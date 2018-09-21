@@ -1,0 +1,16 @@
+*.pyc
+*.pyo
+*.db
+.DS_Store
+.coverage
+.idea
+db.sqlite3
+local_settings.py
+secret_key.txt
+app_name.txt
+prod/logs/*
+prod/run/*
+prod/bin/*
+static/media/*.jpg
+static/media/*.png
+static/media/*.gif
