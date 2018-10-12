@@ -107,8 +107,13 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
 MEDIA_URL = '/static/media/'
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
 
-# TODO email setup
-# TODO admins setup
+ADMINS = [('Aidan', 'aidoraide@gmail.com')]
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'asapsports123@gmail.com'
+EMAIL_HOST_PASSWORD = 'A$apSports123'
+EMAIL_PORT = 587
 
 try:
     from .local_settings import *
