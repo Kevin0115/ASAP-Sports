@@ -12,17 +12,17 @@ import ReviewDetails from '../screens/ReviewDetails';
 import ConfirmMessage from '../screens/ConfirmMessage';
 
 export default createStackNavigator(
-	{
-		Homescreen: Homescreen,
-		Gametype: Gametype,
-		BrowseGames: BrowseGames,
-		GameInfo: GameInfo,
-		TimeDate: TimeDate,
-		Location: Location,
-		ReviewDetails: ReviewDetails,
-		ConfirmMessage: ConfirmMessage
-	},
-	{
-		initialRouteName: 'Homescreen', // This will be changed later to Login depending on conditions
-	}
+    {
+        Homescreen: Homescreen,
+        Gametype: Gametype,
+        BrowseGames: BrowseGames,
+        GameInfo: GameInfo,
+        TimeDate: TimeDate,
+        Location: Location,
+        ReviewDetails: ReviewDetails,
+        ConfirmMessage: ConfirmMessage
+    },
+    {
+        initialRouteName: 'Homescreen', // This will be changed later to Login depending on conditions
+    }
 );
