@@ -34,8 +34,8 @@ from django.core.mail import send_mail
 
 def login(request):
     """
-    :param request: {'fb_access_token': 'facebook_access_token', 'device_id': 'google_device_id'}
-    :return: {'asap_access_token': 'asap_access_token'}
+    :param request: {'fb_access_token': str, 'device_id': str}. device_id is the ID of the device that we can send push notifications to
+    :return: {'asap_access_token': str}
     """
     res = {'asap_access_token': 'abc123def456'}
     return HttpResponse(json.dumps(res), content_type="application/json")
@@ -147,3 +147,5 @@ def subscribe2game(request, game_id):
     """
     res = {'status': 'success'}
     return HttpResponse(json.dumps(res), content_type="application/json")
+
+
