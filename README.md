@@ -22,7 +22,7 @@ Beginning with Gametype, props must be propagated and passed through each screen
 ### Homescreen
 The homescreen.
 
-![Homescreen](mockups/1_Homescreen_MVP.png =250x)
+![Homescreen](mockups/1_Homescreen_MVP.png)
 
 ### Gametype
 The screen where user selects the sport
