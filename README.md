@@ -4,6 +4,9 @@ Mobile application that allows you to find and join other athletes in your area 
 ## Screen Descriptions (for dev team reference)
 Following is a description of what each of the screens should display.
 
+**Important**
+Beginning with Gametype, props must be propagated and passed through each screen until **ReviewDetails** where all props (user input) are submitted through the API.
+
 ### Homescreen
 The homescreen.
 
