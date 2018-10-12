@@ -20,11 +20,18 @@ from django.contrib import admin
 import asapsports.views as views
 
 urlpatterns = [
-    url(r'^admin$', admin.site.urls),
-    path('', views.index),
-    url(r'^endpoint_example$', views.endpoint_example),
-    url(r'^params/(?P<regex_var>[abc][0-9]{2})/$', views.params_regex),
-    path('params/<int:number>/<slug:slug>/', views.params)
+    # url(r'^admin$', admin.site.urls),
+    # path('', views.index),
+    # url(r'^endpoint_example$', views.endpoint_example),
+    # url(r'^params/(?P<regex_var>[abc][0-9]{2})/$', views.params_regex),
+    # path('params/<int:number>/<slug:slug>/', views.params),
+    path('authentication/login', views.login),
+    path('games/upcoming_games', views.upcoming_games),
+    path('games/search', views.search),
+    path('games/join/<int:game_id>', views.join),
+    path('games/host', views.host),
+    path('games/view/<int:game_id>', views.view),
+    path('notifications/subscribe/game/<int:game_id>', views.subscribe2game)
 ]
 
 if settings.DEBUG:

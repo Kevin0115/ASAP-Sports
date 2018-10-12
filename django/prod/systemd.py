@@ -11,10 +11,10 @@ Group=webapps
 WorkingDirectory=/webapps/asapsports/ASAP-Sports/django
 Environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
 ExecStart=/webapps/asapsports/asapsports/bin/gunicorn \
-            --access-logfile /webapps/asapsports/ASAP-Sports/django/asapsports/prod/logs/gunicorn_access.log \
-            --error-logfile /webapps/asapsports/ASAP-Sports/django/asapsports/prod/logs/gunicorn_error.log \
+            --access-logfile /webapps/asapsports/ASAP-Sports/django/prod/logs/gunicorn_access.log \
+            --error-logfile /webapps/asapsports/ASAP-Sports/django/prod/logs/gunicorn_error.log \
             --workers 3 \
-            --bind unix:/webapps/asapsports/ASAP-Sports/django/asapsports/prod/run/gunicorn.sock asapsports.wsgi:application
+            --bind unix:/webapps/asapsports/ASAP-Sports/django/prod/run/gunicorn.sock asapsports.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
