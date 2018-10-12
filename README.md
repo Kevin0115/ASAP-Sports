@@ -53,7 +53,7 @@ The third screen of game creation. User enters a simple plaintext address of the
 ### ReviewDetails
 The fourth and final screen of game creation. The user is shown all of their inputted information and is asked to clarify and submit. Upon submission, the API call is made to create the game.
 
-![](mockups/7_Confirmation.png)
+![](mockups/7_Confirmation_MVP.png)
 
 ### ConfirmMessage
 A simple confirmation message telling the use that their game has been created.
