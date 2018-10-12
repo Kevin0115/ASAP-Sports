@@ -1,6 +1,18 @@
 # ASAP-Sports
 Mobile application that allows you to find and join other athletes in your area in casual/competitive sports.
 
+## STYLE GUIDELINES **READ THIS**
+2 SPACES not tabs; CTRL+A, use "Convert indentions to Spaces", width 2 (Just change your editor so that tabs default to 2 spaces)
+For JSX tags with >= 2 attributes, newline them.
+Example:
+```
+<Button
+    title="Create a Game"
+    color="#fff"
+    onPress={() => this.props.navigation.navigate('Sport')}
+/>
+````
+
 ## Screen Descriptions (for dev team reference)
 Following is a description of what each of the screens should display.
 
