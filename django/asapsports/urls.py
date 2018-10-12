@@ -17,11 +17,27 @@ from django.conf import settings
 from django.urls import path
 from django.conf.urls import url, include, static
 from django.contrib import admin
+from django.http import HttpResponse
 import asapsports.views as views
+
+def doc(request):
+    res = []
+    for url, func in [('authentication/login', views.login),
+                      ('games/upcoming_games', views.upcoming_games),
+                      ('games/search', views.search),
+                      ('games/join/<int:game_id>', views.join),
+                      ('games/host', views.host),
+                      ('games/view/<int:game_id>', views.view),
+                      ('notifications/subscribe/game/<int:game_id>', views.subscribe2game)]:
+        res.append(url)
+        res.append(func.__doc__)
+        res.append('')
+
+    return HttpResponse('\n'.join(res), content_type="text/plain")
 
 urlpatterns = [
     # url(r'^admin$', admin.site.urls),
-    # path('', views.index),
+    path('', doc),
     # url(r'^endpoint_example$', views.endpoint_example),
     # url(r'^params/(?P<regex_var>[abc][0-9]{2})/$', views.params_regex),
     # path('params/<int:number>/<slug:slug>/', views.params),
@@ -36,3 +52,4 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
