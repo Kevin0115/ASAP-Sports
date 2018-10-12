@@ -140,5 +140,10 @@ def view(request, game_id):
 ##### NOTIFICATIONS #####
 
 def subscribe2game(request, game_id):
+    """
+    :param request:
+    :param game_id:
+    :return:
+    """
     res = {'status': 'success'}
     return HttpResponse(json.dumps(res), content_type="application/json")

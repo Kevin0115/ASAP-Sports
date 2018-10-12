@@ -30,7 +30,7 @@ def doc(request):
                       ('games/view/<int:game_id>', views.view),
                       ('notifications/subscribe/game/<int:game_id>', views.subscribe2game)]:
         res.append(url)
-        res.append(func.__doc__)
+        res.append(func.__doc__ or '')
         res.append('')
 
     return HttpResponse('\n'.join(res), content_type="text/plain")
