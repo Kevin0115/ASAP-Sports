@@ -66,10 +66,10 @@ def upcoming_games(request):
 def search(request):
     """
     :param request: {
-          “radius_km”: int,
-          “start_time”: dd-mmm-yyyy hh:mm,
-          “end_time”: dd-mmm-yyyy hh:mm,
-          “sport”: enum
+          'radius_km': int,
+          'start_time': dd-mmm-yyyy hh:mm,
+          'end_time': dd-mmm-yyyy hh:mm,
+          'sport': enum
         }
     :return: [game]
     """
@@ -91,13 +91,13 @@ def host(request):
     """
     :param request: has data like:
         {
-          “sport”: enum,
-          “title”: string,
-          “description”: string,
-          “max_players”: int,
-          “location_lat”: double,
-          “locations_lng”: double,
-          “location_name”: string
+          'sport': enum,
+          'title': string,
+          'description': string,
+          'max_players': int,
+          'location_lat': double,
+          'locations_lng': double,
+          'location_name': string
         }
     :return: {'game_id': game_id}
     """
