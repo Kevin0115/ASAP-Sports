@@ -2,8 +2,8 @@
 Mobile application that allows you to find and join other athletes in your area in casual/competitive sports.
 
 ## STYLE GUIDELINES **READ THIS**
-2 SPACES not tabs; CTRL+A, use "Convert indentions to Spaces", width 2 (Just change your editor so that tabs default to 2 spaces)
-For JSX tags with >= 2 attributes, newline them.
+2 SPACES not tabs; CTRL+A, use "Convert indentions to Spaces", width 2 (Just change your editor so that tabs default to 2 spaces)\
+\For JSX tags with >= 2 attributes, newline them.
 Example:
 ```
 <Button
