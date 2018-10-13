@@ -3,6 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import AppNavigator from './navigation/AppNavigator'
 
+// Disable Warnings
+console.disableYellowBox = true;
+
 export default class App extends React.Component {
   render() {
     return (
