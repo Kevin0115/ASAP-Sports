@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Button } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
 // Add screens here as needed
@@ -27,6 +27,14 @@ export default createStackNavigator(
       navigationOptions: ({navigation}) => ({
         title: 'Select a Sport',
         ...headerStyle,
+        headerLeft: (
+          // Replace this with a "home" icon
+          <Button
+            onPress={() => navigation.popToTop()}
+            title="Cancel"
+            color="#fff"
+          />
+        ),
       }),
     },
     BrowseGames: {
@@ -34,6 +42,14 @@ export default createStackNavigator(
       navigationOptions: ({navigation}) => ({
         title: 'Search Results',
         ...headerStyle,
+        headerLeft: (
+          // Replace this with a "home" icon
+          <Button
+            onPress={() => navigation.popToTop()}
+            title="Home"
+            color="#fff"
+          />
+        ),
       }),
     },
     GameInfo: {
