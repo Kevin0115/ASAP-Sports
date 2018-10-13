@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
+import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class Gametype extends React.Component {
   static navigationOptions = {
     title: 'Select a Sport',
     headerStyle: {
       height: 50,
-      backgroundColor: '#77b2ff',
+      backgroundColor: '#6699ff',
      },
     headerTitleStyle: {
       fontWeight: 'bold',
@@ -15,7 +16,7 @@ export default class Gametype extends React.Component {
   render() {
     return (
       <View style={styles.gametype}>
-        <View style={{flex: 6}}>
+        <View style={{flex: 6, alignItems: 'center', justifyContent: 'space-around'}}>
           <FlatList
             data={[
               {key: 'Basketball'},
@@ -37,34 +38,20 @@ export default class Gametype extends React.Component {
               {key: 'Volleyball'},
               {key: 'Basketball'},
               {key: 'Basketball'},
-              {key: 'Volleyball'},
-              {key: 'Soccer'},
-              {key: 'Basketball'},
-              {key: 'Basketball'},
-              {key: 'Basketball'},
-              {key: 'Soccer'},
-              {key: 'Basketball'},
-              {key: 'Volleyball'},
-              {key: 'Basketball'},
-              {key: 'Soccer'},
-              {key: 'Basketball'},
-              {key: 'Volleyball'},
-              {key: 'Soccer'},
-              {key: 'Basketball'},
-              {key: 'Soccer'},
-              {key: 'Basketball'},
-              {key: 'Basketball'},
             ]}
             renderItem={({item}) =>
-              <Button title={item.key}/>
+              <AwesomeButton
+                width={320}
+                height={60}
+                backgroundColor="#004e89"
+                backgroundDarker="#001a33"
+                // PASS IN PROPS HERE
+                onPress={() => this.props.navigation.navigate('BrowseGames')}
+                style={styles.button}
+              >
+              {item.key}
+              </AwesomeButton>
             }
-          />
-        </View>
-        <View style={styles.nextButton}>
-          <Button
-            title="Next"
-            color="#fff"
-            onPress={() => this.props.navigation.navigate('BrowseGames')}
           />
         </View>
       </View>
@@ -88,12 +75,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Helvetica',
   },
-  nextButton: {
-    flex: 0.8,
-    backgroundColor: '#004e89',
-    justifyContent: 'center',
-  },
+
   listItem: {
     fontSize: 18,
   },
+  button: {
+    marginTop: 16,
+  }
 });
