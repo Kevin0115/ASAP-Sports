@@ -3,16 +3,6 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class Homescreen extends React.Component {
-  static navigationOptions = {
-    title: 'ASAP Sports',
-    headerStyle: {
-      height: 50,
-      backgroundColor: '#6699ff',
-     },
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
-  };
   render() {
     return (
       <View style={styles.homescreen}>

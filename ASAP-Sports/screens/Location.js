@@ -2,16 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
 export default class Location extends React.Component {
-  static navigationOptions = {
-    title: 'Enter Location',
-    headerStyle: {
-      height: 50,
-      backgroundColor: '#77b2ff',
-     },
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    }
-  }
   render() {
     return (
       <View style={styles.location}>

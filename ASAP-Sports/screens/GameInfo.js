@@ -2,16 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
 export default class GameInfo extends React.Component {
-  static navigationOptions = {
-    title: 'Enter Game Details',
-    headerStyle: {
-      height: 50,
-      backgroundColor: '#77b2ff',
-     },
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    }
-  }
   render() {
     return (
       <View style={styles.gameinfo}>

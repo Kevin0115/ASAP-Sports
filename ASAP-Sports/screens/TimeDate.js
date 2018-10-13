@@ -2,16 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
 export default class TimeDate extends React.Component {
-  static navigationOptions = {
-    title: 'Enter Game Time',
-    headerStyle: {
-      height: 50,
-      backgroundColor: '#77b2ff',
-     },
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    }
-  }
   render() {
     return (
       <View style={styles.timedate}>

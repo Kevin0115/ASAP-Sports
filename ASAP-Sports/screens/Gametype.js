@@ -3,16 +3,6 @@ import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class Gametype extends React.Component {
-  static navigationOptions = {
-    title: 'Select a Sport',
-    headerStyle: {
-      height: 50,
-      backgroundColor: '#6699ff',
-     },
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
-  };
   render() {
     return (
       <View style={styles.gametype}>
