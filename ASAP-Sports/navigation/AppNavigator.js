@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { StyleSheet, Button, Alert } from 'react-native';
+import { createStackNavigator, StackNavigator } from 'react-navigation';
 
 // Add screens here as needed
 import Homescreen from '../screens/Homescreen';
@@ -11,14 +11,53 @@ import TimeDate from '../screens/TimeDate';
 import Location from '../screens/Location';
 import ReviewDetails from '../screens/ReviewDetails';
 import ConfirmMessage from '../screens/ConfirmMessage';
+import FilterModal from '../screens/FilterModal'
 
-export default createStackNavigator(
+const BrowseStack = StackNavigator(
+  {
+    BrowseGames: {
+      screen: BrowseGames,
+      navigationOptions: ({navigation}) => ({
+        title: 'Search Results',
+        ...headerStyle,
+        headerLeft: (
+          // Replace this with a "home" icon
+          <Button
+            onPress={() => navigation.popToTop()}
+            title="Home"
+            color="#fff"
+          />
+        ),
+        headerRight: (
+          // Replace this with a "filter" icon
+          <Button
+            onPress={() => navigation.navigate('FilterModal')}
+            title="Filter"
+            color="#fff"
+          />
+        ),
+      }),
+    },
+    FilterModal: {
+      screen: FilterModal,
+      navigationOptions: ({navigation}) => ({
+        title: 'Filter Options',
+        ...headerStyle,
+      }),
+    }
+  },
+  {
+    initialRouteName: 'BrowseGames',
+    mode: 'modal',
+  }
+);
+
+export default StackNavigator(
   {
     // IMPORTANT: move navigationOptions into here. Clutters the screens
     Homescreen: {
       screen: Homescreen,
       navigationOptions: ({navigation}) => ({
-        title: 'ASAP Sports',
         ...headerStyle,
       }),
     },
@@ -29,11 +68,11 @@ export default createStackNavigator(
         ...headerStyle,
       }),
     },
-    BrowseGames: {
-      screen: BrowseGames,
+    Browse: {
+      screen: BrowseStack,
       navigationOptions: ({navigation}) => ({
-        title: 'Search Results',
-        ...headerStyle,
+        header: null,
+        gesturesEnabled: false,
       }),
     },
     GameInfo: {
@@ -73,7 +112,7 @@ export default createStackNavigator(
   },
   {
     initialRouteName: 'Homescreen', // This will be changed later to Login depending on conditions
-    headerMode: 'float',
+    headerMode: 'screen',
     headerBackTitle: 'false',
   }
 );
@@ -88,4 +127,5 @@ const headerStyle = {
     fontWeight: 'bold',
   },
   headerBackTitle: null,
+  gesturesEnabled: false,
 }
