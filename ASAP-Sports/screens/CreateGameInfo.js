@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, StyleSheet, Text, View, TextInput} from 'react-native';
 import {styles} from "../App";
 import RankingStar from "../components/RankingStar";
+import AwesomeButton from 'react-native-really-awesome-button';
 
 export class CreateGameInfo extends React.Component {
   static navigationOptions = {
@@ -23,34 +24,31 @@ export class CreateGameInfo extends React.Component {
             Game Title
           </Text>
         </View>
-        <View style ={{padding: 5}}>
-        <TextInput
-          style={{
-            borderColor: '#000000',
-            borderWidth: 1,
-          }}
-          placeholder=" Enter title "
-          // onSubmitEditing = {(text) => this.setState({text})}
-          // onChangeText={(text) => this.setState({text})}
-        />
+        <View style={{padding: 5}}>
+          <TextInput
+            style={{
+              borderColor: '#000000',
+              borderWidth: 1,
+            }}
+            placeholder=" Enter title "
+          />
         </View>
         <View style={styles.homeHeader}>
           <Text style={styles.headerText}>
             Game Description
           </Text>
         </View>
-        <View style ={{padding: 5}}>
-        <TextInput
-          style={{
-            borderColor: '#000000',
-            borderWidth: 1,
-          }}
-          placeholder=" Enter Description "
+        <View style={{padding: 5}}>
+          <TextInput
+            style={{
+              borderColor: '#000000',
+              borderWidth: 1,
+            }}
+            placeholder=" Enter Description "
 
-          multiline={true}
-          numberOfLines={8}
-          // onChangeText={(text) => this.setState({text})}
-        />
+            multiline={true}
+            numberOfLines={8}
+          />
         </View>
         <View style={styles.homeHeader}>
           <Text style={styles.headerText}>
@@ -61,13 +59,17 @@ export class CreateGameInfo extends React.Component {
           <RankingStar/>
         </View>
         <View style={{flex: 5}}/>
-        <View style={styles.nextButton}>
-          <Button
-            title="Next"
-            color="#fff"
-            onPress={() => this.props.navigation.navigate('Home')}
-          />
-        </View>
+          <View style={styles.buttonContainer}>
+            <AwesomeButton
+              width={320}
+              height={60}
+              backgroundColor="#004e89"
+              backgroundDarker="#001a33"
+              onPress={() => this.props.navigation.navigate('Home')}
+            >
+              Next
+            </AwesomeButton>
+          </View>
       </View>
     );
   }
