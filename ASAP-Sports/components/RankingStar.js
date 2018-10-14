@@ -54,12 +54,17 @@ export default class RankingStar extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    // paddingHorizontal: 20
   },
   starContainer: {
-    padding: 5
+    padding: 10
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // flex: 1
   },
   image: {
-    width: 50,
-    height: 50
+    width: 70,
+    height: 70,
+    // flex: 1
   }
 });

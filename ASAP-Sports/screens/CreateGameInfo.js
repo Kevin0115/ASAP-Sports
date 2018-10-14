@@ -19,12 +19,12 @@ export class CreateGameInfo extends React.Component {
   render() {
     return (
       <View style={styles.screen}>
-        <View style={styles.homeHeader}>
+        <View style={styles2.infoHeader}>
           <Text style={styles.headerText}>
             Game Title
           </Text>
         </View>
-        <View style={{padding: 5}}>
+        <View style={{paddingHorizontal: 10}}>
           <TextInput
             style={{
               borderColor: '#000000',
@@ -33,29 +33,30 @@ export class CreateGameInfo extends React.Component {
             placeholder=" Enter title "
           />
         </View>
-        <View style={styles.homeHeader}>
+        <View style={styles2.infoHeader}>
           <Text style={styles.headerText}>
             Game Description
           </Text>
         </View>
-        <View style={{padding: 5}}>
+        <View style={{paddingHorizontal: 10}}>
           <TextInput
             style={{
               borderColor: '#000000',
               borderWidth: 1,
+              textAlignVertical: "top",
+              height: 175
             }}
             placeholder=" Enter Description "
-
             multiline={true}
-            numberOfLines={8}
+            // numberOfLines={8}
           />
         </View>
-        <View style={styles.homeHeader}>
+        <View style={styles2.infoHeader}>
           <Text style={styles.headerText}>
             Set Competitive Level
           </Text>
         </View>
-        <View style={styles.container}>
+        <View style={styles2.container}>
           <RankingStar/>
         </View>
         <View style={{flex: 5}}/>
@@ -74,3 +75,21 @@ export class CreateGameInfo extends React.Component {
     );
   }
 }
+
+const styles2 = StyleSheet.create({
+  infoHeader: {
+    // flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    paddingBottom: 5
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20
+    // backgroundColor: '#F5FCFF',
+  },
+});
