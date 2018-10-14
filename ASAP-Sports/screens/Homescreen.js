@@ -1,8 +1,47 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
+class LogoIcon extends React.Component {
+  render() {
+    return (
+      <Image
+        source={require('../images/logo.png')}
+        style={styles.logo}
+      />
+    );
+  }
+}
+
+class HeaderPicture extends React.Component {
+  render() {
+    return (
+      <Image
+        source={require('../images/circlepic.png')}
+        style={styles.picture}
+      />
+    );
+  }
+}
+
+class SettingsIcon extends React.Component {
+  render() {
+    return (
+      <Image
+      source={require('../images/settings.png')}
+      style={styles.picture}
+    />
+    );
+  }
+}
+
 export default class Homescreen extends React.Component {
+  static navigationOptions = {
+    headerLeft: <HeaderPicture />,
+    headerRight: <SettingsIcon />,
+    headerTitle: <LogoIcon />,
+  };
+
   render() {
     return (
       <View style={styles.homescreen}>
@@ -50,4 +89,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  picture: {
+    height: 40,
+    width: 40,
+    marginLeft: 15,
+    marginRight: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 220,
+    height: 44,
+  }
 });
