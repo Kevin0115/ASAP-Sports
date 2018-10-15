@@ -12,6 +12,37 @@ import Location from '../screens/Location';
 import ReviewDetails from '../screens/ReviewDetails';
 import ConfirmMessage from '../screens/ConfirmMessage';
 import FilterModal from '../screens/FilterModal'
+import Settings from '../screens/Settings'
+import Profile from '../screens/Profile'
+
+class LogoIcon extends React.Component {
+  render() {
+    return (
+      <Image
+        source={require('../assets/images/logo.png')}
+        style={{width: 55, height: 55}}
+      />
+    );
+  }
+}
+
+const HomeStack = createStackNavigator(
+  {
+    Home: {
+      screen: Homescreen,
+    },
+    Settings: {
+      screen: Settings,
+    },
+    Profile: {
+      screen: Profile,
+    }
+  },
+  {
+    headerMode: 'none',
+    mode: 'modal',
+  }
+);
 
 const BrowseStack = createStackNavigator(
   {
@@ -33,8 +64,29 @@ export default createStackNavigator(
   {
     // IMPORTANT: move navigationOptions into here. Clutters the screens
     Homescreen: {
-      screen: Homescreen,
+      screen: HomeStack,
       navigationOptions: ({navigation}) => ({
+        headerTitle: <LogoIcon />,
+        headerRight: (
+          // Replace this with a "filter" icon
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Settings')}>
+            <Image
+              source={require('../assets/images/settings.png')}
+              style={{width: 40, height: 40, marginRight: 10}}
+            />
+          </TouchableOpacity>
+        ),
+        headerLeft: (
+          // Replace this with a "filter" icon
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Profile')}>
+            <Image
+              source={require('../assets/images/circlepic.png')}
+              style={{width: 40, height: 40, marginLeft: 10}}
+            />
+          </TouchableOpacity>
+        ),
         ...headerStyle,
       }),
     },
@@ -112,6 +164,7 @@ const headerStyle = {
   },
   headerTitleStyle: {
     fontWeight: 'bold',
+    color: '#fff',
   },
   headerBackTitle: null,
   gesturesEnabled: false,
