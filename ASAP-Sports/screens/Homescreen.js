@@ -6,7 +6,7 @@ class LogoIcon extends React.Component {
   render() {
     return (
       <Image
-        source={require('../images/logo.png')}
+        source={require('../assets/images/logo.png')}
         style={styles.logo}
       />
     );
@@ -17,7 +17,7 @@ class HeaderPicture extends React.Component {
   render() {
     return (
       <Image
-        source={require('../images/circlepic.png')}
+        source={require('../assets/images/circlepic.png')}
         style={styles.picture}
       />
     );
@@ -28,7 +28,7 @@ class SettingsIcon extends React.Component {
   render() {
     return (
       <Image
-      source={require('../images/settings.png')}
+      source={require('../assets/images/settings.png')}
       style={styles.picture}
     />
     );
@@ -54,7 +54,7 @@ export default class Homescreen extends React.Component {
         <View style={styles.upcomingGamesContainer}>
           <ScrollView>
             <Image
-              source={require('../images/logotext.png')}
+              source={require('../assets/images/logotext.png')}
              style={styles.logoPlaceholder}
             />
           </ScrollView>

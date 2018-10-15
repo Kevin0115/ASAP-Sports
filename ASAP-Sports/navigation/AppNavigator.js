@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Button, Alert } from 'react-native';
-import { createStackNavigator, StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 // Add screens here as needed
 import Homescreen from '../screens/Homescreen';
@@ -13,7 +13,7 @@ import ReviewDetails from '../screens/ReviewDetails';
 import ConfirmMessage from '../screens/ConfirmMessage';
 import FilterModal from '../screens/FilterModal'
 
-const BrowseStack = StackNavigator(
+const BrowseStack = createStackNavigator(
   {
     BrowseGames: {
       screen: BrowseGames,
@@ -53,7 +53,7 @@ const BrowseStack = StackNavigator(
   }
 );
 
-export default StackNavigator(
+export default createStackNavigator(
   {
     // IMPORTANT: move navigationOptions into here. Clutters the screens
     Homescreen: {
