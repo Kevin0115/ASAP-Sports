@@ -163,7 +163,6 @@ const headerStyle = {
     backgroundColor: '#6699ff',
   },
   headerTitleStyle: {
-    fontWeight: 'bold',
     color: '#fff',
   },
   headerBackTitle: null,
