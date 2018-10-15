@@ -4,14 +4,15 @@ import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class BrowseGames extends React.Component {
   render() {
+    const sport = this.props.navigation.getParam('sport', 'default');
     return (
       <View style={styles.browse}>
         <View style={styles.homeHeader}>
           <Text style={styles.headerText}>
-            No Games Found...
+            No Results Found for {sport}...
           </Text>
           <Text style={styles.headerText}>
-            Try Creating Your Own!
+            {'\n'}Try Creating Your Own!
           </Text>
         </View>
         <View style={{flex: 5}}/>
@@ -21,7 +22,7 @@ export default class BrowseGames extends React.Component {
             height={60}
             backgroundColor="#004e89"
             backgroundDarker="#001a33"
-            onPress={() => this.props.navigation.navigate('GameInfo')}
+            onPress={() => this.props.navigation.navigate('GameInfo', {sport})}
           >
             Create a Game
           </AwesomeButton>
@@ -44,7 +45,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
+    alignItems: 'center',
     color: '#8c8c8c',
     fontFamily: 'Helvetica',
   },

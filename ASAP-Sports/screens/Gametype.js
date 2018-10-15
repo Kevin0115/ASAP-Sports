@@ -36,7 +36,7 @@ export default class Gametype extends React.Component {
                 backgroundColor="#004e89"
                 backgroundDarker="#001a33"
                 // PASS IN PROPS HERE
-                onPress={() => this.props.navigation.navigate('Browse')}
+                onPress={() => this.props.navigation.navigate('Browse', {sport: item.key})}
                 style={styles.button}
               >
               {item.key}
