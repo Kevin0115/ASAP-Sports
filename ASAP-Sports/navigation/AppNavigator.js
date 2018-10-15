@@ -82,7 +82,7 @@ export default createStackNavigator(
           <TouchableOpacity
             onPress={() => navigation.navigate('Profile')}>
             <Image
-              source={require('../assets/images/circlepic.png')}
+              source={require('../assets/images/user.png')}
               style={{width: 40, height: 40, marginLeft: 10}}
             />
           </TouchableOpacity>
