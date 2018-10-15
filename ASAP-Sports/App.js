@@ -31,8 +31,8 @@ export default class App extends React.Component {
     return Promise.all([
       Asset.loadAsync([
         require('./assets/images/logo.png'),
-        require('./assets/images/circlepic.png'),
-        require('./assets/images/circlepic.png'),
+        require('./assets/images/user.png'),
+        require('./assets/images/settings.png'),
         require('./assets/images/logotext.png'),
       ]),
     ]);
