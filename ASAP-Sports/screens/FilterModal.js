@@ -33,10 +33,22 @@ export default class FilterModal extends React.Component {
         </View>
         <View style={styles.applyFilter}>
           <AwesomeButton
-            width={320}
+            width={160}
+            height={60}
+            backgroundColor='red'
+            backgroundDarker='black'
+            style={{marginRight: 10}}
+            onPress={() => this.props.navigation.goBack()}
+          >
+            Cancel
+          </AwesomeButton>
+          <AwesomeButton
+            width={160}
             height={60}
             backgroundColor="#004e89"
             backgroundDarker="#001a33"
+            style={{marginLeft: 10}}
+            // This will be a callback function
             onPress={() => this.props.navigation.goBack()}
           >
             Apply Filter
@@ -59,6 +71,7 @@ const styles = StyleSheet.create({
   },
   applyFilter: {
     flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
   },
