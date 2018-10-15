@@ -2,44 +2,44 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Image, ScrollView } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
-class LogoIcon extends React.Component {
-  render() {
-    return (
-      <Image
-        source={require('../assets/images/logo.png')}
-        style={styles.logo}
-      />
-    );
-  }
-}
+// class LogoIcon extends React.Component {
+//   render() {
+//     return (
+//       <Image
+//         source={require('../assets/images/logo.png')}
+//         style={styles.logo}
+//       />
+//     );
+//   }
+// }
 
-class HeaderPicture extends React.Component {
-  render() {
-    return (
-      <Image
-        source={require('../assets/images/circlepic.png')}
-        style={styles.picture}
-      />
-    );
-  }
-}
+// class HeaderPicture extends React.Component {
+//   render() {
+//     return (
+//       <Image
+//         source={require('../assets/images/circlepic.png')}
+//         style={styles.picture}
+//       />
+//     );
+//   }
+// }
 
-class SettingsIcon extends React.Component {
-  render() {
-    return (
-      <Image
-      source={require('../assets/images/settings.png')}
-      style={styles.picture}
-    />
-    );
-  }
-}
+// class SettingsIcon extends React.Component {
+//   render() {
+//     return (
+//       <Image
+//       source={require('../assets/images/settings.png')}
+//       style={styles.picture}
+//     />
+//     );
+//   }
+// }
 
 export default class Homescreen extends React.Component {
   static navigationOptions = {
-    headerLeft: <HeaderPicture />,
-    headerRight: <SettingsIcon />,
-    headerTitle: <LogoIcon />,
+    // headerLeft: <HeaderPicture />,
+    // headerRight: <SettingsIcon />,
+    // headerTitle: <LogoIcon />,
   };
 
   render() {
@@ -115,9 +115,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logo: {
-    width: 55,
-    height: 55,
-    justifyContent: 'flex-start',
-  }
+  // logo: {
+  //   width: 55,
+  //   height: 55,
+  //   justifyContent: 'flex-start',
+  // }
 });

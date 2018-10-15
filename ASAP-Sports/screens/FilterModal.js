@@ -101,8 +101,8 @@ export default class FilterModal extends React.Component {
           <AwesomeButton
             width={160}
             height={60}
-            backgroundColor='red'
-            backgroundDarker='black'
+            backgroundColor='#ea2727'
+            backgroundDarker='#681010'
             style={{marginRight: 10}}
             onPress={() => this.props.navigation.goBack()}
           >
