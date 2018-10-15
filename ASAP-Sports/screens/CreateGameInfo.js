@@ -66,7 +66,7 @@ export class CreateGameInfo extends React.Component {
               height={60}
               backgroundColor="#004e89"
               backgroundDarker="#001a33"
-              onPress={() => this.props.navigation.navigate('Home')}
+              onPress={() => this.props.navigation.navigate('ReviewDetails')}
             >
               Next
             </AwesomeButton>
