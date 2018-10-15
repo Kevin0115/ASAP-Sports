@@ -18,7 +18,7 @@ export default class Profile extends React.Component {
             height={60}
             backgroundColor="#004e89"
             backgroundDarker="#001a33"
-            onPress={() => this.props.navigation.goBack()}
+            onPress={() => this.props.navigation.popToTop()}
           >
             Done
           </AwesomeButton>
