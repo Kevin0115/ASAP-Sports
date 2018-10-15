@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, ScrollView } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 class LogoIcon extends React.Component {
@@ -44,13 +44,21 @@ export default class Homescreen extends React.Component {
 
   render() {
     return (
+      // upcoming games text will be dynamic later on
       <View style={styles.homescreen}>
-        <View style={styles.homeHeader}>
-          <Text style={styles.headerText}>
-            No Upcoming Games
+        <View style={styles.textContainer}>
+          <Text style={styles.upcomingText}>
+            Upcoming Games
           </Text>
         </View>
-        <View style={{flex: 5}}/>
+        <View style={styles.upcomingGamesContainer}>
+          <ScrollView>
+            <Image
+              source={require('../images/logotext.png')}
+             style={styles.logoPlaceholder}
+            />
+          </ScrollView>
+        </View>
         <View style={styles.buttonContainer}>
           <AwesomeButton
             width={320}
@@ -73,16 +81,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'stretch',
   },
-  homeHeader: {
-    flex: 1,
+  textContainer: {
+    flex: 0.7,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  headerText: {
+  upcomingText: {
     fontWeight: 'bold',
     fontSize: 18,
     color: '#8c8c8c',
     fontFamily: 'Helvetica',
+  },
+  upcomingGamesContainer: {
+    flex: 5.3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoPlaceholder: {
+    opacity: 0.1,
+    width: 200,
+    height: 150,
   },
   buttonContainer: {
     flex: 1,
@@ -98,7 +116,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width: 220,
-    height: 44,
+    width: 45,
+    height: 45,
+    justifyContent: 'flex-start',
   }
 });

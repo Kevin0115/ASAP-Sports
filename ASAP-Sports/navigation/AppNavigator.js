@@ -23,7 +23,7 @@ const BrowseStack = StackNavigator(
         headerLeft: (
           // Replace this with a "home" icon
           <Button
-            onPress={() => navigation.popToTop()}
+            onPress={() => navigation.navigate('Gametype')}
             title="Home"
             color="#fff"
           />
@@ -47,6 +47,7 @@ const BrowseStack = StackNavigator(
     }
   },
   {
+    headerMode: 'none',
     initialRouteName: 'BrowseGames',
     mode: 'modal',
   }
@@ -71,8 +72,16 @@ export default StackNavigator(
     Browse: {
       screen: BrowseStack,
       navigationOptions: ({navigation}) => ({
-        header: null,
-        gesturesEnabled: false,
+        title: 'Search Results',
+        ...headerStyle,
+        headerRight: (
+          // Replace this with a "filter" icon
+          <Button
+            onPress={() => navigation.navigate('FilterModal')}
+            title="Filter"
+            color="#fff"
+          />
+        ),
       }),
     },
     GameInfo: {
@@ -120,7 +129,7 @@ export default StackNavigator(
 // Changes here reflect in ALL headers
 const headerStyle = {
   headerStyle: {
-    height: 50,
+    height: 60,
     backgroundColor: '#6699ff',
   },
   headerTitleStyle: {
