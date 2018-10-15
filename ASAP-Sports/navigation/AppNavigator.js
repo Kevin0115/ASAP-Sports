@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Button, Alert } from 'react-native';
+import { StyleSheet, Button, Alert, TouchableOpacity, Image } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
 // Add screens here as needed
@@ -17,33 +17,9 @@ const BrowseStack = createStackNavigator(
   {
     BrowseGames: {
       screen: BrowseGames,
-      navigationOptions: ({navigation}) => ({
-        title: 'Search Results',
-        ...headerStyle,
-        headerLeft: (
-          // Replace this with a "home" icon
-          <Button
-            onPress={() => navigation.navigate('Gametype')}
-            title="Home"
-            color="#fff"
-          />
-        ),
-        headerRight: (
-          // Replace this with a "filter" icon
-          <Button
-            onPress={() => navigation.navigate('FilterModal')}
-            title="Filter"
-            color="#fff"
-          />
-        ),
-      }),
     },
     FilterModal: {
       screen: FilterModal,
-      navigationOptions: ({navigation}) => ({
-        title: 'Filter Options',
-        ...headerStyle,
-      }),
     }
   },
   {
@@ -76,11 +52,13 @@ export default createStackNavigator(
         ...headerStyle,
         headerRight: (
           // Replace this with a "filter" icon
-          <Button
-            onPress={() => navigation.navigate('FilterModal')}
-            title="Filter"
-            color="#fff"
-          />
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FilterModal')}>
+            <Image
+              source={require('../assets/images/filterIcon.png')}
+              style={{width: 30, height: 30, marginRight: 10}}
+            />
+          </TouchableOpacity>
         ),
       }),
     },
