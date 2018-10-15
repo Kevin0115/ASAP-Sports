@@ -12,22 +12,22 @@ export default class Gametype extends React.Component {
               {key: 'Basketball'},
               {key: 'Volleyball'},
               {key: 'Soccer'},
-              {key: 'Volleyball'},
-              {key: 'Basketball'},
-              {key: 'Soccer'},
-              {key: 'Basketball'},
-              {key: 'Volleyball'},
-              {key: 'Basketball'},
-              {key: 'Basketball'},
-              {key: 'Soccer'},
-              {key: 'Volleyball'},
-              {key: 'Basketball'},
-              {key: 'Basketball'},
-              {key: 'Basketball'},
-              {key: 'Soccer'},
-              {key: 'Volleyball'},
-              {key: 'Basketball'},
-              {key: 'Basketball'},
+              {key: 'Baseball'},
+              {key: 'Badminton'},
+              {key: 'Football'},
+              {key: 'Cricket'},
+              {key: 'Snowboarding'},
+              {key: 'Skiing'},
+              {key: 'Surfing'},
+              {key: 'Table Tennis'},
+              {key: 'Tennis'},
+              {key: 'Dodgeball'},
+              {key: 'Bouldering'},
+              {key: 'Skateboarding'},
+              {key: 'Boxing'},
+              {key: 'Wrestling'},
+              {key: 'Pool'},
+              {key: 'Ultimate Frisbee'},
             ]}
             renderItem={({item}) =>
               <AwesomeButton
@@ -36,7 +36,7 @@ export default class Gametype extends React.Component {
                 backgroundColor="#004e89"
                 backgroundDarker="#001a33"
                 // PASS IN PROPS HERE
-                onPress={() => this.props.navigation.navigate('BrowseGames')}
+                onPress={() => this.props.navigation.navigate('Browse', {sport: item.key})}
                 style={styles.button}
               >
               {item.key}
