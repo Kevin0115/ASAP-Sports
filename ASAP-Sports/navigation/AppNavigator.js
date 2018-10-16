@@ -11,9 +11,13 @@ import TimeDate from '../screens/TimeDate';
 import Location from '../screens/Location';
 import ReviewDetails from '../screens/ReviewDetails';
 import ConfirmMessage from '../screens/ConfirmMessage';
-import FilterModal from '../screens/FilterModal'
-import Settings from '../screens/Settings'
-import Profile from '../screens/Profile'
+import FilterModal from '../screens/FilterModal';
+import Settings from '../screens/Settings';
+import Profile from '../screens/Profile';
+import CancelButton from '../assets/components/CancelButton';
+import FilterButton from '../assets/components/FilterButton';
+import SettingsButton from '../assets/components/SettingsButton';
+import ProfileButton from '../assets/components/ProfileButton';
 
 class LogoIcon extends React.Component {
   render() {
@@ -67,26 +71,8 @@ export default createStackNavigator(
       screen: HomeStack,
       navigationOptions: ({navigation}) => ({
         headerTitle: <LogoIcon />,
-        headerRight: (
-          // Replace this with a "filter" icon
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Settings')}>
-            <Image
-              source={require('../assets/images/settings.png')}
-              style={{width: 40, height: 40, marginRight: 10}}
-            />
-          </TouchableOpacity>
-        ),
-        headerLeft: (
-          // Replace this with a "filter" icon
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Profile')}>
-            <Image
-              source={require('../assets/images/user.png')}
-              style={{width: 40, height: 40, marginLeft: 10}}
-            />
-          </TouchableOpacity>
-        ),
+        headerRight: <SettingsButton />,
+        headerLeft: <ProfileButton />,
         ...headerStyle,
       }),
     },
@@ -102,16 +88,7 @@ export default createStackNavigator(
       navigationOptions: ({navigation}) => ({
         title: 'Search Results',
         ...headerStyle,
-        headerRight: (
-          // Replace this with a "filter" icon
-          <TouchableOpacity
-            onPress={() => navigation.navigate('FilterModal')}>
-            <Image
-              source={require('../assets/images/filterIcon.png')}
-              style={{width: 30, height: 30, marginRight: 10}}
-            />
-          </TouchableOpacity>
-        ),
+        headerRight: <FilterButton />,
       }),
     },
     GameInfo: {
@@ -119,13 +96,15 @@ export default createStackNavigator(
       navigationOptions: ({navigation}) => ({
         title: 'Enter Game Details',
         ...headerStyle,
+        ...creationHeaderStyle,
       }),
     },
     TimeDate: {
       screen: TimeDate,
       navigationOptions: ({navigation}) => ({
-        title: 'Select a Time',
+        title: 'Time and Location',
         ...headerStyle,
+        ...creationHeaderStyle,
       }),
     },
     Location: {
@@ -133,6 +112,7 @@ export default createStackNavigator(
       navigationOptions: ({navigation}) => ({
         title: 'Enter a Location',
         ...headerStyle,
+        ...creationHeaderStyle,
       }),
     },
     ReviewDetails: {
@@ -140,6 +120,7 @@ export default createStackNavigator(
       navigationOptions: ({navigation}) => ({
         title: 'Review Details',
         ...headerStyle,
+        ...creationHeaderStyle,
       }),
     },
     ConfirmMessage: {
@@ -167,4 +148,8 @@ const headerStyle = {
   },
   headerBackTitle: null,
   gesturesEnabled: false,
+}
+
+const creationHeaderStyle = {
+  headerRight: <CancelButton />
 }

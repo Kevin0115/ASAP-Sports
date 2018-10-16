@@ -48,6 +48,7 @@ export default class App extends React.Component {
         require('./assets/images/wrestling.png'),
         require('./assets/images/swimming.png'),
         require('./assets/images/frisbee.png'),
+        require('./assets/images/garbage.png'),
       ]),
     ]);
   };
