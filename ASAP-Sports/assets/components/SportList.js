@@ -3,59 +3,59 @@ import React from 'react';
 const SportList = [
                     {
                       key: 'Basketball',
-                      image: require('../assets/images/basketball.png'),
+                      image: require('../images/basketball.png'),
                     },
                     {
                       key: 'Volleyball',
-                      image: require('../assets/images/volleyball.png'),
+                      image: require('../images/volleyball.png'),
                     },
                     {
                       key: 'Soccer',
-                      image: require('../assets/images/soccer.png'),
+                      image: require('../images/soccer.png'),
                     },
                     {
                       key: 'Baseball',
-                      image: require('../assets/images/baseball.png'),
+                      image: require('../images/baseball.png'),
                     },
                     {
                       key: 'Badminton',
-                      image: require('../assets/images/badminton.png'),
+                      image: require('../images/badminton.png'),
                     },
                     {
                       key: 'Football',
-                      image: require('../assets/images/football.png'),
+                      image: require('../images/football.png'),
                     },
                     {
                       key: 'Table Tennis',
-                      image: require('../assets/images/tabletennis.png'),
+                      image: require('../images/tabletennis.png'),
                     },
                     {
                       key: 'Tennis',
-                      image: require('../assets/images/tennis.png'),
+                      image: require('../images/tennis.png'),
                     },
                     {
                       key: 'Bouldering',
-                      image: require('../assets/images/bouldering.png'),
+                      image: require('../images/bouldering.png'),
                     },
                     {
                       key: 'Skateboarding',
-                      image: require('../assets/images/skateboarding.png'),
+                      image: require('../images/skateboarding.png'),
                     },
                     {
                       key: 'Boxing',
-                      image: require('../assets/images/boxing.png'),
+                      image: require('../images/boxing.png'),
                     },
                     {
                       key: 'Wrestling',
-                      image: require('../assets/images/wrestling.png'),
+                      image: require('../images/wrestling.png'),
                     },
                     {
                       key: 'Swimming',
-                      image: require('../assets/images/swimming.png'),
+                      image: require('../images/swimming.png'),
                     },
                     {
                       key: 'Ultimate Frisbee',
-                      image: require('../assets/images/frisbee.png'),
+                      image: require('../images/frisbee.png'),
                     },
                   ]
 

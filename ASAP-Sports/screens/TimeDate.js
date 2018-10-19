@@ -4,7 +4,7 @@ import AwesomeButton from 'react-native-really-awesome-button';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Modal from 'react-native-modal';
 
-import NumPlayerKeys from './NumPlayerKeys';
+import NumPlayerKeys from '../assets/components/NumPlayerKeys';
 
 export default class TimeDate extends React.Component {
   state = {

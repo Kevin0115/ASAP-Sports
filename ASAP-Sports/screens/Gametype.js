@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, FlatList, Image } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
-import SportList from './SportList';
+import SportList from '../assets/components/SportList';
 
 export default class Gametype extends React.Component {
   render() {
