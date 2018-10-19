@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, Picker } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, Picker, Alert } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Modal from 'react-native-modal';
@@ -13,7 +13,10 @@ export default class TimeDate extends React.Component {
     isNumPickerVisible: false,
     chosenTime: 'No Time Chosen',
     chosenDate: 'No Date Chosen',
-    numPlayers: 1,
+    numPlayers: 'No Limit Chosen',
+    dateChosen: false,
+    timeChosen: false,
+    limitChosen: false,
   };
 
   _showNumPicker = () => this.setState({isNumPickerVisible: true});
@@ -28,26 +31,59 @@ export default class TimeDate extends React.Component {
 
   _hideDatePicker = () => this.setState({ isDatePickerVisible: false });
 
-  _handleNumPicked = (num) => {this.setState({numPlayers: num});}
+  _handleNumPicked = (num) => {
+    this.setState({
+      numPlayers: num,
+      limitChosen: true,
+    });
+  }
 
   _handleTimePicked = (time) => {
-    this.setState({chosenTime: (time.toLocaleString('en-US',
-    {
-      hour: 'numeric',
-      minute: 'numeric',
-    }))});
+    this.setState({
+      chosenTime: (
+        time.toLocaleString(
+          'en-US',
+          {
+            hour: 'numeric',
+            minute: 'numeric',
+          }
+        )
+      ),
+      timeChosen: true,
+    });
     this._hideTimePicker();
   };
 
   _handleDatePicked = (date) => {
-    this.setState({chosenDate: (date.toLocaleString('en-US',
-    {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-    }))});
+    this.setState({
+      chosenDate: (
+        date.toLocaleString(
+          'en-US',
+          {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+          }
+        )
+      ),
+      dateChosen: true,
+    });
     this._hideDatePicker();
   };
+
+  _handleNextPress = () => {
+    if (this.state.dateChosen && this.state.timeChosen && this.state.limitChosen) {
+      this.props.navigation.navigate('Location')
+    } else {
+      Alert.alert('Warning','Please select all options');
+    }
+  };
+
+  _limitMessage = () => {
+    return this.state.limitChosen ? 
+      'Player Limit: ' + this.state.numPlayers :
+      'No Limit Chosen';
+  }
 
   render() {
     return (
@@ -118,7 +154,7 @@ export default class TimeDate extends React.Component {
               Select Player Limit
             </AwesomeButton>
             <Text style={styles.headerText}>
-              Player Limit: {this.state.numPlayers}
+              {this._limitMessage()}
             </Text>
           </View>
         </View>
@@ -128,7 +164,7 @@ export default class TimeDate extends React.Component {
             height={60}
             backgroundColor='#004e89'
             backgroundDarker='#001a33'
-            onPress={() => this.props.navigation.navigate('Location')}
+            onPress={() => this._handleNextPress()}
           >
             Next
           </AwesomeButton>

@@ -10,7 +10,6 @@ import GameInfo from '../screens/GameInfo';
 import TimeDate from '../screens/TimeDate';
 import Location from '../screens/Location';
 import ReviewDetails from '../screens/ReviewDetails';
-import ConfirmMessage from '../screens/ConfirmMessage';
 import FilterModal from '../screens/FilterModal';
 import Settings from '../screens/Settings';
 import Profile from '../screens/Profile';
@@ -102,7 +101,7 @@ export default createStackNavigator(
     TimeDate: {
       screen: TimeDate,
       navigationOptions: ({navigation}) => ({
-        title: 'Time and Location',
+        title: 'Select Date and Time',
         ...headerStyle,
         ...creationHeaderStyle,
       }),
@@ -122,13 +121,7 @@ export default createStackNavigator(
         ...headerStyle,
         ...creationHeaderStyle,
       }),
-    },
-    ConfirmMessage: {
-      screen: ConfirmMessage,
-      navigationOptions: ({navigation}) => ({
-        ...headerStyle,
-      }),
-    },
+  },
   },
   {
     initialRouteName: 'Homescreen', // This will be changed later to Login depending on conditions
