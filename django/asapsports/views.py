@@ -176,7 +176,7 @@ def host(request):
         max_players = utils.sanitize_int(postdata['max_players'])
         sport = utils.sanitize_sport(postdata['sport'])
         start_time = utils.sanitize_datetime(postdata['start_time'])
-        duration = utils.sanitize_datetime(postdata['duration'])
+        duration = utils.sanitize_int(postdata['duration'])
         if duration is None or duration <= 0:
             return utils.json_client_error("Bad duration")
         end_time = start_time + datetime.timedelta(minutes=duration)
@@ -192,7 +192,7 @@ def host(request):
     #     return utils.json_client_error("Bad start_time")
 
     l = locals()
-    for x in ['max_players', 'sport', 'start_time', 'end_time', 'location_lng',
+    for x in ['max_players', 'sport', 'start_time', 'duration', 'location_lng',
               'location_lat', 'location_name', 'asap_access_token', 'comp_level']:
         if l[x] is None:
             return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
