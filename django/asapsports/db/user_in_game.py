@@ -16,6 +16,15 @@ def insert_user_in_game(conn, user_id, game_id, status):
         curs.execute(query, locals())
 
 
+def num_users_in_game(conn, game_id):
+    query = """
+        select count(*) from user_in_game where game_id=%(game_id)s
+    """
+    with conn.cursor() as curs:
+        curs.execute(query, locals())
+        for row in curs:
+            return row[0]
+
 def get_dashboard(conn, user_id):
     # TODO this breaks if a user is in 25 games in the future
     query = """

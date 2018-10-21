@@ -4,12 +4,11 @@ import uuid
 import requests
 import datetime
 
-from django.http import HttpResponse
 from django.core.mail import send_mail
 
 from .db.users import insert_user, get_user_by_asap_token
 from .db.games import insert_game, get_game
-from .db.user_in_game import insert_user_in_game, get_dashboard, Status
+from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, Status
 from . import utils
 from . import facebook as fb
 
@@ -118,7 +117,7 @@ def search(request):
     :return: [game]
     """
     res = []
-    return HttpResponse(json.dumps(res), content_type="application/json")
+    return utils.json_response([x.to_dict() for x in res])
 
 
 def join(request, game_id):
@@ -127,8 +126,23 @@ def join(request, game_id):
     :param game_id: int, in URL
     :return:
     """
-    res = {'status': 'success'}
-    return HttpResponse(json.dumps(res), content_type="application/json")
+    conn = utils.get_connection()
+    user = get_user_by_asap_token(conn, utils.sanitize_uuid(request.META['Authorization']))
+    if user is None:
+        conn.close()
+        return utils.json_client_error("Bad authorization")
+
+    # TODO lock on game row???
+    game = get_game(conn, game_id)
+    num_players = num_users_in_game(conn, game_id)
+    if num_players == game.max_players:
+        conn.close()
+        return utils.json_client_error("The game is already full.")
+
+    insert_user_in_game(conn, user.id, game_id, Status.accepted)
+    conn.commit()
+    conn.close()
+    return utils.json_response({"status": "Successfully join game"})
 
 
 def host(request):
@@ -221,5 +235,5 @@ def subscribe2game(request, game_id):
     :return:
     """
     res = {'status': 'success'}
-    return HttpResponse(json.dumps(res), content_type="application/json")
+    return utils.json_response(res)
 
