@@ -163,6 +163,7 @@ def host(request):
     """
     data = request.read()
     postdata = json.loads(data)
+    print(postdata)
     try:
         game_title = postdata['title']
         game_description = postdata.get('desc')

@@ -23,7 +23,7 @@ def __r_json(d):
 
 class ASAPObject:
 
-    def to_dict(self, d):
+    def __to_dict(self, d):
         for k in d:
             if type(k) is str and "token" in k or "password" in k:
                 del d[k]
@@ -31,7 +31,7 @@ class ASAPObject:
                 d[k] = self.to_dict(d[k])
         return d
 
-    def to_json(self, d):
+    def __to_json(self, d):
         for k, v in d.items():
             if type(k) is str and "token" in k or "password" in k:
                 del d[k]
@@ -40,3 +40,9 @@ class ASAPObject:
             else:
                 d[k] = self.to_json(d[k])
         return d
+
+    def to_dict(self):
+        return self.__to_dict(self.__dict__)
+
+    def to_json(self):
+        return self.__to_json(self.__dict__)
