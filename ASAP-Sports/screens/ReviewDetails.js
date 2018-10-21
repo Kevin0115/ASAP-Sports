@@ -47,15 +47,36 @@ export default class ReviewDetails extends React.Component {
   render() {
     return (
       <View style={styles.review}>
-        
-
-
         <View style={styles.container}>
-          <Text>{JSON.stringify(this.state.creationInfo, null, 2)}</Text> 
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Sport</Text>
+            <Text style={styles.info}>{this.state.creationInfo.sport}</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Game Title</Text>
+            <Text style={styles.info}>{this.state.creationInfo.title}</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Game Description</Text>
+            <Text style={styles.info}>{this.state.creationInfo.desc}</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Competitive Level</Text>
+            <Text style={styles.info}>{this.state.creationInfo.compLevel}</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Game Time and Date</Text>
+            <Text style={styles.info}>{this.state.creationInfo.date} {this.state.creationInfo.time}</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Player Limit</Text>
+            <Text style={styles.info}>{this.state.creationInfo.numPlayers}</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Location</Text>
+            <Text style={styles.info}>{this.state.creationInfo.location}</Text>
+          </View>
         </View>
-
-
-
         <View style={styles.buttonContainer}>
           <Modal
             isVisible={this.state.isModalVisible}
@@ -104,8 +125,22 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 6,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
+  },
+  infoContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  infoTitle: {
+    color: '#707070',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  info: {
+    color: '#707070',
+    fontSize: 18,
   },
   title: {
     justifyContent: 'center',
