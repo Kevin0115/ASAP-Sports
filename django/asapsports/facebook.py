@@ -36,6 +36,7 @@ def get_user_info(fb_access_token):
         from_fb = requests.get("https://graph.facebook.com/me", params=params, headers=headers).json()
         if 'error' in from_fb:
             raise FacebookAPIException(from_fb['error'])
+        fb_id = from_fb['id']
         name = from_fb['name'].split(' ')
         if len(name) == 1:
             first, last = name[0], None
@@ -45,4 +46,4 @@ def get_user_info(fb_access_token):
     except requests.exceptions.HTTPError as e:
         raise FacebookAPIException("Failed to reach Facebook")
 
-    return first, last, profile_pic_url
+    return fb_id, first, last, profile_pic_url

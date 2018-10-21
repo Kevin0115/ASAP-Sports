@@ -1,12 +1,13 @@
 import json
 import uuid
 
+import psycopg2
 import requests
 import datetime
 
 from django.core.mail import send_mail
 
-from .db.users import insert_user, get_user_by_asap_token
+from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id
 from .db.games import insert_game, get_game
 from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, Status
 from . import utils
@@ -62,15 +63,19 @@ def login(request):
 
         try:
             fb_access_token, expiry = fb.get_long_lived_access_token(fb_access_token)
-            first, last, profile_pic_url = fb.get_user_info(fb_access_token)
+            fb_id, first, last, profile_pic_url = fb.get_user_info(fb_access_token)
         except fb.FacebookAPIException as e:
             return utils.json_client_error("Failed to reach Facebook. %s" % str(e))
 
         conn = utils.get_connection()
         asap_access_token = uuid.uuid4()
-        insert_user(conn, first, last, fb_access_token,
+        try:
+            insert_user(conn, fb_id, first, last, fb_access_token,
                     profile_pic_url, asap_access_token)
-        res = get_user_by_asap_token(conn, asap_access_token).to_json()
+            res = get_user_by_asap_token(conn, asap_access_token).to_json()
+        except psycopg2.IntegrityError:
+            conn.rollback()
+            res = get_user_by_fb_id(conn, fb_id).to_json()
         conn.commit()
 
         res.update({'asap_access_token': str(asap_access_token)})
@@ -154,10 +159,11 @@ def host(request):
            'max_players': int,
            'sport': sport_type_enum,
            'start_time': str('YYYY-MM-DD HH:MM'),
-           'end_time': str('YYYY-MM-DD HH:MM'),
+           'end_time': int minutes,
            'location_lng': float,
            'location_lat': float,
-           'location_name': str
+           'location_name': str,
+           'comp_level': int E [1,3]
         }
     :return: {'game_id': game_id}
     """
@@ -170,9 +176,13 @@ def host(request):
         max_players = utils.sanitize_int(postdata['max_players'])
         sport = utils.sanitize_sport(postdata['sport'])
         start_time = utils.sanitize_datetime(postdata['start_time'])
-        end_time = start_time + datetime.timedelta(hours=2) # TODO utils.sanitize_datetime(postdata['end_time'])
-        location_lng = 0 #utils.sanitize_float(postdata['location_lng'])
-        location_lat = 0 #utils.sanitize_float(postdata['location_lat'])
+        duration = utils.sanitize_datetime(postdata['duration'])
+        if duration is None or duration <= 0:
+            return utils.json_client_error("Bad duration")
+        end_time = start_time + datetime.timedelta(minutes=duration)
+        location_lng = utils.sanitize_float(postdata['location_lng'])
+        location_lat = utils.sanitize_float(postdata['location_lat'])
+        comp_level = utils.sanitize_int(postdata['comp_level'])
         location_name = postdata['location_name']
         asap_access_token = request.META['HTTP_AUTHORIZATION']
     except KeyError as e:
@@ -183,18 +193,19 @@ def host(request):
 
     l = locals()
     for x in ['max_players', 'sport', 'start_time', 'end_time', 'location_lng',
-              'location_lat', 'location_name', 'asap_access_token']:
+              'location_lat', 'location_name', 'asap_access_token', 'comp_level']:
         if l[x] is None:
             return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
 
     conn = utils.get_connection()
     user = get_user_by_asap_token(conn, asap_access_token)
     if user is None:
+        conn.close()
         return utils.json_client_error("Invalid access token.")
 
     game_id = insert_game(conn, user.id, game_title, game_description, max_players,
                             sport, start_time, end_time, location_lat, location_lng,
-                            location_name)
+                            location_name, comp_level)
     insert_user_in_game(conn, user.id, game_id, Status.accepted)
 
     conn.commit()
