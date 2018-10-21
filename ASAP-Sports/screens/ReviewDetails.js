@@ -11,6 +11,7 @@ export default class ReviewDetails extends React.Component {
   };
 
   _handleSubmit = () => {
+    fetch('http://796629f7.ngrok.io')
     this._showConf;
   };
 
@@ -20,7 +21,7 @@ export default class ReviewDetails extends React.Component {
     this.setState({isModalVisible: false});
     this.props.navigation.popToTop();
   };
-  
+
   render() {
     return (
       <View style={styles.review}>
