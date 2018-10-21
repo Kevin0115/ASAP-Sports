@@ -45,10 +45,12 @@ def sanitize_uuid(x):
 
 
 def sanitize_datetime(x):
-    try:
-        return datetime.datetime.strptime(x, '%Y-%m-%d %H-%M')
-    except ValueError:
-        return None
+    for format in ['%Y-%m-%d %H-%M', '%A, %B %d, %Y %I:%M %p']:
+        try:
+            return datetime.datetime.strptime(x, format)
+        except ValueError:
+            pass
+    return None
 
 
 def sanitize_sport(x):

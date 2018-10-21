@@ -25,8 +25,8 @@ def insert_game(conn, host_id, title, description, max_players, sport, start_tim
     query = """
         insert into games (id, host_id, title, description, max_players, sport, 
             start_time, end_time, location_lng, location_lat, location_name)
-            values nextval('games_sequence'), %(host_id)s, %(title)s, %(description)s, %(max_players)s,
-              %(sport)s, %(start_time)s, %(end_time)s, %(location_lng)s, %(location_lat)s, %(location_name)s
+            values (nextval('games_id_seq'), %(host_id)s, %(title)s, %(description)s, %(max_players)s,
+              %(sport)s, %(start_time)s, %(end_time)s, %(location_lng)s, %(location_lat)s, %(location_name)s)
             returning id
     """
     with conn.cursor() as curs:

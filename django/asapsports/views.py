@@ -4,7 +4,7 @@ import uuid
 import requests
 import datetime
 
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.core.mail import send_mail
 
 from .db.users import insert_user, get_user_by_asap_token
@@ -57,21 +57,24 @@ def login(request):
             fb_access_token = post_params['fb_access_token']
             # device_id = request.POST['device_id']
         except KeyError:
-            return HttpResponseBadRequest("Missing required parameter")
+            return utils.json_client_error("Missing required parameter")
+        except json.JSONDecodeError:
+            return utils.json_client_error("Invalid JSON")
 
         try:
             fb_access_token, expiry = fb.get_long_lived_access_token(fb_access_token)
             first, last, profile_pic_url = fb.get_user_info(fb_access_token)
         except fb.FacebookAPIException as e:
-            return HttpResponseBadRequest("Failed to reach Facebook. %s" % str(e))
+            return utils.json_client_error("Failed to reach Facebook. %s" % str(e))
 
         conn = utils.get_connection()
         asap_access_token = uuid.uuid4()
         insert_user(conn, first, last, fb_access_token,
                     profile_pic_url, asap_access_token)
-
+        res = get_user_by_asap_token(conn, asap_access_token).to_dict()
         conn.commit()
-        res = {'asap_access_token': str(asap_access_token)}
+
+        res.update({'asap_access_token': str(asap_access_token)})
         return utils.json_response(res)
 
 
@@ -147,18 +150,21 @@ def host(request):
     data = request.read()
     postdata = json.loads(data)
     try:
-        game_title = postdata['game_title']
-        game_description = postdata.get('game_description')
+        game_title = postdata['title']
+        game_description = postdata.get('desc')
         max_players = utils.sanitize_int(postdata['max_players'])
         sport = utils.sanitize_sport(postdata['sport'])
         start_time = utils.sanitize_datetime(postdata['start_time'])
-        end_time = utils.sanitize_datetime(postdata['end_time'])
-        location_lng = utils.sanitize_float(postdata['location_lng'])
-        location_lat = utils.sanitize_float(postdata['location_lat'])
+        end_time = start_time + datetime.timedelta(hours=2) # TODO utils.sanitize_datetime(postdata['end_time'])
+        location_lng = 0 #utils.sanitize_float(postdata['location_lng'])
+        location_lat = 0 #utils.sanitize_float(postdata['location_lat'])
         location_name = postdata['location_name']
-        asap_access_token = request.META['Authorization']
+        asap_access_token = request.META['HTTP_AUTHORIZATION']
     except KeyError as e:
         return utils.json_client_error("Missing parameter " + str(e))
+
+    # if start_time < datetime.datetime.utcnow() - datetime.timedelta(minutes=15):
+    #     return utils.json_client_error("Bad start_time")
 
     l = locals()
     for x in ['max_players', 'sport', 'start_time', 'end_time', 'location_lng',
