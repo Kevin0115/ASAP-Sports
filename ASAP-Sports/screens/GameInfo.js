@@ -21,7 +21,7 @@ export default class GameInfo extends React.Component {
   };
 
   _handleNextPress = () => {
-    if (this.state.titleEntered) {
+    if (true || this.state.titleEntered) {
       this.props.navigation.navigate('TimeDate',
       {
         sport: this.props.navigation.getParam('sport', 'Default'),
@@ -30,7 +30,7 @@ export default class GameInfo extends React.Component {
         compLevel: this.state.compLevel,
       });
     } else {
-      Alert.alert('Warning','Please enter a game title');
+      //Alert.alert('Warning','Please enter a game title');
     }
   };
 
