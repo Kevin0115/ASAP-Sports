@@ -70,7 +70,7 @@ def login(request):
         asap_access_token = uuid.uuid4()
         insert_user(conn, first, last, fb_access_token,
                     profile_pic_url, asap_access_token)
-        res = get_user_by_asap_token(conn, asap_access_token).to_dict()
+        res = get_user_by_asap_token(conn, asap_access_token).to_json()
         conn.commit()
 
         res.update({'asap_access_token': str(asap_access_token)})
@@ -99,10 +99,10 @@ def upcoming_games(request):
     games_upcoming, games_in_progress, past_games = get_dashboard(conn, user.id)
     conn.close()
 
-    res = {'auth_user': user.to_dict(),
-           'games_in_progress': [x.to_dict() for x in games_in_progress],
-           'games_upcoming': [x.to_dict() for x in games_upcoming],
-           'past_games': [x.to_dict() for x in past_games]}
+    res = {'auth_user': user.to_json(),
+           'games_in_progress': [x.to_json() for x in games_in_progress],
+           'games_upcoming': [x.to_json() for x in games_upcoming],
+           'past_games': [x.to_json() for x in past_games]}
     return utils.json_response(res)
 
 
@@ -117,7 +117,7 @@ def search(request):
     :return: [game]
     """
     res = []
-    return utils.json_response([x.to_dict() for x in res])
+    return utils.json_response([x.to_json() for x in res])
 
 
 def join(request, game_id):
@@ -224,7 +224,7 @@ def view(request, game_id):
     conn = utils.get_connection()
     game = get_game(conn, game_id)
     conn.close()
-    return utils.json_response(game.to_dict())
+    return utils.json_response(game.to_json())
 
 
 ##### NOTIFICATIONS #####

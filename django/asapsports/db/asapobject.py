@@ -22,27 +22,19 @@ def __r_json(d):
 
 
 class ASAPObject:
-
-    def __to_dict(self, d):
-        for k in d:
-            if type(k) is str and "token" in k or "password" in k:
-                del d[k]
-            else:
-                d[k] = self.__to_dict(d[k])
-        return d
+# TODO or add a JSON Decoder class that can handle these objects
+# TODO Facebook ID
 
     def __to_json(self, d):
-        for k, v in d.items():
+        for k in list(d.keys()):
             if type(k) is str and "token" in k or "password" in k:
                 del d[k]
-            elif type(v) is datetime.datetime:
-                d[k] = v.strftime('%A, %B %d, %Y %I:%M %p')
-            else:
+            elif type(d[k]) is datetime.datetime:
+                d[k] = d[k].strftime('%A, %B %d, %Y %I:%M %p')
+            elif type(d[k]) is dict:
                 d[k] = self.__to_json(d[k])
+            # TODO check if subclass of ASAPObject
         return d
-
-    def to_dict(self):
-        return self.__to_dict(self.__dict__)
 
     def to_json(self):
         return self.__to_json(self.__dict__)
