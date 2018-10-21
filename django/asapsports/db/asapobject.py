@@ -28,7 +28,7 @@ class ASAPObject:
             if type(k) is str and "token" in k or "password" in k:
                 del d[k]
             else:
-                d[k] = self.to_dict(d[k])
+                d[k] = self.__to_dict(d[k])
         return d
 
     def __to_json(self, d):
@@ -38,7 +38,7 @@ class ASAPObject:
             elif type(v) is datetime.datetime:
                 d[k] = v.strftime('%A, %B %d, %Y %I:%M %p')
             else:
-                d[k] = self.to_json(d[k])
+                d[k] = self.__to_json(d[k])
         return d
 
     def to_dict(self):
