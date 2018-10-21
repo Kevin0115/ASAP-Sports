@@ -9,7 +9,7 @@ export default class Location extends React.Component {
   };
 
   _handleLocationChange = (location) => {
-    this.setState({location});
+    this.setState({location: location});
     this.setState({locChosen: true});
   };
 
