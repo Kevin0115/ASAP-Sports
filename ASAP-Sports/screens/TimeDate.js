@@ -63,6 +63,7 @@ export default class TimeDate extends React.Component {
             weekday: 'long',
             month: 'long',
             day: 'numeric',
+            year: 'numeric',
           }
         )
       ),
