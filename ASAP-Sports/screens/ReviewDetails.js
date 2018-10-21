@@ -8,18 +8,40 @@ import ConfirmationModal from '../assets/components/ConfirmationModal';
 export default class ReviewDetails extends React.Component {
   state = {
     isModalVisible: false,
+    creationInfo: {},
+  };
+
+  componentDidMount() {
+    this.setState({creationInfo: {
+        sport: this.props.navigation.getParam('sport', 'Default'),
+        title: this.props.navigation.getParam('title', 'Default'),
+        desc: this.props.navigation.getParam('desc', 'Default'),
+        compLevel: this.props.navigation.getParam('compLevel', 'Default'),
+        time: this.props.navigation.getParam('time', 'Default'),
+        date: this.props.navigation.getParam('date', 'Default'),
+        numPlayers: this.props.navigation.getParam('numPlayers', 'Default'),
+        location: this.props.navigation.getParam('location', 'Default'),
+      }
+    });
+  };
+
+  _hideModal = () => {
+    this.setState({isModalVisible: false});
+    this.props.navigation.popToTop();
   };
 
   _handleSubmit = () => {
-    fetch('http://796629f7.ngrok.io')
-    this._showConf;
-  };
-
-  _showConf = () => this.setState({isModalVisible: true});
-
-  _hideConf = () => {
-    this.setState({isModalVisible: false});
-    this.props.navigation.popToTop();
+    this.setState({isModalVisible: true});
+    const creationInfo = JSON.stringify(this.state.creationInfo);
+    fetch('http://796629f7.ngrok.io/games/host', {
+      method: 'POST',
+      headers: {
+        'Authentication': 'b68c07da-e0c5-40ea-be83-75e9234e88f8',
+      },
+      body: creationInfo,
+    }).then(res => res.json())
+    .then(response => console.log('Success: ', JSON.stringify(response)))
+    .catch(error => console.log('Error: ', error));
   };
 
   render() {
@@ -29,7 +51,7 @@ export default class ReviewDetails extends React.Component {
 
 
         <View style={styles.container}>
-          <Text> PUT MATERIAL HERE. DON'T TOUCH STUFF OUTSIDE OF THIS VIEW</Text> 
+          <Text>{JSON.stringify(this.state.creationInfo, null, 2)}</Text> 
         </View>
 
 
@@ -53,7 +75,7 @@ export default class ReviewDetails extends React.Component {
               </Text>
               <Button
                 title="OK"
-                onPress={this._handleSubmit}
+                onPress={this._hideModal}
               />
             </View>
           </Modal>
@@ -62,7 +84,7 @@ export default class ReviewDetails extends React.Component {
             height={60}
             backgroundColor='#004e89'
             backgroundDarker='#001a33'
-            onPress={this._showConf}
+            onPress={this._handleSubmit}
           >
             Create My Game
           </AwesomeButton>
