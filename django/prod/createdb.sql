@@ -21,7 +21,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE games (
-  id SERIAL PRIMARY KEY,
+  id INT PRIMARY KEY,
   host_id INT REFERENCES users(id) NOT NULL ,
   title VARCHAR(255) NOT NULL CHECK (char_length(title) > 0),
   description VARCHAR(512),

@@ -4,15 +4,13 @@ import uuid
 import requests
 import datetime
 
-from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.mail import send_mail
 
 from .db.users import insert_user, get_user_by_asap_token
 from .db.games import insert_game, get_game
+from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, Status
 from . import utils
-
-FB_APP_ID = "169924577279041"
-FB_APP_SECRET = "5282a0aa51733f16f3ed227246bc8ec0"
+from . import facebook as fb
 
 # def index(request):
 #     res = {'page': 'This is the index'}
@@ -58,43 +56,25 @@ def login(request):
             fb_access_token = post_params['fb_access_token']
             # device_id = request.POST['device_id']
         except KeyError:
-            return HttpResponseBadRequest("Missing required parameter")
+            return utils.json_client_error("Missing required parameter")
+        except json.JSONDecodeError:
+            return utils.json_client_error("Invalid JSON")
 
-        # Following docs here https://developers.facebook.com/docs/facebook-login/access-tokens/refreshing/
-        params = {'client_id': FB_APP_ID,
-                  'client_secret': FB_APP_SECRET,
-                  'fb_exchange_token': fb_access_token,
-                  'grant_type': 'fb_exchange_token'}
         try:
-            from_fb = requests.get("https://graph.facebook.com/oauth/access_token", params=params).json()
-            print(from_fb)
-            fb_access_token = from_fb['access_token']
-            expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=from_fb['expires_in'])
-        except requests.exceptions.HTTPError as e:
-            return HttpResponseBadRequest("Failed to reach Facebook")
-
-
-        params = {'fields': 'id,name'}
-        headers = {'Authorization': 'Bearer ' + fb_access_token}
-        try:
-            from_fb = requests.get("https://graph.facebook.com/me", params=params, headers=headers).json()
-            name = from_fb['name'].split(' ')
-            if len(name) == 1:
-                first, last = name[0], None
-            else:
-                first, last = name[0], name[-1]
-            profile_pic_url = "https://graph.facebook.com/%s/picture?redirect=0&width=100&height=100" % from_fb['id']
-        except requests.exceptions.HTTPError as e:
-            return HttpResponseBadRequest("Failed to reach Facebook")
+            fb_access_token, expiry = fb.get_long_lived_access_token(fb_access_token)
+            first, last, profile_pic_url = fb.get_user_info(fb_access_token)
+        except fb.FacebookAPIException as e:
+            return utils.json_client_error("Failed to reach Facebook. %s" % str(e))
 
         conn = utils.get_connection()
         asap_access_token = uuid.uuid4()
         insert_user(conn, first, last, fb_access_token,
                     profile_pic_url, asap_access_token)
-
+        res = get_user_by_asap_token(conn, asap_access_token).to_dict()
         conn.commit()
-        res = {'asap_access_token': str(asap_access_token)}
-        return HttpResponse(json.dumps(res), content_type="application/json")
+
+        res.update({'asap_access_token': str(asap_access_token)})
+        return utils.json_response(res)
 
 
 ##### GAMES #####
@@ -102,25 +82,28 @@ def login(request):
 def upcoming_games(request):
     """
     :param request: Only requires ASAP access token in the header key asap_access_token
-    :return: {
-           'auth_user': user,
-           'games_in_progess': [game],
-           'games_upcoming': [game],
-           'past_games': [game]
-           }
+    :return: 
+            {
+                'auth_user': user,
+                'games_in_progess': [game],
+                'games_upcoming': [game],
+                'past_games': [game]
+            }
     """
     conn = utils.get_connection()
     user = get_user_by_asap_token(conn, utils.sanitize_uuid(request.META['Authorization']))
     if user is None:
-        return HttpResponseBadRequest("Bad authorization")
+        return utils.json_client_error("Bad authorization")
 
-
+    conn = utils.get_connection()
+    games_upcoming, games_in_progress, past_games = get_dashboard(conn, user.id)
+    conn.close()
 
     res = {'auth_user': user.to_dict(),
-           'games_in_progress': [],
-           'games_upcoming': [],
-           'past_games': []}
-    return HttpResponse(json.dumps(res), content_type="application/json")
+           'games_in_progress': [x.to_dict() for x in games_in_progress],
+           'games_upcoming': [x.to_dict() for x in games_upcoming],
+           'past_games': [x.to_dict() for x in past_games]}
+    return utils.json_response(res)
 
 
 def search(request):
@@ -134,7 +117,7 @@ def search(request):
     :return: [game]
     """
     res = []
-    return HttpResponse(json.dumps(res), content_type="application/json")
+    return utils.json_response([x.to_dict() for x in res])
 
 
 def join(request, game_id):
@@ -143,8 +126,23 @@ def join(request, game_id):
     :param game_id: int, in URL
     :return:
     """
-    res = {'status': 'success'}
-    return HttpResponse(json.dumps(res), content_type="application/json")
+    conn = utils.get_connection()
+    user = get_user_by_asap_token(conn, utils.sanitize_uuid(request.META['Authorization']))
+    if user is None:
+        conn.close()
+        return utils.json_client_error("Bad authorization")
+
+    # TODO lock on game row???
+    game = get_game(conn, game_id)
+    num_players = num_users_in_game(conn, game_id)
+    if num_players == game.max_players:
+        conn.close()
+        return utils.json_client_error("The game is already full.")
+
+    insert_user_in_game(conn, user.id, game_id, Status.accepted)
+    conn.commit()
+    conn.close()
+    return utils.json_response({"status": "Successfully join game"})
 
 
 def host(request):
@@ -166,43 +164,50 @@ def host(request):
     data = request.read()
     postdata = json.loads(data)
     try:
-        game_title = postdata['game_title']
-        game_description = postdata.get('game_description')
+        game_title = postdata['title']
+        game_description = postdata.get('desc')
         max_players = utils.sanitize_int(postdata['max_players'])
         sport = utils.sanitize_sport(postdata['sport'])
         start_time = utils.sanitize_datetime(postdata['start_time'])
-        end_time = utils.sanitize_datetime(postdata['end_time'])
-        location_lng = utils.sanitize_float(postdata['location_lng'])
-        location_lat = utils.sanitize_float(postdata['location_lat'])
+        end_time = start_time + datetime.timedelta(hours=2) # TODO utils.sanitize_datetime(postdata['end_time'])
+        location_lng = 0 #utils.sanitize_float(postdata['location_lng'])
+        location_lat = 0 #utils.sanitize_float(postdata['location_lat'])
         location_name = postdata['location_name']
-        asap_access_token = request.META['Authorization']
+        asap_access_token = request.META['HTTP_AUTHORIZATION']
     except KeyError as e:
-        return HttpResponseBadRequest("Missing parameter " + str(e))
+        return utils.json_client_error("Missing parameter " + str(e))
+
+    # if start_time < datetime.datetime.utcnow() - datetime.timedelta(minutes=15):
+    #     return utils.json_client_error("Bad start_time")
 
     l = locals()
     for x in ['max_players', 'sport', 'start_time', 'end_time', 'location_lng',
               'location_lat', 'location_name', 'asap_access_token']:
         if l[x] is None:
-            return HttpResponseBadRequest("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
+            return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
 
     conn = utils.get_connection()
     user = get_user_by_asap_token(conn, asap_access_token)
     if user is None:
-        return HttpResponseBadRequest("Invalid access token.")
+        return utils.json_client_error("Invalid access token.")
 
-    game_id = insert_game(conn, user.id, game_title, game_description, max_players, sport, start_time,
-                end_time, location_lat, location_lng, location_name)
+    game_id = insert_game(conn, user.id, game_title, game_description, max_players,
+                            sport, start_time, end_time, location_lat, location_lng,
+                            location_name)
+    insert_user_in_game(conn, user.id, game_id, Status.accepted)
+
     conn.commit()
-
+    conn.close()
     res = {'game_id': game_id}
-    return HttpResponse(json.dumps(res), content_type="application/json")
+    return utils.json_response(res)
 
 
 def view(request, game_id):
     """
     :param request: ASAP access token header
     :param game_id: int, in URL
-    :return: {'game_id': game_id,
+    :return: {
+                'game_id': game_id,
                'host_id': user_id,
                'game_title': str,
                'game_description': str,
@@ -213,11 +218,12 @@ def view(request, game_id):
                'location_lng': float,
                'location_lat': float,
                'location_name': str
-               }
+             }
     """
     conn = utils.get_connection()
     game = get_game(conn, game_id)
-    return HttpResponse(game.to_dict(), content_type="application/json")
+    conn.close()
+    return utils.json_response(game.to_dict())
 
 
 ##### NOTIFICATIONS #####
@@ -229,5 +235,5 @@ def subscribe2game(request, game_id):
     :return:
     """
     res = {'status': 'success'}
-    return HttpResponse(json.dumps(res), content_type="application/json")
+    return utils.json_response(res)
 
