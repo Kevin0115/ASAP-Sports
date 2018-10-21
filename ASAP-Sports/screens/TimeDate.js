@@ -72,7 +72,7 @@ export default class TimeDate extends React.Component {
   };
 
   _handleNextPress = () => {
-    if (true || this.state.dateChosen && this.state.timeChosen && this.state.limitChosen) {
+    if (this.state.dateChosen && this.state.timeChosen && this.state.limitChosen) {
       this.props.navigation.navigate('Location',
       {
         sport: this.props.navigation.getParam('sport', 'Default'),
@@ -84,7 +84,7 @@ export default class TimeDate extends React.Component {
         numPlayers: this.state.numPlayers,
       })
     } else {
-      //Alert.alert('Warning','Please select all options');
+      Alert.alert('Warning','Please select all options');
     }
   };
 
