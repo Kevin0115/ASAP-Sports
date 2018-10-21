@@ -7,20 +7,22 @@ import ConfirmationModal from '../assets/components/ConfirmationModal';
 
 export default class ReviewDetails extends React.Component {
   state = {
+    modalTitleText: '',
+    modalBodyText: '',
     isModalVisible: false,
     creationInfo: {},
   };
 
   componentDidMount() {
+    let startTime = this.props.navigation.getParam('date', 'Default') + ' ' + this.props.navigation.getParam('time', 'Default');
     this.setState({creationInfo: {
         sport: this.props.navigation.getParam('sport', 'Default'),
         title: this.props.navigation.getParam('title', 'Default'),
         desc: this.props.navigation.getParam('desc', 'Default'),
         compLevel: this.props.navigation.getParam('compLevel', 'Default'),
-        time: this.props.navigation.getParam('time', 'Default'),
-        date: this.props.navigation.getParam('date', 'Default'),
-        numPlayers: this.props.navigation.getParam('numPlayers', 'Default'),
-        location: this.props.navigation.getParam('location', 'Default'),
+        start_time: startTime,
+        max_players: this.props.navigation.getParam('numPlayers', 'Default'),
+        location_name: this.props.navigation.getParam('location', 'Default'),
       }
     });
   };
@@ -31,17 +33,26 @@ export default class ReviewDetails extends React.Component {
   };
 
   _handleSubmit = () => {
-    this.setState({isModalVisible: true});
     const creationInfo = JSON.stringify(this.state.creationInfo);
     fetch('http://796629f7.ngrok.io/games/host', {
       method: 'POST',
       headers: {
-        'Authentication': 'b68c07da-e0c5-40ea-be83-75e9234e88f8',
+        'Authorization': 'b68c07da-e0c5-40ea-be83-75e9234e88f8',
       },
       body: creationInfo,
     }).then(res => res.json())
-    .then(response => console.log('Success: ', JSON.stringify(response)))
-    .catch(error => console.log('Error: ', error));
+    .then(response = () => {
+      console.log('Success: ', JSON.stringify(response));
+      this.setState({modalTitleText: 'You Game Has Been Created!'});
+      this.setState({modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.'});
+      this.setState({isModalVisible: true});
+    })      
+    .catch(error = () => {
+      console.log('Error: ', error);
+      this.setState({modalTitleText: 'Sorry Your Game Could Not Be Created'});
+      this.setState({modalBodyText: 'We are sorry for the inconvenience, please try again'}); 
+      this.setState({isModalVisible: true});  
+    })    
   };
 
   render() {
@@ -66,15 +77,15 @@ export default class ReviewDetails extends React.Component {
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Time and Date</Text>
-            <Text style={styles.info}>{this.state.creationInfo.date} {this.state.creationInfo.time}</Text>
+            <Text style={styles.info}>{this.state.creationInfo.start_time}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Player Limit</Text>
-            <Text style={styles.info}>{this.state.creationInfo.numPlayers}</Text>
+            <Text style={styles.info}>{this.state.creationInfo.max_players}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Location</Text>
-            <Text style={styles.info}>{this.state.creationInfo.location}</Text>
+            <Text style={styles.info}>{this.state.creationInfo.location_name}</Text>
           </View>
         </View>
         <View style={styles.buttonContainer}>
@@ -88,11 +99,10 @@ export default class ReviewDetails extends React.Component {
                 style={styles.check}
               />
               <Text style={styles.title}>
-                You Game Has Been Created!
+                {this.state.modalTitleText}
               </Text>
               <Text style={styles.desc}>
-                Enable notifications to be alerted when others join your game!
-                {'\n\n'}You'll be notified closer to the day of your game.
+                {this.state.modalBodyText}
               </Text>
               <Button
                 title="OK"
