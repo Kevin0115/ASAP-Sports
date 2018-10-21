@@ -10,12 +10,17 @@ export default class ReviewDetails extends React.Component {
     isModalVisible: false,
   };
 
+  _handleSubmit = () => {
+    this._showConf;
+  };
+
   _showConf = () => this.setState({isModalVisible: true});
 
   _hideConf = () => {
     this.setState({isModalVisible: false});
     this.props.navigation.popToTop();
-  }
+  };
+  
   render() {
     return (
       <View style={styles.review}>
@@ -47,7 +52,7 @@ export default class ReviewDetails extends React.Component {
               </Text>
               <Button
                 title="OK"
-                onPress={this._hideConf}
+                onPress={this._handleSubmit}
               />
             </View>
           </Modal>

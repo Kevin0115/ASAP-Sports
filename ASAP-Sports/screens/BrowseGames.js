@@ -22,7 +22,11 @@ export default class BrowseGames extends React.Component {
             height={60}
             backgroundColor="#004e89"
             backgroundDarker="#001a33"
-            onPress={() => this.props.navigation.navigate('GameInfo', {sport})}
+            onPress={() => {
+              this.props.navigation.navigate('GameInfo', {
+                sport: sport
+              });
+            }}
           >
             Create a Game
           </AwesomeButton>

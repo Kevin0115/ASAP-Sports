@@ -73,7 +73,16 @@ export default class TimeDate extends React.Component {
 
   _handleNextPress = () => {
     if (this.state.dateChosen && this.state.timeChosen && this.state.limitChosen) {
-      this.props.navigation.navigate('Location')
+      this.props.navigation.navigate('Location',
+      {
+        sport: this.props.navigation.getParam('sport', 'Default'),
+        title: this.props.navigation.getParam('title', 'Default'),
+        desc: this.props.navigation.getParam('desc', 'Default'),
+        compLevel: this.props.navigation.getParam('compLevel', 'Default'),
+        time: this.state.chosenTime,
+        date: this.state.chosenDate,
+        numPlayers: this.state.numPlayers,
+      })
     } else {
       Alert.alert('Warning','Please select all options');
     }
@@ -83,7 +92,7 @@ export default class TimeDate extends React.Component {
     return this.state.limitChosen ? 
       'Player Limit: ' + this.state.numPlayers :
       'No Limit Chosen';
-  }
+  };
 
   render() {
     return (
