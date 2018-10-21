@@ -1,9 +1,10 @@
+import json
 import uuid
 
 import datetime
 import psycopg2
 from django.conf import settings
-
+from django.http import HttpResponse, HttpResponseBadRequest
 
 DB_INFO = settings.DATABASES['default']
 
@@ -53,3 +54,11 @@ def sanitize_datetime(x):
 def sanitize_sport(x):
     x = x.lower()
     return x if x in sports else None
+
+
+def json_response(dict_obj):
+    return HttpResponse(json.dumps(dict_obj), content_type="application/json")
+
+
+def json_client_error(error_str):
+    return HttpResponseBadRequest(json.dumps({'error': error_str}), content_type="application/json")
