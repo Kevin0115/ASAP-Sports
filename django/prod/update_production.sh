@@ -4,14 +4,14 @@ PREVDIR=$(pwd)
 VENV_BIN=/webapps/asapsports/asapsports/bin
 DJANGO=/webapps/asapsports/ASAP-Sports/django
 
-cd $(DJANGO)
+cd $DJANGO
 git pull
 
 # These two lines are needed if we use Django's ORM
 #$VENV_BIN/python3.6 $DJANGO/manage.py makemigrations # TODO needs user permission, doesn't update sub apps
 #$VENV_BIN/python3.6 $DJANGO/manage.py migrate # TODO needs user permission
 
-$(VENV_BIN)/pip3 install -r requirements.txt
+$VENV_BIN/pip3 install -r requirements.txt
 sudo systemctl restart asapsports
 
 cd $PREVDIR

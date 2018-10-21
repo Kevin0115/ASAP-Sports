@@ -15,8 +15,8 @@ class User(ASAPObject):
 
 def get_user_by_asap_token(conn, asap_access_token):
     query = """
-        select (id, first, last, fb_access_token, profile_pic_url,
-            asap_access_token, creation_timestamp) 
+        select id, first, last, fb_access_token, profile_pic_url,
+            asap_access_token, creation_timestamp
             from users where asap_access_token=%s
     """
     with conn.cursor() as curs:
