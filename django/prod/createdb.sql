@@ -8,6 +8,7 @@ CREATE SEQUENCE user_sequence;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
+  fb_id BIGINT UNIQUE,
   first VARCHAR(64),
   last VARCHAR(64),
   fb_access_token VARCHAR(256),
@@ -16,13 +17,12 @@ CREATE TABLE users (
   asap_access_token uuid,
   -- expiry date for access token?
   creation_timestamp TIMESTAMP NOT NULL DEFAULT current_timestamp
---   device_id VARCHAR(128)
-
+  --   device_id VARCHAR(128)
 );
 
 CREATE TABLE games (
   id INT PRIMARY KEY,
-  host_id INT REFERENCES users(id) NOT NULL ,
+  host_id INT REFERENCES users(id) NOT NULL,
   title VARCHAR(255) NOT NULL CHECK (char_length(title) > 0),
   description VARCHAR(512),
   max_players SMALLINT CHECK (max_players >= 2 AND max_players <= 16),
@@ -34,6 +34,7 @@ CREATE TABLE games (
   location_lat FLOAT(32),
   location_lng FLOAT(32),
   location_name VARCHAR(128) NOT NULL CHECK (char_length(location_name) > 0),
+  comp_level INT NOT NULL CHECK (comp_level >= 1 and comp_level <= 3),
   creation_timestamp TIMESTAMP NOT NULL DEFAULT current_timestamp,
 
   CONSTRAINT startend_time_chk CHECK (end_time >= start_time)
