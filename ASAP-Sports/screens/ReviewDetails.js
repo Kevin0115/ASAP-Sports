@@ -11,18 +11,27 @@ export default class ReviewDetails extends React.Component {
     modalBodyText: '',
     isModalVisible: false,
     creationInfo: {},
+    modalImage: null,
   };
 
   componentDidMount() {
-    let startTime = this.props.navigation.getParam('date', 'Default') + ' ' + this.props.navigation.getParam('time', 'Default');
+    const { navigation } = this.props;
+    const startTime =
+    navigation.getParam('date', 'Default') +
+    ' ' +
+    navigation.getParam('time', 'Default');
+
     this.setState({creationInfo: {
-        sport: this.props.navigation.getParam('sport', 'Default'),
-        title: this.props.navigation.getParam('title', 'Default'),
-        desc: this.props.navigation.getParam('desc', 'Default'),
-        compLevel: this.props.navigation.getParam('compLevel', 'Default'),
-        start_time: startTime,
-        max_players: this.props.navigation.getParam('numPlayers', 'Default'),
-        location_name: this.props.navigation.getParam('location', 'Default'),
+      sport: navigation.getParam('sport', 'Default'),
+      title: navigation.getParam('title', 'Default'),
+      desc: navigation.getParam('desc', 'Default'),
+      comp_level: navigation.getParam('compLevel', 'Default'),
+      start_time: startTime,
+      duration: navigation.getParam('duration', 'Default'),
+      location_lng: 0,
+      location_lat: 0,
+      max_players: navigation.getParam('numPlayers', 'Default'),
+      location_name: navigation.getParam('location', 'Default'),
       }
     });
   };
@@ -34,58 +43,66 @@ export default class ReviewDetails extends React.Component {
 
   _handleSubmit = () => {
     const creationInfo = JSON.stringify(this.state.creationInfo);
-    fetch('http://796629f7.ngrok.io/games/host', {
+    fetch('http://asapsports.aidanrosswood.ca/games/host', {
       method: 'POST',
       headers: {
-        'Authorization': 'b68c07da-e0c5-40ea-be83-75e9234e88f8',
+        'Authorization': '0daa420c-c03e-4d5b-83ee-235981206ff4',
       },
       body: creationInfo,
     }).then(res => res.json())
-    .then(response = () => {
+    .then(response => {
+      this.setState({
+        modalTitleText: 'Success!',
+        modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.',
+        modalImage: require('../assets/images/checked.png'),
+        isModalVisible: true,
+      });
       console.log('Success: ', JSON.stringify(response));
-      this.setState({modalTitleText: 'You Game Has Been Created!'});
-      this.setState({modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.'});
-      this.setState({isModalVisible: true});
     })      
-    .catch(error = () => {
+    .catch(error => {
+      this.setState({
+        modalTitleText: 'There was a Problem',
+        modalBodyText: 'We could not create your game, please try again!',
+        modalImage: require('../assets/images/error.png'),
+        isModalVisible: true,
+      });
       console.log('Error: ', error);
-      this.setState({modalTitleText: 'Sorry Your Game Could Not Be Created'});
-      this.setState({modalBodyText: 'We are sorry for the inconvenience, please try again'}); 
-      this.setState({isModalVisible: true});  
-    })    
+    });
+    this._handleSubmitComplete;
   };
 
   render() {
+    const { creationInfo } = this.state;
     return (
       <View style={styles.review}>
         <View style={styles.container}>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Sport</Text>
-            <Text style={styles.info}>{this.state.creationInfo.sport}</Text>
+            <Text style={styles.info}>{creationInfo.sport}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Title</Text>
-            <Text style={styles.info}>{this.state.creationInfo.title}</Text>
+            <Text style={styles.info}>{creationInfo.title}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Description</Text>
-            <Text style={styles.info}>{this.state.creationInfo.desc}</Text>
+            <Text style={styles.info}>{creationInfo.desc}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Competitive Level</Text>
-            <Text style={styles.info}>{this.state.creationInfo.compLevel}</Text>
+            <Text style={styles.info}>{creationInfo.comp_level}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Time and Date</Text>
-            <Text style={styles.info}>{this.state.creationInfo.start_time}</Text>
+            <Text style={styles.info}>{creationInfo.start_time}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Player Limit</Text>
-            <Text style={styles.info}>{this.state.creationInfo.max_players}</Text>
+            <Text style={styles.info}>{creationInfo.max_players}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Location</Text>
-            <Text style={styles.info}>{this.state.creationInfo.location_name}</Text>
+            <Text style={styles.info}>{creationInfo.location_name}</Text>
           </View>
         </View>
         <View style={styles.buttonContainer}>
@@ -95,7 +112,7 @@ export default class ReviewDetails extends React.Component {
           >
             <View style={styles.modalContent}>
               <Image
-                source={require('../assets/images/checked.png')}
+                source={this.state.modalImage}
                 style={styles.check}
               />
               <Text style={styles.title}>
@@ -153,8 +170,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   title: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    textAlign: 'center',
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 12,

@@ -4,24 +4,24 @@ import AwesomeButton from 'react-native-really-awesome-button';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Modal from 'react-native-modal';
 
-import NumPlayerKeys from '../assets/components/NumPlayerKeys';
+import GameDurations from '../assets/components/GameDurations';
 
 export default class TimeDate extends React.Component {
   state = {
     isTimePickerVisible: false,
     isDatePickerVisible: false,
-    isNumPickerVisible: false,
+    isDurPickerVisible: false,
     chosenTime: 'No Time Chosen',
     chosenDate: 'No Date Chosen',
-    numPlayers: 'No Limit Chosen',
+    duration: 'No Limit Chosen',
     dateChosen: false,
     timeChosen: false,
-    limitChosen: false,
+    durChosen: false,
   };
 
-  _showNumPicker = () => this.setState({isNumPickerVisible: true});
+  _showNumPicker = () => this.setState({isDurPickerVisible: true});
 
-  _hideNumPicker = () => this.setState({isNumPickerVisible: false});
+  _hideNumPicker = () => this.setState({isDurPickerVisible: false});
 
   _showTimePicker = () => this.setState({ isTimePickerVisible: true });
 
@@ -31,12 +31,17 @@ export default class TimeDate extends React.Component {
 
   _hideDatePicker = () => this.setState({ isDatePickerVisible: false });
 
-  _handleNumPicked = (num) => {
-    this.setState({
-      numPlayers: num,
-      limitChosen: true,
-    });
-  }
+  _handleNumPicked = (minutes, index, key) => {
+    console.log('minutes: ' + minutes);
+    console.log('index: ' + index);
+    console.log('key: ' + key);
+    // if (num != 1) {
+      this.setState({
+        duration: minutes,
+        durChosen: true,
+      });
+    // }
+  };
 
   _handleTimePicked = (time) => {
     this.setState({
@@ -73,7 +78,7 @@ export default class TimeDate extends React.Component {
   };
 
   _handleNextPress = () => {
-    if (this.state.dateChosen && this.state.timeChosen && this.state.limitChosen) {
+    if (this.state.dateChosen && this.state.timeChosen && this.state.durChosen) {
       this.props.navigation.navigate('Location',
       {
         sport: this.props.navigation.getParam('sport', 'Default'),
@@ -82,16 +87,16 @@ export default class TimeDate extends React.Component {
         compLevel: this.props.navigation.getParam('compLevel', 'Default'),
         time: this.state.chosenTime,
         date: this.state.chosenDate,
-        numPlayers: this.state.numPlayers,
+        duration: this.state.duration,
       })
     } else {
       Alert.alert('Warning','Please select all options');
     }
   };
 
-  _limitMessage = () => {
-    return this.state.limitChosen ? 
-      'Player Limit: ' + this.state.numPlayers :
+  _durationText = () => {
+    return this.state.durChosen ? 
+      'Game Duration: ' + this.state.duration + 'minutes' :
       'No Limit Chosen';
   };
 
@@ -138,19 +143,21 @@ export default class TimeDate extends React.Component {
           </View>
           <View style={styles.pickerSection}>
             <Modal 
-              isVisible={this.state.isNumPickerVisible}
+              isVisible={this.state.isDurPickerVisible}
               style={styles.bottomModal}
               backdropOpacity={0.5}
             >
               <View style={styles.modalContent}>
-                <Text style={{opacity: 0.6}}>Pick a Player Limit</Text>
+                <Text style={{opacity: 0.6}}>
+                  Choose a time limit
+                </Text>
                 <Picker
-                  style={{width: 100}}
-                  selectedValue={this.state.numPlayers}
+                  style={{width: 200}}
+                  selectedValue={this.state.duration}
                   onValueChange={this._handleNumPicked}
                 >
-                  {NumPlayerKeys.map((item, index) => {
-                    return (<Picker.Item label={item} value={index + 1} />)
+                  {GameDurations.map((item) => {
+                    return (<Picker.Item label={item.displayText} value={item.value} />)
                   })}
                 </Picker>
                 <Button title='Confirm' onPress={this._hideNumPicker} />
@@ -161,10 +168,10 @@ export default class TimeDate extends React.Component {
               height={60}
               onPress={this._showNumPicker}
             >
-              Select Player Limit
+              Select Game Duration
             </AwesomeButton>
             <Text style={styles.headerText}>
-              {this._limitMessage()}
+              {this._durationText()}
             </Text>
           </View>
         </View>
@@ -174,7 +181,7 @@ export default class TimeDate extends React.Component {
             height={60}
             backgroundColor='#004e89'
             backgroundDarker='#001a33'
-            onPress={() => this._handleNextPress()}
+            onPress={() => this._handleNextPress}
           >
             Next
           </AwesomeButton>

@@ -10,13 +10,12 @@ export default class GameInfo extends React.Component {
     compLevel: '2',
   };
 
-  _handleTitleChange = (gameTitle) => {
-    this.setState({gameTitle});
+  _handleTitleChange = (title) => {
+    this.setState({gameTitle: title});
     this.setState({titleEntered: true});
   };
 
   _handleLevelPicked = (level) => {
-    console.log(level);
     this.setState({compLevel: level});
   };
 
