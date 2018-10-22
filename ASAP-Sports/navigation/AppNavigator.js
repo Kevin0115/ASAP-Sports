@@ -18,7 +18,7 @@ import FilterButton from '../assets/components/FilterButton';
 import SettingsButton from '../assets/components/SettingsButton';
 import ProfileButton from '../assets/components/ProfileButton';
 import Login from "../screens/Login";
-import {AuthLoadingScreen} from "../screens/AuthLoadingScreen";
+import { AuthLoadingScreen } from "../screens/AuthLoadingScreen";
 
 class LogoIcon extends React.Component {
   render() {

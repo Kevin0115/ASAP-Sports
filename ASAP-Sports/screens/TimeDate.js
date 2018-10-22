@@ -96,8 +96,18 @@ export default class TimeDate extends React.Component {
 
   _durationText = () => {
     return this.state.durChosen ? 
-      'Game Duration: ' + this.state.duration + 'minutes' :
+      'Game Duration: ' + this._convertMinToHour(this.state.duration) :
       'No Limit Chosen';
+  };
+
+  _convertMinToHour = (min) => {
+    if (min < 60) {
+      return min;
+    } else if (min == 60) {
+      return '1 hour';
+    } else {
+      return (min / 60) + ' hours';
+    }
   };
 
   render() {
@@ -157,7 +167,7 @@ export default class TimeDate extends React.Component {
                   onValueChange={this._handleNumPicked}
                 >
                   {GameDurations.map((item) => {
-                    return (<Picker.Item label={item.displayText} value={item.value} />)
+                    return (<Picker.Item label={this._convertMinToHour(item)} value={item} />)
                   })}
                 </Picker>
                 <Button title='Confirm' onPress={this._hideNumPicker} />
