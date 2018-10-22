@@ -7,20 +7,31 @@ import ConfirmationModal from '../assets/components/ConfirmationModal';
 
 export default class ReviewDetails extends React.Component {
   state = {
+    modalTitleText: '',
+    modalBodyText: '',
     isModalVisible: false,
     creationInfo: {},
+    modalImage: null,
   };
 
   componentDidMount() {
+    const { navigation } = this.props;
+    const startTime =
+    navigation.getParam('date', 'Default') +
+    ' ' +
+    navigation.getParam('time', 'Default');
+
     this.setState({creationInfo: {
-        sport: this.props.navigation.getParam('sport', 'Default'),
-        title: this.props.navigation.getParam('title', 'Default'),
-        desc: this.props.navigation.getParam('desc', 'Default'),
-        compLevel: this.props.navigation.getParam('compLevel', 'Default'),
-        time: this.props.navigation.getParam('time', 'Default'),
-        date: this.props.navigation.getParam('date', 'Default'),
-        numPlayers: this.props.navigation.getParam('numPlayers', 'Default'),
-        location: this.props.navigation.getParam('location', 'Default'),
+      sport: navigation.getParam('sport', 'Default'),
+      title: navigation.getParam('title', 'Default'),
+      desc: navigation.getParam('desc', 'Default'),
+      comp_level: navigation.getParam('compLevel', 'Default'),
+      start_time: startTime,
+      duration: navigation.getParam('duration', 'Default'),
+      location_lng: 0,
+      location_lat: 0,
+      max_players: navigation.getParam('numPlayers', 'Default'),
+      location_name: navigation.getParam('location', 'Default'),
       }
     });
   };
@@ -31,50 +42,67 @@ export default class ReviewDetails extends React.Component {
   };
 
   _handleSubmit = () => {
-    this.setState({isModalVisible: true});
     const creationInfo = JSON.stringify(this.state.creationInfo);
-    fetch('http://796629f7.ngrok.io/games/host', {
+    fetch('http://asapsports.aidanrosswood.ca/games/host', {
       method: 'POST',
       headers: {
-        'Authentication': 'b68c07da-e0c5-40ea-be83-75e9234e88f8',
+        'Authorization': '0daa420c-c03e-4d5b-83ee-235981206ff4',
       },
       body: creationInfo,
     }).then(res => res.json())
-    .then(response => console.log('Success: ', JSON.stringify(response)))
-    .catch(error => console.log('Error: ', error));
+    .then(response => {
+      this.setState({
+        modalTitleText: 'Success!',
+        modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.',
+        modalImage: require('../assets/images/checked.png'),
+        isModalVisible: true,
+      });
+      console.log('Success: ', JSON.stringify(response));
+    })      
+    .catch(error => {
+      this.setState({
+        modalTitleText: 'There was a Problem',
+        modalBodyText: 'We could not create your game, please try again!',
+        modalImage: require('../assets/images/error.png'),
+        isModalVisible: true,
+      });
+      console.log('Error: ', error);
+    });
+    this._handleSubmitComplete;
   };
 
   render() {
+    const { creationInfo } = this.state;
     return (
       <View style={styles.review}>
         <View style={styles.container}>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Sport</Text>
-            <Text style={styles.info}>{this.state.creationInfo.sport}</Text>
+            <Text style={styles.info}>{creationInfo.sport}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Title</Text>
-            <Text style={styles.info}>{this.state.creationInfo.title}</Text>
+            <Text style={styles.info}>{creationInfo.title}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Description</Text>
-            <Text style={styles.info}>{this.state.creationInfo.desc}</Text>
+            <Text style={styles.info}>{creationInfo.desc}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Competitive Level</Text>
-            <Text style={styles.info}>{this.state.creationInfo.compLevel}</Text>
+            <Text style={styles.info}>{creationInfo.comp_level}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Time and Date</Text>
-            <Text style={styles.info}>{this.state.creationInfo.date} {this.state.creationInfo.time}</Text>
+            <Text style={styles.info}>{creationInfo.start_time}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Player Limit</Text>
-            <Text style={styles.info}>{this.state.creationInfo.numPlayers}</Text>
+            <Text style={styles.info}>{creationInfo.max_players}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Location</Text>
-            <Text style={styles.info}>{this.state.creationInfo.location}</Text>
+            <Text style={styles.info}>{creationInfo.location_name}</Text>
           </View>
         </View>
         <View style={styles.buttonContainer}>
@@ -84,15 +112,14 @@ export default class ReviewDetails extends React.Component {
           >
             <View style={styles.modalContent}>
               <Image
-                source={require('../assets/images/checked.png')}
+                source={this.state.modalImage}
                 style={styles.check}
               />
               <Text style={styles.title}>
-                You Game Has Been Created!
+                {this.state.modalTitleText}
               </Text>
               <Text style={styles.desc}>
-                Enable notifications to be alerted when others join your game!
-                {'\n\n'}You'll be notified closer to the day of your game.
+                {this.state.modalBodyText}
               </Text>
               <Button
                 title="OK"
@@ -143,8 +170,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   title: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    textAlign: 'center',
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 12,

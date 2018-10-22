@@ -1,6 +1,4 @@
-import React from 'react';
-
-const SportList = [
+export default SportList = [
                     {
                       key: 'Basketball',
                       image: require('../images/basketball.png'),
@@ -57,6 +55,4 @@ const SportList = [
                       key: 'Ultimate Frisbee',
                       image: require('../images/frisbee.png'),
                     },
-                  ]
-
-export default SportList;
+                  ];

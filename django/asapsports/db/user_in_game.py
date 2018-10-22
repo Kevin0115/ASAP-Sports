@@ -29,7 +29,7 @@ def get_dashboard(conn, user_id):
     # TODO this breaks if a user is in 25 games in the future
     query = """
             SELECT id, host_id, title, description, max_players, sport, start_time,
-                 end_time, location_lat, location_lng, location_name, creation_timestamp
+                 end_time, location_lat, location_lng, location_name, comp_level, creation_timestamp
             FROM games g LEFT OUTER JOIN user_in_games uig ON uig.game_id=g.id
             WHERE uid.user_id=%(user_id)s ORDER BY g.creation_timestamp DESC LIMIT 25
     """

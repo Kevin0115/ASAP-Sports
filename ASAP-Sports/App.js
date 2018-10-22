@@ -5,7 +5,6 @@ import AwesomeButton from 'react-native-really-awesome-button';
 import  {SwitchNavigator} from './navigation/AppNavigator'
 import Login from "./screens/Login";
 
-
 // Disable Warnings
 console.disableYellowBox = true;
 
@@ -53,6 +52,7 @@ export default class App extends React.Component {
         require('./assets/images/frisbee.png'),
         require('./assets/images/garbage.png'),
         require('./assets/images/checked.png'),
+        require('./assets/images/error.png'),
       ]),
     ]);
   };
