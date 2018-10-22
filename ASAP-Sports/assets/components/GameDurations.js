@@ -12,3 +12,6 @@ export default GameDurations = [
     value: 150,
   },
 ];
+
+
+// CHANGE THIS INTO JUST AN ARRAY OF MINUTES; WRITE SHORT ALGO TO CONVERT TO HOURS IF NEEDED
