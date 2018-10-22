@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Button, Alert, TouchableOpacity, Image } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator , createSwitchNavigator} from 'react-navigation';
 
 // Add screens here as needed
 import Homescreen from '../screens/Homescreen';
@@ -17,6 +17,8 @@ import CancelButton from '../assets/components/CancelButton';
 import FilterButton from '../assets/components/FilterButton';
 import SettingsButton from '../assets/components/SettingsButton';
 import ProfileButton from '../assets/components/ProfileButton';
+import Login from "../screens/Login";
+import {AuthLoadingScreen} from "../screens/AuthLoadingScreen";
 
 class LogoIcon extends React.Component {
   render() {
@@ -63,7 +65,21 @@ const BrowseStack = createStackNavigator(
   }
 );
 
-export default createStackNavigator(
+// export class AppNavigator extends React.Component {
+//   render () {
+//     return <SignedInStack />;
+//   }
+// }
+
+const LoginStack = createStackNavigator ({
+  LoginScreen: {
+    screen: Login,
+  }
+});
+
+
+
+const AppStack =  createStackNavigator(
   {
     // IMPORTANT: move navigationOptions into here. Clutters the screens
     Homescreen: {
@@ -130,6 +146,19 @@ export default createStackNavigator(
   }
 );
 
+
+
+export const SwitchNavigator =  createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    Login: LoginStack,
+    App: AppStack,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+);
+
 // Changes here reflect in ALL headers
 const headerStyle = {
   headerStyle: {
@@ -143,6 +172,10 @@ const headerStyle = {
   gesturesEnabled: false,
 }
 
+
+
 const creationHeaderStyle = {
   headerRight: <CancelButton />
 }
+
+
