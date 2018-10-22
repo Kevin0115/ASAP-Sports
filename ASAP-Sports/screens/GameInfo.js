@@ -82,7 +82,7 @@ export default class GameInfo extends React.Component {
             backgroundDarker="#001a33"
             onPress={this._handleNextPress}
           >
-            Find a Game
+            Next
           </AwesomeButton>
         </View>
       </View>

@@ -16,18 +16,14 @@ export default class Login extends React.Component {
       const tokenStr = token.toString();
       const loginBody = JSON.stringify({'fb_access_token': tokenStr});
       try {
-        let reponse =  await fetch('http://asapsports.aidanrosswood.ca/authentication/login', {
+        let ASAPresponse =  await fetch('http://asapsports.aidanrosswood.ca/authentication/login', {
           method: 'POST',
           body: loginBody,
         });
+        const ASAPreponseJSON = ASAPresponse.json();
+        await AsyncStorage.setItem('userAuth', JSON.stringify(ASAPreponseJSON));
       } catch (err) {
         console.log('Error: ', err);
-      }
-      const reponseJSON = response.json();
-      try {
-        await AsyncStorage.setItem('userAuth', JSON.stringify(reponseJSON));
-      } catch (err) {
-        console.log(err);
       }
       //make this conditional to success
       this.props.navigation.navigate('App');
@@ -37,11 +33,6 @@ export default class Login extends React.Component {
 render () {
   return (
     <View style={styles.homescreen}>
-      <View style={styles.textContainer}>
-        <Text style={styles.upcomingText}>
-          Welcome to ASAP Sports
-        </Text>
-      </View>
       <View style={styles.upcomingGamesContainer}>
           <Image
             source={require('../assets/images/logotext.png')}
