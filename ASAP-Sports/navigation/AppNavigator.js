@@ -65,19 +65,11 @@ const BrowseStack = createStackNavigator(
   }
 );
 
-// export class AppNavigator extends React.Component {
-//   render () {
-//     return <SignedInStack />;
-//   }
-// }
-
 const LoginStack = createStackNavigator ({
   LoginScreen: {
     screen: Login,
   }
 });
-
-
 
 const AppStack =  createStackNavigator(
   {
@@ -145,8 +137,6 @@ const AppStack =  createStackNavigator(
     headerBackTitle: 'false',
   }
 );
-
-
 
 export const SwitchNavigator =  createSwitchNavigator(
   {

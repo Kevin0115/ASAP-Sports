@@ -48,7 +48,7 @@ export default class Homescreen extends React.Component {
       <View style={styles.homescreen}>
         <View style={styles.textContainer}>
           <Text style={styles.upcomingText}>
-            Upcoming Games updated 3
+            Upcoming Games
           </Text>
         </View>
         <View style={styles.upcomingGamesContainer}>

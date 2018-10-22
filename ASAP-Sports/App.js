@@ -14,56 +14,6 @@ export default class App extends React.Component {
     isLoaded: false,
   };
 
-  // async componentDidMount () {
-  //   const value = await AsyncStorage.getItem('loggedInStatus');
-  //   console.log(`this ran ${value}`);
-  //   if (value != null) {
-  //     if (value == 'true') {
-  //       this.setState({isLoggedIn: true});
-  //     }
-  //     console.log(this.state.isLoggedIn);
-  //   }
-  // }
-
-  // async logIn() {
-  //   const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('169924577279041', {
-  //     permissions: ['public_profile'],
-  //   });
-  //   if (type === 'success') {
-  //     // Get the user's name using Facebook's Graph API
-  //     const response = await fetch(
-  //       `https://graph.facebook.com/me?access_token=${token}`);
-  //     console.log(token);
-  //     // Alert.alert(
-  //     //       //   `Logged in with!`,
-  //     //       //   `Hi ${(await response.json()).name}!`,
-  //     //       // );
-  //     const tokenStr = token.toString();
-  //     const loginBody = JSON.stringify({'fb_access_token': tokenStr});
-  //     console.log(loginBody);
-  //     try {
-  //       var reponse =  await fetch('http://asapsports.aidanrosswood.ca/authentication/login', {
-  //         method: 'POST',
-  //         body: loginBody,
-  //       });
-  //     } catch (err) {
-  //       console.log('Error: ', err);
-  //     }
-  //     reponse = response.json();
-  //     console.log('Success: ', JSON.stringify(response));
-  //     this.setState({isLoggedIn: true });
-  //     console.log(`the logged in status is now ${this.state.isLoggedIn}`);
-  //     try {
-  //       await AsyncStorage.setItem('userAuth', JSON.stringify(reponse));
-  //       await AsyncStorage.setItem('loggedInStatus', 'true');
-  //       const crazy = await AsyncStorage.getItem(('loggedInStatus'));
-  //       console.log(`this shit is crazy ${crazy}`);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  // }
-
   render() {
     if (!this.state.isLoaded) {
       return (
