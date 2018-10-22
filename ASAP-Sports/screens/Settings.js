@@ -1,8 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import {StyleSheet, Text, View, Button, AsyncStorage} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class Settings extends React.Component {
+
+
+  async logOut() {
+    await AsyncStorage.removeItem('userAuth');
+    this.props.navigation.navigate('AuthLoading');
+  }
+
   render() {
     return (
       <View style={styles.settings}>
@@ -10,6 +17,12 @@ export default class Settings extends React.Component {
           <Text style={styles.text}>
             Welcome to Settings
           </Text>
+          <View style={{paddingTop:20}}>
+          <Text style={styles.textLogout}
+          onPress={() => this.logOut()}>
+            Logout
+          </Text>
+          </View>
         </View>
         <View style={{flex: 5.3}} />
         <View style={styles.buttonContainer}>
@@ -51,4 +64,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  textLogout: {
+    color: "#004e89",
+    textDecorationLine: 'underline',
+    fontSize: 16,
+  }
 });

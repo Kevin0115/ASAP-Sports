@@ -16,16 +16,16 @@ export default class Login extends React.Component {
       const tokenStr = token.toString();
       const loginBody = JSON.stringify({'fb_access_token': tokenStr});
       try {
-        var reponse =  await fetch('http://asapsports.aidanrosswood.ca/authentication/login', {
+        let reponse =  await fetch('http://asapsports.aidanrosswood.ca/authentication/login', {
           method: 'POST',
           body: loginBody,
         });
       } catch (err) {
         console.log('Error: ', err);
       }
-      reponse = response.json();
+      const reponseJSON = response.json();
       try {
-        await AsyncStorage.setItem('userAuth', JSON.stringify(reponse));
+        await AsyncStorage.setItem('userAuth', JSON.stringify(reponseJSON));
       } catch (err) {
         console.log(err);
       }
