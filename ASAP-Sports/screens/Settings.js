@@ -1,8 +1,25 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import {StyleSheet, Text, View, Button, AsyncStorage, Alert} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class Settings extends React.Component {
+  async logOut() {
+    await AsyncStorage.removeItem('userAuth');
+    this.props.navigation.navigate('AuthLoading');
+  };
+
+  _handleLogout = () => {
+    Alert.alert(
+      'Cancel',
+      'Are you sure you want to discard this game?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'OK', onPress: () => this.logOut()},
+      ],
+      {cancelable: true},
+    )
+  };
+
   render() {
     return (
       <View style={styles.settings}>
@@ -11,7 +28,18 @@ export default class Settings extends React.Component {
             Welcome to Settings
           </Text>
         </View>
-        <View style={{flex: 5.3}} />
+        <View style={{flex: 4.8}} />
+        <View style={styles.logoutContainer}>
+          <AwesomeButton
+            width={320}
+            height={60}
+            backgroundColor="#e80606"
+            backgroundDarker="#910000"
+            onPress={this._handleLogout}
+          >
+            Logout
+          </AwesomeButton>
+        </View>
         <View style={styles.buttonContainer}>
           <AwesomeButton
             width={320}
@@ -51,4 +79,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  logoutContainer: {
+    flex: 0.5,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textLogout: {
+    color: "#004e89",
+    textDecorationLine: 'underline',
+    fontSize: 16,
+  }
 });

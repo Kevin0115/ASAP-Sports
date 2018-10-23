@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, AsyncStorage} from 'react-native';
 import { AppLoading, Asset } from 'expo';
-
-import AppNavigator from './navigation/AppNavigator';
+import AwesomeButton from 'react-native-really-awesome-button';
+import  {SwitchNavigator} from './navigation/AppNavigator'
+import Login from "./screens/Login";
 
 // Disable Warnings
 console.disableYellowBox = true;
@@ -21,9 +22,10 @@ export default class App extends React.Component {
           onFinish={this._handleFinishLoading}
         />
       );
-    } else {
+    }
+    else {
       return (
-        <AppNavigator />
+        <SwitchNavigator />
       );
     }
   }
@@ -61,7 +63,7 @@ export default class App extends React.Component {
 
   _handleFinishLoading = () => {
     this.setState({ isLoaded: true });
-  };  
+  };
 }
 
 const styles = StyleSheet.create({
