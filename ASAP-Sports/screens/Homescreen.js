@@ -2,46 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Image, ScrollView } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
-// class LogoIcon extends React.Component {
-//   render() {
-//     return (
-//       <Image
-//         source={require('../assets/images/logo.png')}
-//         style={styles.logo}
-//       />
-//     );
-//   }
-// }
-
-// class HeaderPicture extends React.Component {
-//   render() {
-//     return (
-//       <Image
-//         source={require('../assets/images/circlepic.png')}
-//         style={styles.picture}
-//       />
-//     );
-//   }
-// }
-
-// class SettingsIcon extends React.Component {
-//   render() {
-//     return (
-//       <Image
-//       source={require('../assets/images/settings.png')}
-//       style={styles.picture}
-//     />
-//     );
-//   }
-// }
-
 export default class Homescreen extends React.Component {
-  static navigationOptions = {
-    // headerLeft: <HeaderPicture />,
-    // headerRight: <SettingsIcon />,
-    // headerTitle: <LogoIcon />,
-  };
-
   render() {
     return (
       // upcoming games text will be dynamic later on
@@ -110,17 +71,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  picture: {
-    height: 40,
-    width: 40,
-    marginLeft: 15,
-    marginRight: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  // logo: {
-  //   width: 55,
-  //   height: 55,
-  //   justifyContent: 'flex-start',
-  // }
 });

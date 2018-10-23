@@ -5,16 +5,27 @@ import createStackNavigator from "react-navigation";
 import {SignedInStack} from "../navigation/AppNavigator";
 
 export default class Login extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
 
   async logIn() {
-    const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('169924577279041', {
+    const APP_ID = '169924577279041';
+    const options = {
       permissions: ['public_profile'],
-    });
+    }
+    const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(APP_ID, options);
     if (type === 'success') {
       // Get the user's name using Facebook's Graph API
-      const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+      const response = await fetch(
+        `https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture`
+      );
+      const fbGraphApiResponse = (await response.json());
+      console.log(fbGraphApiResponse);
+      await AsyncStorage.setItem('fbGraphApiResponse', JSON.stringify(fbGraphApiResponse));
       const tokenStr = token.toString();
       const loginBody = JSON.stringify({'fb_access_token': tokenStr});
+
       try {
         let ASAPresponse =  await fetch('http://asapsports.aidanrosswood.ca/authentication/login', {
           method: 'POST',
@@ -33,7 +44,8 @@ export default class Login extends React.Component {
 render () {
   return (
     <View style={styles.homescreen}>
-      <View style={styles.upcomingGamesContainer}>
+      <View style={{flex: 1}} />
+      <View style={styles.logoContainer}>
           <Image
             source={require('../assets/images/logotext.png')}
             style={styles.logoPlaceholder}
@@ -60,25 +72,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'stretch',
   },
-  textContainer: {
-    flex: 0.7,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  upcomingText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: '#8c8c8c',
-    fontFamily: 'Helvetica',
-  },
-  upcomingGamesContainer: {
-    flex: 5.3,
+  logoContainer: {
+    flex: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   logoPlaceholder: {
-    width: 200,
-    height: 150,
+    opacity: 0.2,
+    width: 300,
+    height: 225,
   },
   buttonContainer: {
     flex: 1,
