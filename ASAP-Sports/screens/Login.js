@@ -21,7 +21,6 @@ export default class Login extends React.Component {
         `https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture`
       );
       const fbGraphApiResponse = (await response.json());
-      console.log(fbGraphApiResponse);
       await AsyncStorage.setItem('fbGraphApiResponse', JSON.stringify(fbGraphApiResponse));
       const tokenStr = token.toString();
       const loginBody = JSON.stringify({'fb_access_token': tokenStr});

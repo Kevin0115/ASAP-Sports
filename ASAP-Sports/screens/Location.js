@@ -11,7 +11,7 @@ export default class Location extends React.Component {
     location: '', // plaintext string
     locChosen: false,
     isNumPickerVisible: false,
-    numPlayers: 'No Limit Chosen',
+    maxPlayers: 'No Limit Chosen',
     limitChosen: false,
   };
 
@@ -25,22 +25,20 @@ export default class Location extends React.Component {
   _hideNumPicker = () => this.setState({isNumPickerVisible: false});
 
   _handleNumPicked = (num) => {
-    if (num != 1) {
-      this.setState({
-        numPlayers: num,
-        limitChosen: true,
-      });
-    }
+    this.setState({
+      maxPlayers: num,
+      limitChosen: (num == 1) ? false : true,
+    });
   };
 
   _limitMessage = () => {
     return this.state.limitChosen ? 
-      'Player Limit: ' + this.state.numPlayers :
+      'Player Limit: ' + this.state.maxPlayers :
       'No Limit Chosen';
   };
 
   _handleNextPress = () => {
-    if (this.state.locChosen) {
+    if (this.state.locChosen && this.state.limitChosen) {
       this.props.navigation.navigate('ReviewDetails',
       {
         sport: this.props.navigation.getParam('sport', 'Default'),
@@ -50,73 +48,71 @@ export default class Location extends React.Component {
         time: this.props.navigation.getParam('time', 'Default'),
         duration: this.props.navigation.getParam('duration', 'Default'),
         date: this.props.navigation.getParam('date', 'Default'),
-        numPlayers: this.props.navigation.getParam('numPlayers', 'Default'),
+        maxPlayers: this.state.maxPlayers,
         location: this.state.location,
       });
     } else {
-      Alert.alert('Please enter a game location');
+      Alert.alert('Please complete all fields');
     }
   }
 
   render() {
     return (
       <View style={styles.location}>
-        <View style={styles.contentContainer}>
-          <View style={styles.input}>
-            <Text style={styles.textHeader}>Please Enter a Location</Text>
-            <TextInput
-              placeholder="Enter a location"
-              placeholderTextColor="#c9c9c9"
-              clearTextOnFocus={true}
-              style={styles.titleInput}
-              onChangeText={this._handleLocationChange}
-              value={this.state.location}
-            />
-          </View>
-          <View style={styles.pickerSection}>
-            <Modal 
-              isVisible={this.state.isNumPickerVisible}
-              style={styles.bottomModal}
-              backdropOpacity={0.5}
-            >
-              <View style={styles.modalContent}>
-                <Text style={{opacity: 0.6}}>
-                  Choose a maximum number of players
-                </Text>
-                <Picker
-                  style={{width: 200}}
-                  selectedValue={this.state.numPlayers}
-                  onValueChange={this._handleNumPicked}
-                >
-                  {NumPlayerKeys.map((item, index) => {
-                    return (<Picker.Item label={item} value={index + 1} />)
-                  })}
-                </Picker>
-                <Button title='Confirm' onPress={this._hideNumPicker} />
-              </View>
-            </Modal>
-            <AwesomeButton
-              width={320}
-              height={60}
-              onPress={this._showNumPicker}
-            >
-              Select Player Limit
-            </AwesomeButton>
-            <Text style={styles.headerText}>
-              {this._limitMessage()}
-            </Text>
-          </View>
-          <View style={styles.buttonContainer}>
-            <AwesomeButton
-              width={320}
-              height={60}
-              backgroundColor='#004e89'
-              backgroundDarker='#001a33'
-              onPress={() => this._handleNextPress()}
-            >
-              Next
-            </AwesomeButton>
-          </View>
+        <View style={styles.input}>
+          <Text style={styles.textHeader}>Please Enter a Location</Text>
+          <TextInput
+            placeholder="Enter a location"
+            placeholderTextColor="#c9c9c9"
+            clearTextOnFocus={true}
+            style={styles.titleInput}
+            onChangeText={this._handleLocationChange}
+            value={this.state.location}
+          />
+        </View>
+        <View style={styles.pickerSection}>
+          <Modal 
+            isVisible={this.state.isNumPickerVisible}
+            style={styles.bottomModal}
+            backdropOpacity={0.5}
+          >
+            <View style={styles.modalContent}>
+              <Text style={{opacity: 0.6}}>
+                Choose a maximum number of players
+              </Text>
+              <Picker
+                style={{width: 200}}
+                selectedValue={this.state.maxPlayers}
+                onValueChange={this._handleNumPicked}
+              >
+                {NumPlayerKeys.map((item, index) => {
+                  return (<Picker.Item label={item} value={index + 1} />)
+                })}
+              </Picker>
+              <Button title='Confirm' onPress={this._hideNumPicker} />
+            </View>
+          </Modal>
+          <AwesomeButton
+            width={320}
+            height={60}
+            onPress={this._showNumPicker}
+          >
+            Select Player Limit
+          </AwesomeButton>
+          <Text style={styles.headerText}>
+            {this._limitMessage()}
+          </Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <AwesomeButton
+            width={320}
+            height={60}
+            backgroundColor='#004e89'
+            backgroundDarker='#001a33'
+            onPress={this._handleNextPress}
+          >
+            Next
+          </AwesomeButton>
         </View>
       </View>
 
@@ -131,27 +127,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  contentContainer: {
-    justifyContent: 'center',
-    width: '100%',
-    flex: 6,
-  },
   textHeader: {
     color: '#707070',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     paddingBottom: 15,
   },
   input: {
-    flex: 3.5,
+    flex: 3,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pickerSection: {
-    flex: 1,
+  headerText: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 14,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    color: '#8c8c8c',
+    fontFamily: 'Helvetica',
+  },
+  pickerSection: {
+    flex: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   bottomModal: {
     justifyContent: "flex-end",

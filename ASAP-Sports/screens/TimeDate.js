@@ -13,13 +13,16 @@ export default class TimeDate extends React.Component {
     isDurPickerVisible: false,
     chosenTime: 'No Time Chosen',
     chosenDate: 'No Date Chosen',
-    duration: 'No Limit Chosen',
+    duration: 30,
     dateChosen: false,
     timeChosen: false,
     durChosen: false,
   };
 
-  _showNumPicker = () => this.setState({isDurPickerVisible: true});
+  _showNumPicker = () => this.setState({
+    isDurPickerVisible: true,
+    durChosen: true,
+  });
 
   _hideNumPicker = () => this.setState({isDurPickerVisible: false});
 
@@ -31,17 +34,7 @@ export default class TimeDate extends React.Component {
 
   _hideDatePicker = () => this.setState({ isDatePickerVisible: false });
 
-  _handleNumPicked = (minutes, index, key) => {
-    console.log('minutes: ' + minutes);
-    console.log('index: ' + index);
-    console.log('key: ' + key);
-    // if (num != 1) {
-      this.setState({
-        duration: minutes,
-        durChosen: true,
-      });
-    // }
-  };
+  _handleNumPicked = (minutes) => this.setState({duration: minutes});
 
   _handleTimePicked = (time) => {
     this.setState({
@@ -191,7 +184,7 @@ export default class TimeDate extends React.Component {
             height={60}
             backgroundColor='#004e89'
             backgroundDarker='#001a33'
-            onPress={() => this._handleNextPress}
+            onPress={this._handleNextPress}
           >
             Next
           </AwesomeButton>
@@ -215,7 +208,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 16,
+    marginTop: 14,
     alignItems: 'center',
     color: '#8c8c8c',
     fontFamily: 'Helvetica',
@@ -228,7 +222,7 @@ const styles = StyleSheet.create({
   pickerSection: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
   },
   bottomModal: {
     justifyContent: "flex-end",

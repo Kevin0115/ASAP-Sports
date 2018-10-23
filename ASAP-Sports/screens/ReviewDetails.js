@@ -30,7 +30,7 @@ export default class ReviewDetails extends React.Component {
       duration: navigation.getParam('duration', 'Default'),
       location_lng: 0,
       location_lat: 0,
-      max_players: navigation.getParam('numPlayers', 'Default'),
+      max_players: navigation.getParam('maxPlayers', 'Default'),
       location_name: navigation.getParam('location', 'Default'),
       }
     });
@@ -71,6 +71,16 @@ export default class ReviewDetails extends React.Component {
     this._handleSubmitComplete;
   };
 
+  _convertMinToHour = (min) => {
+    if (min < 60) {
+      return min;
+    } else if (min == 60) {
+      return '1 hour';
+    } else {
+      return (min / 60) + ' hours';
+    }
+  };
+
   render() {
     const { creationInfo } = this.state;
     return (
@@ -95,6 +105,10 @@ export default class ReviewDetails extends React.Component {
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Time and Date</Text>
             <Text style={styles.info}>{creationInfo.start_time}</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Game Duration</Text>
+            <Text style={styles.info}>{this._convertMinToHour(creationInfo.duration)}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Player Limit</Text>

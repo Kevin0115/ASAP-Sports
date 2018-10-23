@@ -1,17 +1,36 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, AsyncStorage, Image } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class Profile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userData: {},
+    };
+    this._retrieveData();
+  }
+
+  _retrieveData = async () => {
+    const userData = JSON.parse(await AsyncStorage.getItem('fbGraphApiResponse'));
+    this.setState({
+      userData: userData,
+    });
+  }
+
   render() {
     return (
       <View style={styles.profile}>
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Welcome to Your Profile
+            Welcome, {this.state.userData.name}!
           </Text>
         </View>
-        <View style={{flex: 5.3}} />
+        <View style={{flex: 5.3, alignItems: 'center', justifyContent: 'center'}}>
+          <Image
+            //source={{uri: {pic}}}
+          />
+        </View>
         <View style={styles.buttonContainer}>
           <AwesomeButton
             width={320}

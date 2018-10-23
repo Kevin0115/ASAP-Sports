@@ -10,8 +10,8 @@ export default class Settings extends React.Component {
 
   _handleLogout = () => {
     Alert.alert(
-      'Cancel',
-      'Are you sure you want to discard this game?',
+      'Logout',
+      'Are you sure you want to logout?',
       [
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => this.logOut()},
@@ -25,7 +25,7 @@ export default class Settings extends React.Component {
       <View style={styles.settings}>
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Welcome to Settings
+            Settings
           </Text>
         </View>
         <View style={{flex: 4.8}} />
