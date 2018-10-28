@@ -38,9 +38,9 @@ def sanitize_float(x):
 
 
 def sanitize_uuid(x):
-     try:
-         return uuid.UUID(x)
-     except ValueError:
+    try:
+        return uuid.UUID(x)
+    except ValueError:
         return None
 
 

@@ -15,8 +15,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.urls import path
-from django.conf.urls import url, include, static
-from django.contrib import admin
+from django.conf.urls import static
 from django.http import HttpResponse
 import asapsports.views as views
 
