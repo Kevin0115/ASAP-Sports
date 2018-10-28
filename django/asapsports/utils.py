@@ -45,9 +45,9 @@ def sanitize_uuid(x):
 
 
 def sanitize_datetime(x):
-    for format in ['%Y-%m-%d %H-%M', '%A, %B %d, %Y %I:%M %p']:
+    for fmt in ['%Y-%m-%d %H-%M', '%A, %B %d, %Y %I:%M %p']:
         try:
-            return datetime.datetime.strptime(x, format)
+            return datetime.datetime.strptime(x, fmt)
         except ValueError:
             pass
     return None

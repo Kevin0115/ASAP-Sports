@@ -19,7 +19,7 @@ def get_long_lived_access_token(short_fb_access_token):
 
     try:
         from_fb = requests.get("https://graph.facebook.com/oauth/access_token", params=params).json()
-    except requests.exceptions.HTTPError as e:
+    except requests.exceptions.HTTPError:
         raise FacebookAPIException("Failed to reach Facebook")
     if 'error' in from_fb:
         raise FacebookAPIException(from_fb['error'])
