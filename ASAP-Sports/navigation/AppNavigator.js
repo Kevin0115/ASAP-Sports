@@ -160,12 +160,12 @@ const headerStyle = {
   },
   headerBackTitle: null,
   gesturesEnabled: false,
-}
+};
 
 
 
 const creationHeaderStyle = {
   headerRight: <CancelButton />
-}
+};
 
 

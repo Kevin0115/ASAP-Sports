@@ -4,12 +4,12 @@ import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class FilterModal extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       distance: 0,
       timeOfDay: 0,
       dateRange: 0,
-      comp: 0, }
+      comp: 0, };
   } 
   getVal(val){
     console.warn(val);
@@ -29,8 +29,8 @@ export default class FilterModal extends React.Component {
               minimumValue={0}
               maximumValue={100}
               value={this.state.distance}
-              onValueChange={val => this.setState({ distance: val })}
-              onSlidingComplete={ val => this.getVal(val)}
+              onValueChange={(val) => this.setState({ distance: val })}
+              onSlidingComplete={ (val) => this.getVal(val)}
             />
             <Text style={styles.sliderText}>
               {this.state.distance}km from Current Location
@@ -46,8 +46,8 @@ export default class FilterModal extends React.Component {
               minimumValue={0}
               maximumValue={30}
               value={this.state.dateRange}
-              onValueChange={val => this.setState({ dateRange: val })}
-              onSlidingComplete={ val => this.getVal(val)}
+              onValueChange={(val) => this.setState({ dateRange: val })}
+              onSlidingComplete={ (val) => this.getVal(val)}
             />
             <Text style={styles.sliderText}>
               {this.state.dateRange} Days from Today
@@ -63,8 +63,8 @@ export default class FilterModal extends React.Component {
               minimumValue={0}
               maximumValue={100}
               value={this.state.timeOfDay}
-              onValueChange={val => this.setState({ timeOfDay: val })}
-              onSlidingComplete={ val => this.getVal(val)}
+              onValueChange={(val) => this.setState({ timeOfDay: val })}
+              onSlidingComplete={ (val) => this.getVal(val)}
             />
             <Text style={styles.sliderText}>
               {
@@ -85,8 +85,8 @@ export default class FilterModal extends React.Component {
               minimumValue={0}
               maximumValue={2}
               value={this.state.comp}
-              onValueChange={val => this.setState({ comp: val })}
-              onSlidingComplete={ val => this.getVal(val)}
+              onValueChange={(val) => this.setState({ comp: val })}
+              onSlidingComplete={ (val) => this.getVal(val)}
             />
             <Text style={styles.sliderText}>
               {

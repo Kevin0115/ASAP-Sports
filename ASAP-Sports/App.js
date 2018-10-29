@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, AsyncStorage} from 'react-native';
 import { AppLoading, Asset } from 'expo';
 import AwesomeButton from 'react-native-really-awesome-button';
-import  {SwitchNavigator} from './navigation/AppNavigator'
+import  {SwitchNavigator} from './navigation/AppNavigator';
 import Login from "./screens/Login";
 
 // Disable Warnings
@@ -57,7 +57,7 @@ export default class App extends React.Component {
     ]);
   };
 
-  _handleLoadingError = error => {
+  _handleLoadingError = (error) => {
     console.warn(error);
   };
 

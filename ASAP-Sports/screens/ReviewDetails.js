@@ -34,7 +34,7 @@ export default class ReviewDetails extends React.Component {
       location_name: navigation.getParam('location', 'Default'),
       }
     });
-  };
+  }
 
   _hideModal = () => {
     this.setState({isModalVisible: false});
@@ -49,8 +49,8 @@ export default class ReviewDetails extends React.Component {
         'Authorization': '0daa420c-c03e-4d5b-83ee-235981206ff4',
       },
       body: creationInfo,
-    }).then(res => res.json())
-    .then(response => {
+    }).then((res) => res.json())
+    .then((response) => {
       this.setState({
         modalTitleText: 'Success!',
         modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.',
@@ -59,7 +59,7 @@ export default class ReviewDetails extends React.Component {
       });
       console.log('Success: ', JSON.stringify(response));
     })      
-    .catch(error => {
+    .catch((error) => {
       this.setState({
         modalTitleText: 'There was a Problem',
         modalBodyText: 'We could not create your game, please try again!',
