@@ -6,7 +6,7 @@ export default class Settings extends React.Component {
   async logOut() {
     await AsyncStorage.removeItem('userAuth');
     this.props.navigation.navigate('AuthLoading');
-  };
+  }
 
   _handleLogout = () => {
     Alert.alert(
@@ -17,7 +17,7 @@ export default class Settings extends React.Component {
         {text: 'OK', onPress: () => this.logOut()},
       ],
       {cancelable: true},
-    )
+    );
   };
 
   render() {

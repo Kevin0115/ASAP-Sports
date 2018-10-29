@@ -1,1 +1,1 @@
-export default GameDurations = ['30', '60', '120', '150', '180', '210', '240'];
+export let GameDurations = ['30', '60', '120', '150', '180', '210', '240'];

@@ -13,7 +13,7 @@ export default class Login extends React.Component {
     const APP_ID = '169924577279041';
     const options = {
       permissions: ['public_profile'],
-    }
+    };
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(APP_ID, options);
     if (type === 'success') {
       // Get the user's name using Facebook's Graph API
@@ -61,7 +61,7 @@ render () {
         </AwesomeButton>
       </View>
     </View>
-  )
+  );
 }
 }
 
