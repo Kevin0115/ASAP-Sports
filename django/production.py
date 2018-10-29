@@ -33,5 +33,6 @@ def main(app_name, domain_name):
     systemd.create_conf_file(app_name)
     # TODO certbot setup
 
+
 if __name__ == '__main__':
     plac.call(main)

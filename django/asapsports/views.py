@@ -2,41 +2,13 @@ import json
 import uuid
 
 import psycopg2
-import requests
 import datetime
-
-from django.core.mail import send_mail
 
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id
 from .db.games import insert_game, get_game
 from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, Status
 from . import utils
 from . import facebook as fb
-
-# def index(request):
-#     res = {'page': 'This is the index'}
-#     return HttpResponse(json.dumps(res), content_type="application/json")
-#
-#
-# def endpoint_example(request):
-#     if 'team1' not in request.GET or 'team2' not in request.GET:
-#         return HttpResponseBadRequest('Bad request')
-#
-#     res = {
-#         'team1': request.GET['team1'],
-#         'team2': request.GET.getlist('team2')
-#     }
-#     return HttpResponse(json.dumps(res), content_type="application/json")
-#
-#
-# def params(request, number, slug):
-#     res = {'number': number, 'slug': slug}
-#     return HttpResponse(json.dumps(res), content_type="application/json")
-#
-#
-# def params_regex(request, regex_var):
-#     res = {'data_you_sent': regex_var}
-#     return HttpResponse(json.dumps(res), content_type="application/json")
 
 
 ##### AUTHENTICATION #####
@@ -87,7 +59,7 @@ def login(request):
 def upcoming_games(request):
     """
     :param request: Only requires ASAP access token in the header key asap_access_token
-    :return: 
+    :return:
             {
                 'auth_user': user,
                 'games_in_progess': [game],
@@ -153,7 +125,7 @@ def join(request, game_id):
 def host(request):
     """
     :param request: has data like:
-        { 
+        {
            'game_title': str,
            'game_description': str,
            'max_players': int,
@@ -188,8 +160,8 @@ def host(request):
     except KeyError as e:
         return utils.json_client_error("Missing parameter " + str(e))
 
-    # if start_time < datetime.datetime.utcnow() - datetime.timedelta(minutes=15):
-    #     return utils.json_client_error("Bad start_time")
+    if start_time < datetime.datetime.utcnow() - datetime.timedelta(minutes=15):
+        return utils.json_client_error("Bad start_time")
 
     l = locals()
     for x in ['max_players', 'sport', 'start_time', 'duration', 'location_lng',

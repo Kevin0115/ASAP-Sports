@@ -38,16 +38,16 @@ def sanitize_float(x):
 
 
 def sanitize_uuid(x):
-     try:
-         return uuid.UUID(x)
-     except ValueError:
+    try:
+        return uuid.UUID(x)
+    except ValueError:
         return None
 
 
 def sanitize_datetime(x):
-    for format in ['%Y-%m-%d %H-%M', '%A, %B %d, %Y %I:%M %p']:
+    for fmt in ['%Y-%m-%d %H-%M', '%A, %B %d, %Y %I:%M %p']:
         try:
-            return datetime.datetime.strptime(x, format)
+            return datetime.datetime.strptime(x, fmt)
         except ValueError:
             pass
     return None
