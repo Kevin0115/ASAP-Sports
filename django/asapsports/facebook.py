@@ -1,9 +1,9 @@
 import datetime
 import requests
 
+from django.conf import settings
 
 FB_APP_ID = "169924577279041"
-FB_APP_SECRET = "5282a0aa51733f16f3ed227246bc8ec0"
 
 
 class FacebookAPIException(Exception):
@@ -13,7 +13,7 @@ class FacebookAPIException(Exception):
 def get_long_lived_access_token(short_fb_access_token):
     # Following docs here https://developers.facebook.com/docs/facebook-login/access-tokens/refreshing/
     params = {'client_id': FB_APP_ID,
-              'client_secret': FB_APP_SECRET,
+              'client_secret': settings.FB_APP_SECRET,
               'fb_exchange_token': short_fb_access_token,
               'grant_type': 'fb_exchange_token'}
 

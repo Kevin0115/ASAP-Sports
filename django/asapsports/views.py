@@ -44,13 +44,14 @@ def login(request):
         try:
             insert_user(conn, fb_id, first, last, fb_access_token,
                     profile_pic_url, asap_access_token)
-            res = get_user_by_asap_token(conn, asap_access_token).to_json()
+            user = get_user_by_asap_token(conn, asap_access_token)
         except psycopg2.IntegrityError:
             conn.rollback()
-            res = get_user_by_fb_id(conn, fb_id).to_json()
+            user = get_user_by_fb_id(conn, fb_id)
         conn.commit()
 
-        res.update({'asap_access_token': str(asap_access_token)})
+        res = user.to_json()
+        res.update({'asap_access_token': str(user.asap_access_token)})
         return utils.json_response(res)
 
 
