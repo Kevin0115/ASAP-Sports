@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 DOMAIN_NAME=$1
+APP_NAME=$2
+
 VENV_BIN=/webapps/$APP_NAME/$APP_NAME/bin
 DJANGO=/webapps/$APP_NAME/ASAP-Sports/django
 echo 'App/owner/db name is '$APP_NAME
