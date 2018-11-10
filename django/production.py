@@ -29,9 +29,32 @@ def main(app_name, domain_name):
         if not os.path.exists(dir_name):
             os.mkdir(dir_name)
 
+    generate_local_settings(settings.PROJECT_APP_PATH, app_name)
     nginx.create_conf_file(domain_name, settings.PROJECT_ROOT, app_name, settings.STATIC_ROOT)
     systemd.create_conf_file(app_name)
     # TODO certbot setup
+
+
+LOCAL_SETTINGS_TEMPLATE = """
+DEBUG = False
+FB_APP_SECRET = 'TODO'
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": '%(app_name)s',
+        # 'USER': '%(app_name)s',
+        # 'PASSWORD': 'password',
+        # 'HOST': 'localhost',
+        # 'PORT': 5432
+    }
+}
+"""
+
+
+def generate_local_settings(asap_app_path, app_name):
+    with open(asap_app_path + '/local_settings.py', 'w') as f:
+        f.write(LOCAL_SETTINGS_TEMPLATE % locals())
 
 
 if __name__ == '__main__':

@@ -1,6 +1,8 @@
 import os
 import subprocess
 
+# TODO document that subprocess is not an actual problem even though Codacy thinks it is
+
 CONF_TEMPLATE = """
 server {
     listen 80;
