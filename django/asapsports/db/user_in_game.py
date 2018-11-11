@@ -25,6 +25,7 @@ def num_users_in_game(conn, game_id):
         for row in curs:
             return row[0]
 
+
 def get_dashboard(conn, user_id):
     # TODO this breaks if a user is in 25 games in the future
     query = """
