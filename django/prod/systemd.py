@@ -14,7 +14,7 @@ ExecStart=/webapps/%(project_name)s/%(project_name)s/bin/gunicorn \
             --access-logfile /webapps/%(project_name)s/ASAP-Sports/django/prod/logs/gunicorn_access.log \
             --error-logfile /webapps/%(project_name)s/ASAP-Sports/django/prod/logs/gunicorn_error.log \
             --workers 3 \
-            --bind unix:/webapps/%(project_name)s/ASAP-Sports/django/prod/run/gunicorn.sock %(project_name)s.wsgi:application
+            --bind unix:/webapps/%(project_name)s/ASAP-Sports/django/prod/run/gunicorn.sock asapsports.wsgi:application
 
 [Install]
 WantedBy=multi-user.target

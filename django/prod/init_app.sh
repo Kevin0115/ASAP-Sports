@@ -37,6 +37,7 @@ sudo -u $APP_NAME psql -f "prod/createdb.sql"
 sudo systemctl daemon-reload
 sudo service nginx restart
 sudo systemctl start $APP_NAME
+sudo systemctl restart $APP_NAME
 
 # Only needed if we use ORM
 # sudo -u $APP_NAME $VENV_BIN/python $DJANGO/$APP_NAME/manage.py migrate

@@ -6,7 +6,7 @@ import subprocess
 CONF_TEMPLATE = """
 server {
     listen 80;
-    server_name %(domain_name)s www.%(domain_name)s;
+    server_name %(domain_name)s;
     
     client_max_body_size 15m;
     
