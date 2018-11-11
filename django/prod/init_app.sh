@@ -14,7 +14,7 @@ sudo passwd $APP_NAME
 sudo chown -R $APP_NAME:users /webapps/$APP_NAME
 cd /webapps/$APP_NAME
 sudo git clone https://github.com/Kevin0115/ASAP-Sports
-sudo -u $APP_NAME virtualenv -p $(which python3.6) $APP_NAME
+sudo virtualenv -p $(which python3.6) $APP_NAME
 cd ASAP-Sports/django
 sudo $VENV_BIN/pip3.6 install -r requirements.txt
 
@@ -24,6 +24,7 @@ sudo systemctl daemon-reload
 service nginx restart
 sudo systemctl start $APP_NAME
 
+sudo chown -R $APP_NAME:users /webapps/$APP_NAME
 sudo chown -R $APP_NAME:webapps $DJANGO
 sudo chmod -R g+w $DJANGO
 

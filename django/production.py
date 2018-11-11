@@ -29,6 +29,7 @@ def main(app_name, domain_name):
         if not os.path.exists(dir_name):
             os.mkdir(dir_name)
 
+    print("Running production.py with ", str(locals()))
     generate_local_settings(settings.PROJECT_APP_PATH, app_name)
     nginx.create_conf_file(domain_name, settings.PROJECT_ROOT, app_name, settings.STATIC_ROOT)
     systemd.create_conf_file(app_name)
