@@ -23,8 +23,8 @@ def login(request):
         """
 
         # TODO: Check for ASAP Access Token header and return if valid???
-
-        try:
+           
+        try: 
             post_params = json.loads(request.read())
             fb_access_token = post_params['fb_access_token']
             # device_id = request.POST['device_id']
@@ -127,12 +127,12 @@ def host(request):
     """
     :param request: has data like:
         {
-           'game_title': str,
-           'game_description': str,
+           'title': str,
+           'desc': str,
            'max_players': int,
            'sport': sport_type_enum,
            'start_time': str('YYYY-MM-DD HH:MM'),
-           'end_time': int minutes,
+           'duration': int minutes,
            'location_lng': float,
            'location_lat': float,
            'location_name': str,
@@ -140,27 +140,39 @@ def host(request):
         }
     :return: {'game_id': game_id}
     """
+    print('hi')
     data = request.read()
+    print('145')
     postdata = json.loads(data)
     print(postdata)
     try:
+        print('149')
         game_title = postdata['title']
+        print('151')
         game_description = postdata.get('desc')
+        print('153')
         max_players = utils.sanitize_int(postdata['max_players'])
         sport = utils.sanitize_sport(postdata['sport'])
         start_time = utils.sanitize_datetime(postdata['start_time'])
         duration = utils.sanitize_int(postdata['duration'])
+        print('158')
         if duration is None or duration <= 0:
             return utils.json_client_error("Bad duration")
+        print(start_time)
+        print(start_time)
         end_time = start_time + datetime.timedelta(minutes=duration)
+        print('162')
         location_lng = utils.sanitize_float(postdata['location_lng'])
         location_lat = utils.sanitize_float(postdata['location_lat'])
         comp_level = utils.sanitize_int(postdata['comp_level'])
+        print('166')
         location_name = postdata['location_name']
+        print('163')
         asap_access_token = request.META['HTTP_AUTHORIZATION']
     except KeyError as e:
+        print('key error')
         return utils.json_client_error("Missing parameter " + str(e))
-
+    print('167')
     if start_time < datetime.datetime.utcnow() - datetime.timedelta(minutes=15):
         return utils.json_client_error("Bad start_time")
 
@@ -170,6 +182,7 @@ def host(request):
         if l[x] is None:
             return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
 
+    print('176')
     conn = utils.get_connection()
     user = get_user_by_asap_token(conn, asap_access_token)
     if user is None:
