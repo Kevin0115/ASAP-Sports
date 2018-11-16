@@ -19,6 +19,7 @@ from django.conf.urls import static
 from django.http import HttpResponse
 import asapsports.views as views
 
+
 def doc(request):
     res = []
     for url, func in [('authentication/login', views.login),
@@ -33,6 +34,7 @@ def doc(request):
         res.append('')
 
     return HttpResponse('\n'.join(res), content_type="text/plain")
+
 
 urlpatterns = [
     # url(r'^admin$', admin.site.urls),
