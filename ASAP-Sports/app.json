@@ -1,14 +1,17 @@
 {
   "expo": {
     "name": "ASAP-Sports",
-    "description": "This project is really great.",
+    "description": "Find friends to play sports with.",
     "slug": "ASAP-Sports",
     "privacy": "public",
     "sdkVersion": "30.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": ["ios"], //add back andriod later
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "ios": {
+      "bundleIdentifier": "com.ASAP-Sports.ASAP-Sports"
+    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -19,9 +22,6 @@
     },
     "assetBundlePatterns": [
       "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    }
+    ]
   }
 }

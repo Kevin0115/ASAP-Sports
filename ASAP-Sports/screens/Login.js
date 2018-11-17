@@ -1,10 +1,16 @@
 import React from "react";
-import {AsyncStorage, Image, ScrollView, StyleSheet, Text, View} from "react-native";
+import {AsyncStorage, Image, ScrollView, StyleSheet, Text, View, TouchableWithoutFeedback} from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
 import createStackNavigator from "react-navigation";
 import {SignedInStack} from "../navigation/AppNavigator";
 
 export default class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      numTaps: 0,
+  }
+  }
   static navigationOptions = {
     header: null,
   };
@@ -40,17 +46,35 @@ export default class Login extends React.Component {
     }
   }
 
+  quickTapDevLogin() {
+    this.state.numTaps++;
+    console.log("numTaps", this.state.numTaps);
+    if (this.state.numTaps === 3) {
+      this.props.navigation.navigate('App');
+    }
+    else if (this.state.numTaps>0) {
+      setTimeout(() => {
+        this.state.numTaps--;
+      }, 2000);
+    }
+  }
+
 render () {
   return (
     <View style={styles.homescreen}>
       <View style={{flex: 1}} />
-      <View style={styles.logoContainer}>
+      <View style={styles.logoContainer}
+        testID = "dev-login">
+        <TouchableWithoutFeedback onPress={()=> this.quickTapDevLogin()}>
           <Image
             source={require('../assets/images/logotext.png')}
             style={styles.logoPlaceholder}
           />
+        </TouchableWithoutFeedback>
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={styles.buttonContainer}
+            testID='login-button'
+      >
         <AwesomeButton
           width={320}
           height={60}

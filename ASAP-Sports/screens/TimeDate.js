@@ -105,9 +105,11 @@ export default class TimeDate extends React.Component {
 
   render() {
     return (
-      <View style={styles.timedate}>
+      <View style={styles.timedate}
+            testID="time-date-screen">
         <View style={styles.timedateWindow}>
-          <View style={styles.pickerSection}>
+          <View style={styles.pickerSection}
+                testID="date-picker-button">
             <AwesomeButton
               width={320}
               height={60}
@@ -116,6 +118,7 @@ export default class TimeDate extends React.Component {
               Select a Date
             </AwesomeButton>
             <DateTimePicker
+              testID="date-picker"
               mode='date'
               isVisible={this.state.isDatePickerVisible}
               onConfirm={this._handleDatePicked}
@@ -125,7 +128,8 @@ export default class TimeDate extends React.Component {
               {this.state.chosenDate}
             </Text>
           </View>
-          <View style={styles.pickerSection}>
+          <View style={styles.pickerSection}
+                testID="time-picker-button">
             <AwesomeButton
               width={320}
               height={60}
@@ -144,7 +148,8 @@ export default class TimeDate extends React.Component {
               {this.state.chosenTime}
             </Text>
           </View>
-          <View style={styles.pickerSection}>
+          <View style={styles.pickerSection}
+                testID="duration-picker-button">
             <Modal 
               isVisible={this.state.isDurPickerVisible}
               style={styles.bottomModal}
@@ -178,7 +183,8 @@ export default class TimeDate extends React.Component {
             </Text>
           </View>
         </View>
-        <View style={styles.buttonContainer}>
+        <View style={styles.buttonContainer}
+              testID="location-screen-button">
           <AwesomeButton
             width={320}
             height={60}

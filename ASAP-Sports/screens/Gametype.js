@@ -7,7 +7,8 @@ import SportList from '../assets/components/SportList';
 export default class Gametype extends React.Component {
   render() {
     return (
-      <View style={styles.gametype}>
+      <View style={styles.gametype}
+            testID='gametype-screen'>
         <View style={{flex: 6, alignItems: 'center', justifyContent: 'space-around'}}>
           <FlatList
             data={SportList}
@@ -26,7 +27,8 @@ export default class Gametype extends React.Component {
                 }
                 style={styles.button}
               >
-                <View style={styles.buttonContainer}>
+                <View style={styles.buttonContainer}
+                  testID={item.key}>
                   <Image
                     source={item.image}
                     style={styles.logo}

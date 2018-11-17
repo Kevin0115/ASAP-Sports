@@ -68,15 +68,18 @@ export default class Location extends React.Component {
             style={styles.titleInput}
             onChangeText={this._handleLocationChange}
             value={this.state.location}
+            testID="location-input"
           />
         </View>
-        <View style={styles.pickerSection}>
+        <View style={styles.pickerSection}
+              testID="num-player-picker-button">
           <Modal 
             isVisible={this.state.isNumPickerVisible}
             style={styles.bottomModal}
             backdropOpacity={0.5}
           >
-            <View style={styles.modalContent}>
+            <View style={styles.modalContent}
+                  testID="modal-content">
               <Text style={{opacity: 0.6}}>
                 Choose a maximum number of players
               </Text>
@@ -85,11 +88,16 @@ export default class Location extends React.Component {
                 selectedValue={this.state.maxPlayers}
                 onValueChange={this._handleNumPicked}
               >
-                {NumPlayerKeys.map((item, index) => {
-                  return (<Picker.Item label={item} value={index + 1} />);
+                {NumPlayerKeys.map((item) => {
+                  return (
+                    <Picker.Item label={item}
+                                 value={item}
+                                 testID={item}/>);
                 })}
               </Picker>
+              <View testID="num-player-confirm">
               <Button title='Confirm' onPress={this._hideNumPicker} />
+              </View>
             </View>
           </Modal>
           <AwesomeButton
@@ -103,7 +111,8 @@ export default class Location extends React.Component {
             {this._limitMessage()}
           </Text>
         </View>
-        <View style={styles.buttonContainer}>
+        <View style={styles.buttonContainer}
+              testID="review-screen-button">
           <AwesomeButton
             width={320}
             height={60}

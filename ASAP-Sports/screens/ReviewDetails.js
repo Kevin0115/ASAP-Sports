@@ -138,9 +138,11 @@ export default class ReviewDetails extends React.Component {
               <Button
                 title="OK"
                 onPress={this._hideModal}
+                testID="modal-ok-button"
               />
             </View>
           </Modal>
+          <View testID="done-button">
           <AwesomeButton
             width={320}
             height={60}
@@ -150,6 +152,7 @@ export default class ReviewDetails extends React.Component {
           >
             Create My Game
           </AwesomeButton>
+        </View>
         </View>
       </View>
 

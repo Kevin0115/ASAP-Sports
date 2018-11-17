@@ -6,7 +6,8 @@ export default class BrowseGames extends React.Component {
   render() {
     const sport = this.props.navigation.getParam('sport', 'default');
     return (
-      <View style={styles.browse}>
+      <View style={styles.browse}
+            testID="browse-games-screen">
         <View style={styles.homeHeader}>
           <Text style={styles.headerText}>
             No Results Found for {sport}...
@@ -16,7 +17,8 @@ export default class BrowseGames extends React.Component {
           </Text>
         </View>
         <View style={{flex: 5}}/>
-        <View style={styles.buttonContainer}>
+        <View style={styles.buttonContainer}
+              testID="create-game-button">
           <AwesomeButton
             width={320}
             height={60}

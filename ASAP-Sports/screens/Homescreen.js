@@ -6,7 +6,8 @@ export default class Homescreen extends React.Component {
   render() {
     return (
       // upcoming games text will be dynamic later on
-      <View style={styles.homescreen}>
+      <View style={styles.homescreen}
+            testID='homescreen'>
         <View style={styles.textContainer}>
           <Text style={styles.upcomingText}>
             Upcoming Games
@@ -20,7 +21,8 @@ export default class Homescreen extends React.Component {
             />
           </ScrollView>
         </View>
-        <View style={styles.buttonContainer}>
+        <View style={styles.buttonContainer}
+              testID='findGame-button'>
           <AwesomeButton
             width={320}
             height={60}

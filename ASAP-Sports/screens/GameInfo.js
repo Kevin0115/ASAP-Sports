@@ -35,7 +35,8 @@ export default class GameInfo extends React.Component {
 
   render() {
     return (
-      <View style={styles.gameinfo}>
+      <View style={styles.gameinfo}
+            testID="game-info-screen">
         <View style={styles.contentContainer}>
           <View style={styles.inputContainer}>
             <Text style={styles.textHeader}>Game Title</Text>
@@ -46,6 +47,7 @@ export default class GameInfo extends React.Component {
               style={styles.titleInput}
               onChangeText={this._handleTitleChange}
               value={this.state.gameTitle}
+              testID="game-title-input"
             />
             <Text style={styles.textHeader}>Game Description</Text>
             <TextInput
@@ -73,7 +75,8 @@ export default class GameInfo extends React.Component {
             </Picker>
           </View>
         </View>
-        <View style={styles.buttonContainer}>
+        <View style={styles.buttonContainer}
+              testID="time-date-button">
           <AwesomeButton
             width={320}
             height={60}
