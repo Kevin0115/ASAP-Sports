@@ -1,8 +1,5 @@
-from asapsports.db import users
-from test.utils import get_connection
 from . import utils
 
-import uuid
 import requests
 import json
 import pytest
@@ -54,7 +51,7 @@ def test_missing_json(asap_access_token):
         print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.content)
-        if "Missing" not in res.text: 
+        if "Missing" not in res.text:
             assert False
         else:
             assert True
@@ -77,7 +74,7 @@ def test_missing_param(asap_access_token):
         print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.content)
-        if "Missing parameter" not in res.text: 
+        if "Missing parameter" not in res.text:
             assert False
         else:
             assert True
@@ -101,7 +98,7 @@ def test_invalid_start_time(asap_access_token):
         print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.content)
-        if "Bad start_time" not in res.text: 
+        if "Bad start_time" not in res.text:
             assert False
         else:
             assert True
@@ -125,7 +122,7 @@ def test_invalid_token():
         print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.content)
-        if "Server Error" not in res.text: 
+        if "Server Error" not in res.text:
             assert False
         else:
             assert True

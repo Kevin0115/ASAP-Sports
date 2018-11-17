@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '../') 
+sys.path.insert(0, '../')
 from test.utils import get_connection, insert_user
 
 

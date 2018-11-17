@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '../') 
+sys.path.insert(0, '../')
 from test.utils import get_connection, delete_user, delete_games, delete_user_in_games
 
 
