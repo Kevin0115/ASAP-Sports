@@ -1,29 +1,12 @@
-from . import utils
-
+from . import utils, data
 import requests
 import json
 import pytest
 
+def test_valid_data():
 
 
-
-@pytest.fixture
-def asap_access_token():
-    # Setup code goes here
-    conn = utils.get_connection()
-
-    asap_access_token = "00000000-0000-0000-0000-000000000000"
-    yield asap_access_token
-
-    # Tear down code goes here
-    conn.rollback()
-    conn.close()
-
-
-def test_valid_data(asap_access_token):
-
-
-    headers = {'Authorization': str(asap_access_token)}
+    headers = {'Authorization': data.user["asap_access_token"]}
     params = {'title': 'test_title',
            'desc': 'test_desc',
            'max_players': 6,
@@ -36,30 +19,26 @@ def test_valid_data(asap_access_token):
            'comp_level': 1}
 
     try:
-        print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
-        print(res.content)
-        assert True
+        print(res.text)
+        assert "game_id" in res.text
     except:
         assert False
 
-def test_missing_json(asap_access_token):
-    headers = {'Authorization': str(asap_access_token)}
+def test_missing_json():
+    headers = {'Authorization': data.user["asap_access_token"]}
     params = {}
 
     try:
-        print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
-        print(res.content)
-        if "Missing" not in res.text:
-            assert False
-        else:
-            assert True
+        print(res.text)
+        assert "error" in res.text
+        assert "Missing" in res.text
     except:
         assert False
 
-def test_missing_param(asap_access_token):
-    headers = {'Authorization': str(asap_access_token)}
+def test_missing_param():
+    headers = {'Authorization': data.user["asap_access_token"]}
     params = {'title': 'test_title',
            'desc': 'test_desc',
            'max_players': 6,
@@ -71,18 +50,15 @@ def test_missing_param(asap_access_token):
            'comp_level': 1}
 
     try:
-        print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
-        print(res.content)
-        if "Missing parameter" not in res.text:
-            assert False
-        else:
-            assert True
+        print(res.text)
+        assert "error" in res.text
+        assert "Missing parameter" in res.text
     except:
         assert False
 
-def test_invalid_start_time(asap_access_token):
-    headers = {'Authorization': str(asap_access_token)}
+def test_invalid_start_time():
+    headers = {'Authorization': data.user["asap_access_token"]}
     params = {'title': 'test_title',
            'desc': 'test_desc',
            'max_players': 6,
@@ -95,13 +71,10 @@ def test_invalid_start_time(asap_access_token):
            'comp_level': 1}
 
     try:
-        print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
-        print(res.content)
-        if "Bad start_time" not in res.text:
-            assert False
-        else:
-            assert True
+        print(res.text)
+        assert "error" in res.text
+        assert "Bad start_time" in res.text
     except:
         assert False
 
@@ -119,12 +92,9 @@ def test_invalid_token():
            'comp_level': 1}
 
     try:
-        print('before')
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
-        print(res.content)
-        if "Server Error" not in res.text:
-            assert False
-        else:
-            assert True
+        print(res.text)
+        assert "Server Error" in res.text
+        assert "500" in res.text
     except:
         assert False
