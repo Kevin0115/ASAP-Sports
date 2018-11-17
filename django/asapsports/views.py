@@ -39,16 +39,14 @@ def login(request):
         except fb.FacebookAPIException as e:
             return utils.json_client_error("Failed to reach Facebook. %s" % str(e))
 
-        conn = utils.get_connection()
         asap_access_token = uuid.uuid4()
         try:
-            insert_user(conn, fb_id, first, last, fb_access_token,
+            insert_user(request.db_conn, fb_id, first, last, fb_access_token,
                     profile_pic_url, asap_access_token)
-            user = get_user_by_asap_token(conn, asap_access_token)
+            user = get_user_by_asap_token(request.db_conn, asap_access_token)
         except psycopg2.IntegrityError:
-            conn.rollback()
-            user = get_user_by_fb_id(conn, fb_id)
-        conn.commit()
+            request.db_conn.rollback()
+            user = get_user_by_fb_id(request.db_conn, fb_id)
 
         res = user.to_json()
         res.update({'asap_access_token': str(user.asap_access_token)})
@@ -68,14 +66,11 @@ def upcoming_games(request):
                 'past_games': [game]
             }
     """
-    conn = utils.get_connection()
-    user = get_user_by_asap_token(conn, utils.sanitize_uuid(request.META['Authorization']))
+    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['Authorization']))
     if user is None:
         return utils.json_client_error("Bad authorization")
 
-    conn = utils.get_connection()
-    games_upcoming, games_in_progress, past_games = get_dashboard(conn, user.id)
-    conn.close()
+    games_upcoming, games_in_progress, past_games = get_dashboard(request.db_conn, user.id)
 
     res = {'auth_user': user.to_json(),
            'games_in_progress': [x.to_json() for x in games_in_progress],
@@ -104,22 +99,17 @@ def join(request, game_id):
     :param game_id: int, in URL
     :return:
     """
-    conn = utils.get_connection()
-    user = get_user_by_asap_token(conn, utils.sanitize_uuid(request.META['Authorization']))
+    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['Authorization']))
     if user is None:
-        conn.close()
         return utils.json_client_error("Bad authorization")
 
     # TODO lock on game row???
-    game = get_game(conn, game_id)
-    num_players = num_users_in_game(conn, game_id)
+    game = get_game(request.db_conn, game_id)
+    num_players = num_users_in_game(request.db_conn, game_id)
     if num_players == game.max_players:
-        conn.close()
         return utils.json_client_error("The game is already full.")
 
-    insert_user_in_game(conn, user.id, game_id, Status.accepted)
-    conn.commit()
-    conn.close()
+    insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
     return utils.json_response({"status": "Successfully join game"})
 
 
@@ -142,7 +132,6 @@ def host(request):
     """
     data = request.read()
     postdata = json.loads(data)
-    print(postdata)
     try:
         game_title = postdata['title']
         game_description = postdata.get('desc')
@@ -170,19 +159,15 @@ def host(request):
         if l[x] is None:
             return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
 
-    conn = utils.get_connection()
-    user = get_user_by_asap_token(conn, asap_access_token)
+    user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:
-        conn.close()
         return utils.json_client_error("Invalid access token.")
 
-    game_id = insert_game(conn, user.id, game_title, game_description, max_players,
+    game_id = insert_game(request.db_conn, user.id, game_title, game_description, max_players,
                             sport, start_time, end_time, location_lat, location_lng,
                             location_name, comp_level)
-    insert_user_in_game(conn, user.id, game_id, Status.accepted)
+    insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
 
-    conn.commit()
-    conn.close()
     res = {'game_id': game_id}
     return utils.json_response(res)
 
@@ -205,9 +190,7 @@ def view(request, game_id):
                'location_name': str
              }
     """
-    conn = utils.get_connection()
-    game = get_game(conn, game_id)
-    conn.close()
+    game = get_game(request.db_conn, game_id)
     return utils.json_response(game.to_json())
 
 
