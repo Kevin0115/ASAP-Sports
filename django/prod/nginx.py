@@ -1,10 +1,12 @@
 import os
 import subprocess
 
+# TODO document that subprocess is not an actual problem even though Codacy thinks it is
+
 CONF_TEMPLATE = """
 server {
     listen 80;
-    server_name %(domain_name)s www.%(domain_name)s;
+    server_name %(domain_name)s;
     
     client_max_body_size 15m;
     

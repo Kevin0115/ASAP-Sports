@@ -1,4 +1,4 @@
-export let SportList = [
+export default SportList = [
                     {
                       key: 'Basketball',
                       image: require('../images/basketball.png'),
