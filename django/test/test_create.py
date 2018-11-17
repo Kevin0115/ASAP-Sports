@@ -21,7 +21,8 @@ def test_valid_data():
     try:
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.text)
-        assert "game_id" in res.text
+        jsonres = res.json()
+        assert "game_id" in jsonres
     except:
         assert False
 
@@ -32,8 +33,9 @@ def test_missing_json():
     try:
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.text)
-        assert "error" in res.text
-        assert "Missing" in res.text
+        jsonres = res.json()
+        assert "error" in jsonres
+        assert "Missing" in jsonres["error"]
     except:
         assert False
 
@@ -52,8 +54,9 @@ def test_missing_param():
     try:
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.text)
-        assert "error" in res.text
-        assert "Missing parameter" in res.text
+        jsonres = res.json()
+        assert "error" in jsonres
+        assert "Missing parameter" in jsonres["error"]
     except:
         assert False
 
@@ -73,8 +76,9 @@ def test_invalid_start_time():
     try:
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.text)
-        assert "error" in res.text
-        assert "Bad start_time" in res.text
+        jsonres = res.json()
+        assert "error" in jsonres
+        assert "Bad start_time" in jsonres["error"]
     except:
         assert False
 
@@ -94,7 +98,8 @@ def test_invalid_token():
     try:
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         print(res.text)
-        assert "Server Error" in res.text
-        assert "500" in res.text
+        jsonres = res.json()
+        assert "error" in jsonres
+        assert "Invalid access token." in jsonres["error"]
     except:
         assert False
