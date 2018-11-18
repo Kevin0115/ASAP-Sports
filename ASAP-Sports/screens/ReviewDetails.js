@@ -17,21 +17,21 @@ export default class ReviewDetails extends React.Component {
   componentDidMount() {
     const { navigation } = this.props;
     const startTime =
-    navigation.getParam('date', 'Default') +
-    ' ' +
-    navigation.getParam('time', 'Default');
+      navigation.getParam('date', 'Default') +
+      ' ' +
+      navigation.getParam('time', 'Default');
 
     this.setState({creationInfo: {
-      sport: navigation.getParam('sport', 'Default'),
-      title: navigation.getParam('title', 'Default'),
-      desc: navigation.getParam('desc', 'Default'),
-      comp_level: navigation.getParam('compLevel', 'Default'),
-      start_time: startTime,
-      duration: navigation.getParam('duration', 'Default'),
-      location_lng: 0,
-      location_lat: 0,
-      max_players: navigation.getParam('maxPlayers', 'Default'),
-      location_name: navigation.getParam('location', 'Default'),
+        sport: navigation.getParam('sport', 'Default'),
+        title: navigation.getParam('title', 'Default'),
+        desc: navigation.getParam('desc', 'Default'),
+        comp_level: navigation.getParam('compLevel', 'Default'),
+        start_time: startTime,
+        duration: navigation.getParam('duration', 'Default'),
+        location_lng: 0,
+        location_lat: 0,
+        max_players: navigation.getParam('maxPlayers', 'Default'),
+        location_name: navigation.getParam('location', 'Default'),
       }
     });
   }
@@ -50,24 +50,24 @@ export default class ReviewDetails extends React.Component {
       },
       body: creationInfo,
     }).then((res) => res.json())
-    .then((response) => {
-      this.setState({
-        modalTitleText: 'Success!',
-        modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.',
-        modalImage: require('../assets/images/checked.png'),
-        isModalVisible: true,
+      .then((response) => {
+        this.setState({
+          modalTitleText: 'Success!',
+          modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.',
+          modalImage: require('../assets/images/checked.png'),
+          isModalVisible: true,
+        });
+        console.log('Success: ', JSON.stringify(response));
+      })
+      .catch((error) => {
+        this.setState({
+          modalTitleText: 'There was a Problem',
+          modalBodyText: 'We could not create your game, please try again!',
+          modalImage: require('../assets/images/error.png'),
+          isModalVisible: true,
+        });
+        console.log('Error: ', error);
       });
-      console.log('Success: ', JSON.stringify(response));
-    })      
-    .catch((error) => {
-      this.setState({
-        modalTitleText: 'There was a Problem',
-        modalBodyText: 'We could not create your game, please try again!',
-        modalImage: require('../assets/images/error.png'),
-        isModalVisible: true,
-      });
-      console.log('Error: ', error);
-    });
     this._handleSubmitComplete;
   };
 
@@ -84,7 +84,8 @@ export default class ReviewDetails extends React.Component {
   render() {
     const { creationInfo } = this.state;
     return (
-      <View style={styles.review}>
+      <View style={styles.review}
+            testID="review-screen">
         <View style={styles.container}>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Sport</Text>
@@ -143,16 +144,16 @@ export default class ReviewDetails extends React.Component {
             </View>
           </Modal>
           <View testID="done-button">
-          <AwesomeButton
-            width={320}
-            height={60}
-            backgroundColor='#004e89'
-            backgroundDarker='#001a33'
-            onPress={this._handleSubmit}
-          >
-            Create My Game
-          </AwesomeButton>
-        </View>
+            <AwesomeButton
+              width={320}
+              height={60}
+              backgroundColor='#004e89'
+              backgroundDarker='#001a33'
+              onPress={this._handleSubmit}
+            >
+              Create My Game
+            </AwesomeButton>
+          </View>
         </View>
       </View>
 
