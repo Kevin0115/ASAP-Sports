@@ -1,5 +1,6 @@
 {
   "name": "ASAP-Sports",
+  "version": "0.0.1",
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "scripts": {
@@ -18,8 +19,8 @@
     "react-navigation": "^2.18.0"
   },
   "devDependencies": {
-    "detox": "^9.0.6",
-    "detox-expo-helpers": "^0.4.0",
+    "detox": "^9.1.2",
+    "detox-expo-helpers": "^0.6.0",
     "expo-detox-hook": "^1.0.10",
     "jest": "^23.6.0",
     "mocha": "^5.2.0"
