@@ -1,0 +1,11 @@
+*.pyc
+*.pyo
+*.db
+.DS_Store
+.coverage
+.coverage/*
+.idea
+db.sqlite3
+local_settings.py
+secret_key.txt
+app_name.txt
