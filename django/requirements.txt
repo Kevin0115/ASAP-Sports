@@ -3,7 +3,7 @@ pytz==2017.3
 plac==0.9.6
 psycopg2==2.7.3.2
 gunicorn==19.7.1
-requests==2.2
+requests==2.20.1
 pytest==3.10.0
 pytest-cov==2.6.0
 Flask==1.0.2
