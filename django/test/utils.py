@@ -14,3 +14,4 @@ def get_connection(): # TODO change to connect to test DB instead
                             password=DB_INFO.get('PASSWORD'),
                             host=DB_INFO.get('HOST'),
                             port=DB_INFO.get('PORT'))
+

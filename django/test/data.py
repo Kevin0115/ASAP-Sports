@@ -1,0 +1,1 @@
+user = {"fb_id":1, "first":"test", "last":"user", "fb_access_token":"none", "profile_pic_url":"http://dummy.com", "asap_access_token":"00000000-0000-0000-0000-000000000000"}
