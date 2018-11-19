@@ -13,7 +13,7 @@ app = Flask(__name__)
 SECRET = 'gHjgTVTBbAihjdOCF2myElkY0NFsSLMbikobVDeyb3QFXiUNrl' # TODO use
 DJANGO_DIR = None
 
-# TODO set app route
+
 @app.route('/testrunner/pullrequest', methods=['POST'])
 def entry_point():
     request_json = request.get_json()
