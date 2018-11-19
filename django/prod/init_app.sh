@@ -14,7 +14,7 @@ sudo passwd $APP_NAME
 # TODO Double check chowns
 sudo chown -R $APP_NAME:users /webapps/$APP_NAME
 cd /webapps/$APP_NAME
-sudo git clone https://github.com/Kevin0115/ASAP-Sports
+sudo git clone https://github.com/aidoraide/ASAP-Sports
 sudo virtualenv -p $(which python3.6) $APP_NAME
 cd ASAP-Sports/django
 sudo $VENV_BIN/pip3.6 install -r requirements.txt

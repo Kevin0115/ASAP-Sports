@@ -83,9 +83,11 @@ def search(request):
     """
     :param request: {
           'radius_km': int,
-          'start_time': dd-mmm-yyyy hh:mm,
-          'end_time': dd-mmm-yyyy hh:mm,
-          'sport': enum
+          'location_lng': float,
+          'location_lat': float,
+          'start_time': dd-mmm-yyyy hh:mm(default=now),
+          'sport': enum(default=null),
+          'page_num': int(default=0)
         }
     :return: [game]
     """

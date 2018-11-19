@@ -31,6 +31,3 @@ def db_conn():
 def test_add(db_conn, x, y, s):
     assert x + y == s
 
-
-def test_fail(db_conn):
-    assert False
