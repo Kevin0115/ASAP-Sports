@@ -1,68 +1,57 @@
 #!/usr/bin/python
 # coding: utf-8
 from flask import Flask, request
-from github import Github
 from base64 import b64encode
 import requests
-import psycopg2
 import subprocess
+import json
+import uuid
+import os
 
 
 app = Flask(__name__)
-SECRET = 'gHjgTVTBbAihjdOCF2myElkY0NFsSLMbikobVDeyb3QFXiUNrl'
-ACCESS_TOKEN = '2e94b2b3f2be9209cb7806d55bd7d7e7f1425788'
+SECRET = 'gHjgTVTBbAihjdOCF2myElkY0NFsSLMbikobVDeyb3QFXiUNrl' # TODO use
 DJANGO_DIR = None
 
 # TODO set app route
 @app.route('/testrunner/pullrequest', methods=['POST'])
 def entry_point():
-    print(request)
     request_json = request.get_json()
-    # print(request_json)
 
     # Check if the event is what we want to run tests for
     if request_json['action'] not in ('opened', 'edited', 'reopened'):
         return 'OK'
     head_commit_sha = request_json['pull_request']['head']['sha']
     status_url = f'https://api.github.com/repos/aidoraide/ASAP-Sports/statuses/{head_commit_sha}'
-    headers = {'Authorization': b64encode(b'ASAPSports:2e94b2b3f2be9209cb7806d55bd7d7e7f1425788')} # Access token with only access to status API
-    
-
-    # Auth with Github (maybe make a new Github user) TODO
-    g = Github('106ad45e42b40bda0840409d61564c809a7bc274')
-    print(dir(g))
+    headers = {'Authorization': b'Basic ' + b64encode(b'ASAPSports:ff7bfa48c4bf998ff14f5fd5f9858eec09b67f3f')} # Access token with only access to status API
 
 
+    coverage_report_filename = head_commit_sha + '.txt'
+    report_url = f'http://testasapsports.aidanrosswood.ca/static/test_reports/{coverage_report_filename}'
     # Set status to pending
     data = {
         'state': 'pending',
+        'target_url': report_url,
         'description': 'Testrunner is currently processing this pull request.',
         'context': 'testrunner CI'
     }
-    print(requests.get('https://api.github.com/repos/aidoraide/ASAP-Sports/statuses/5d46818a9aa871d7795331bae8d84f6999e1be32').text)
-    print(status_url)
-    res = requests.post(status_url, data=data, headers=headers)
-    jsonres = res.json()
-    print('Set status to pending:')
-    print(res.status_code)
-    print(jsonres)
-    
+    requests.post(status_url, data=json.dumps(data), headers=headers)
 
     # Run tests with coverage and get the report as a UTF-8 string
     result = subprocess.run(['pytest', '--cov='+DJANGO_DIR, DJANGO_DIR+'test/'], stdout=subprocess.PIPE)
     coverage_report = result.stdout.decode('utf-8')
     status = 'failure' if 'FAILURE' in coverage_report and 'test_fail' in coverage_report else 'success'
+    with open(os.path.join(DJANGO_DIR, f'static/test_reports/{coverage_report_filename}'), 'w') as f:
+        f.write(coverage_report)
     
     # Send status to the correct SHA https://developer.github.com/v3/repos/statuses/
     data = {
         'state': status,
-        'description': coverage_report,
+        'target_url': report_url,
+        'description': f'Test {status}. Click details to view report ---->', # coverage_report,
         'context': 'testrunner CI'
     }
-    res = requests.post(status_url, data=data, headers=headers).json()
-    print('Set status to %s:' % status)
-    print(res)
-    # print(coverage_report)
+    requests.post(status_url, data=json.dumps(data), headers=headers)
     return 'OK'
 
 
@@ -74,7 +63,7 @@ if __name__ == '__main__':
         DEBUG = False
 
     if len(sys.argv) != 2:
-        print("You must pass one argument, the directory of the tests to run. Ex:\npython testrunner.py /webapps/testasapsports/ASAP-Sports/django")
+        print("You must pass one argument, the directory of Django. Ex:\npython testrunner.py /webapps/testasapsports/ASAP-Sports/django")
         exit(1)
 
     DJANGO_DIR = sys.argv[1]
