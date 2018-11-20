@@ -81,6 +81,16 @@ export default class ReviewDetails extends React.Component {
     }
   };
 
+  _convertCompLevelToString = (compLevel) => {
+    if (compLevel == 1) {
+      return 'Casual';
+    } else if (compLevel ==2) {
+      return 'Intermediate';
+    } else {
+      return 'Competitive';
+    }
+  };
+
   render() {
     const { creationInfo } = this.state;
     return (
@@ -100,7 +110,8 @@ export default class ReviewDetails extends React.Component {
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Competitive Level</Text>
-            <Text style={styles.info}>{creationInfo.comp_level}</Text>
+
+            <Text style={styles.info}>{this._convertCompLevelToString(creationInfo.comp_level)}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Time and Date</Text>
