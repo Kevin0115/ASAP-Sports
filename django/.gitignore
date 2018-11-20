@@ -14,3 +14,4 @@ prod/bin/*
 static/media/*.jpg
 static/media/*.png
 static/media/*.gif
+static/test_reports/*.txt

@@ -83,9 +83,11 @@ def search(request):
     """
     :param request: {
           'radius_km': int,
-          'start_time': dd-mmm-yyyy hh:mm,
-          'end_time': dd-mmm-yyyy hh:mm,
-          'sport': enum
+          'location_lng': float,
+          'location_lat': float,
+          'start_time': dd-mmm-yyyy hh:mm(default=now),
+          'sport': enum(default=null),
+          'page_num': int(default=0)
         }
     :return: [game]
     """
@@ -117,12 +119,12 @@ def host(request):
     """
     :param request: has data like:
         {
-           'game_title': str,
-           'game_description': str,
+           'title': str,
+           'desc': str,
            'max_players': int,
            'sport': sport_type_enum,
            'start_time': str('YYYY-MM-DD HH:MM'),
-           'end_time': int minutes,
+           'duration': int minutes,
            'location_lng': float,
            'location_lat': float,
            'location_name': str,
@@ -146,16 +148,19 @@ def host(request):
         location_lat = utils.sanitize_float(postdata['location_lat'])
         comp_level = utils.sanitize_int(postdata['comp_level'])
         location_name = postdata['location_name']
-        asap_access_token = request.META['HTTP_AUTHORIZATION']
+        asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
     except KeyError as e:
         return utils.json_client_error("Missing parameter " + str(e))
+
+    if asap_access_token is None:
+       return utils.json_client_error("Invalid access token.") 
 
     if start_time < datetime.datetime.utcnow() - datetime.timedelta(minutes=15):
         return utils.json_client_error("Bad start_time")
 
     l = locals()
     for x in ['max_players', 'sport', 'start_time', 'duration', 'location_lng',
-              'location_lat', 'location_name', 'asap_access_token', 'comp_level']:
+              'location_lat', 'location_name', 'comp_level']:
         if l[x] is None:
             return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
 
