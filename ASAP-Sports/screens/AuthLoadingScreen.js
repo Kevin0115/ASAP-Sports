@@ -1,4 +1,5 @@
 import React from 'react';
+import { Font } from 'expo';
 import {
   ActivityIndicator,
   AsyncStorage,
@@ -18,6 +19,9 @@ export class AuthLoadingScreen extends React.Component {
     // This will switch to the App screen or Auth screen and this loading
     // screen will be unmounted and thrown away.
     // this.props.navigation.navigate('Login');
+    await Font.loadAsync({
+      Helvetica: require("./../assets/fonts/Poppins-Regular.ttf"),
+    });
     this.props.navigation.navigate(userAuthToken ? 'App' : 'Login');
   };
   // Render any loading content that you like here
