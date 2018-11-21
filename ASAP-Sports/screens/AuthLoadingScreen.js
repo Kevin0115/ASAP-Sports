@@ -1,5 +1,4 @@
 import React from 'react';
-import { Font } from 'expo';
 import {
   ActivityIndicator,
   AsyncStorage,
