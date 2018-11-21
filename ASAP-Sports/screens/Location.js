@@ -86,7 +86,7 @@ export default class Location extends React.Component {
                 onValueChange={this._handleNumPicked}
               >
                 {NumPlayerKeys.map((item, index) => {
-                  return (<Picker.Item label={item} value={index + 1} />);
+                  return (<Picker.Item key={item} label={item} value={index + 1} />);
                 })}
               </Picker>
               <Button title='Confirm' onPress={this._hideNumPicker} />

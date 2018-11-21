@@ -82,12 +82,15 @@ export default class ReviewDetails extends React.Component {
   };
 
   _convertCompLevelToString = (compLevel) => {
-    if (compLevel == 1) {
-      return 'Casual';
-    } else if (compLevel ==2) {
-      return 'Intermediate';
-    } else {
-      return 'Competitive';
+    switch (compLevel) {
+      case 3:
+        return 'Competitive';
+      case 2:
+        return 'Intermediate';
+      case 1:
+        return 'Casual';
+      default:
+        return 'Casual';
     }
   };
 

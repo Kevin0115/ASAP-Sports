@@ -160,7 +160,7 @@ export default class TimeDate extends React.Component {
                   onValueChange={this._handleNumPicked}
                 >
                   {GameDurations.map((item) => {
-                    return (<Picker.Item label={this._convertMinToHour(item)} value={item} />);
+                    return (<Picker.Item key={item} label={this._convertMinToHour(item)} value={item} />);
                   })}
                 </Picker>
                 <Button title='Confirm' onPress={this._hideNumPicker} />
