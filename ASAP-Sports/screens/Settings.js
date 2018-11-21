@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     color: '#8c8c8c',
-    fontFamily: 'Helvetica',
   },
   buttonContainer: {
     flex: 1,
