@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image , ScrollView} from 'react-native';
+import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
 import SportDict from '../assets/components/SportsDict';
@@ -76,7 +76,7 @@ export default class ReviewDetails extends React.Component {
 
   _convertMinToHour = (min) => {
     if (min < 60) {
-      return min;
+      return min + ' minutes';
     } else if (min == 60) {
       return '1 hour';
     } else {
@@ -100,7 +100,7 @@ export default class ReviewDetails extends React.Component {
 
       <View style={styles.review}>
         <View style={styles.container}>
-          <View style={{flexDirection:'row', padding: 20, paddingLeft: 45, paddingRight: 45}}>
+          <View style={{flexDirection:'row', padding: 10, paddingLeft: 45, paddingRight: 45}}>
             <Image
               style={styles.logo}
               source = {SportDict[this.state.creationInfo.sport]}/>
@@ -108,34 +108,44 @@ export default class ReviewDetails extends React.Component {
             <Text style={styles.gameTitle}>{creationInfo.title}</Text>
             </View>
           </View>
-          <ScrollView stickyHeaderIndices={[1]}>
+
           <MapView
-            style={{ alignSelf: 'stretch', height: 250 , padding: 7, borderRadius:  10}}
+            style={{width: Dimensions.get('window').width - 18, height: 250 , padding: 7, borderRadius:  10}}
             region={creationInfo.mapRegion}
           >
             <Marker key={1} coordinate={creationInfo.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
 
           </MapView>
+          <ScrollView stickyHeaderIndices={[1]} style={{ width: Dimensions.get('window').width - 18, paddingTop: 10}}>
+            <View style = {{padding: 15}}>
           <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Game Time and Date</Text>
-            <Text style={styles.info}>{creationInfo.start_time}</Text>
+            <Image
+              // style = {{alignSelf: 'flex-start'}}
+              source = {require('../assets/images/calendaricon.png')}/>
+             <Text style ={styles.info}>{creationInfo.start_time}</Text>
+             {/*<Text style={{flex:1}}>asdadaskdskad</Text>*/}
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Game Duration</Text>
-            <Text style={styles.info}>{this._convertMinToHour(creationInfo.duration)}</Text>
+            <Image
+              style = {{alignSelf: 'flex-start'}}
+              source = {require('../assets/images/durationicon.png')}/>
+            <Text style={styles.info}>{this._convertMinToHour(creationInfo.duration)} </Text>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Competitive Level</Text>
+            <Image
+              source = {require('../assets/images/trophyicon.png')}/>
             <Text style={styles.info}>{this._convertCompLevelToString(creationInfo.comp_level)}</Text>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Player Limit</Text>
-            <Text style={styles.info}>{creationInfo.max_players}</Text>
+            <Image
+              source = {require('../assets/images/maxplayericon.png')}/>
+            <Text style={styles.info}>Max {creationInfo.max_players} Players</Text>
           </View>
-          <View style={styles.infoContainer}>
+          <View >
             <Text style={styles.infoTitle}>Game Description</Text>
             <Text style={styles.info}>{creationInfo.desc}</Text>
           </View>
+            </View>
           </ScrollView>
         </View>
         <View style={styles.buttonContainer}>
@@ -190,8 +200,17 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flex: 1,
+    flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
+    paddingBottom: 20,
+  },
+  infoContainerFlex: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    // flexWrap: "wrap"
   },
   infoTitle: {
     color: '#707070',
@@ -201,6 +220,8 @@ const styles = StyleSheet.create({
   info: {
     color: '#707070',
     fontSize: 18,
+    paddingTop: 3,
+    paddingLeft: 8,
   },
   title: {
     textAlign: 'center',
@@ -233,7 +254,10 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   logo: {
-    tintColor:  '#000000',
+    borderRadius:30,
+    backgroundColor: '#FFA500',
+    height: 60,
+    width: 60,
   },
   gameTitle: {
     color: '#707070',
