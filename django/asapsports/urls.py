@@ -48,7 +48,8 @@ urlpatterns = [
     path('games/join/<int:game_id>', views.join),
     path('games/host', views.host),
     path('games/view/<int:game_id>', views.view),
-    path('notifications/subscribe/game/<int:game_id>', views.subscribe2game)
+    path('notifications/subscribe/game/<int:game_id>', views.subscribe2game),
+    path('user', views.user_details)
 ]
 
 if settings.DEBUG:

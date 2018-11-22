@@ -210,3 +210,33 @@ def subscribe2game(request, game_id):
     res = {'status': 'success'}
     return utils.json_response(res)
 
+
+##### USERS #####    
+
+def user_details(request):
+    """
+    :param request:
+    :param game_id:
+    :return: {
+
+                'id': int,
+                'fb_id': int,
+                'first': str,
+                'last': str,
+                'fb_access_token': str,
+                'profile_pic_url': str(http://url.com),
+                'asap_access_token': uuid,
+                'creation_timestamp': str,
+
+             }
+    """
+    #data = request.read()
+    #postdata = json.loads(data)
+    #print(postdata)
+    print(request.META['Authorization'])
+    for header in request.META:
+        print(header)
+    #user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['Authorization']))
+    #if user is None:
+    #    return utils.json_client_error("Bad authorization")
+    #return utils.json_response(user.to_json())

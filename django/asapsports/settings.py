@@ -108,7 +108,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
 MEDIA_URL = '/static/media/'
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
 
-ADMINS = [('Aidan', 'aidoraide@gmail.com')]
+ADMINS = [('Harpaul', 'harpaul.gill9@gmail.com')]
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
