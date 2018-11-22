@@ -4,7 +4,7 @@ import AwesomeButton from 'react-native-really-awesome-button';
 
 import GameCard from '../assets/components/GameCard';
 
-// FOR TESTING ONLY
+// FOR TESTING ONLY - when we get the API call working, this should be deleted
 const sampleGames = [
   {  
    "id":3,
@@ -72,8 +72,17 @@ export default class BrowseGames extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameList: sampleGames, // ONLY FOR TESTING
+      gameList: null,
     };
+  }
+
+  componentWillMount() {
+    /*
+      FOR AIDAN:
+      
+      Make the API GET call, and assign the JSON array to this gameList state object.
+    */
+    this.setState({gameList: sampleGames});
   }
 
   _determineDisplayView = (sport) => {
