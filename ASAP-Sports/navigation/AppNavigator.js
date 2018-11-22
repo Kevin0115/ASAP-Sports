@@ -8,7 +8,7 @@ import Gametype from '../screens/Gametype';
 import BrowseGames from '../screens/BrowseGames';
 import GameInfo from '../screens/GameInfo';
 import TimeDate from '../screens/TimeDate';
-import Location from '../screens/Location';
+import LocationScreen from '../screens/Location';
 import ReviewDetails from '../screens/ReviewDetails';
 import FilterModal from '../screens/FilterModal';
 import Settings from '../screens/Settings';
@@ -115,7 +115,7 @@ const AppStack =  createStackNavigator(
       }),
     },
     Location: {
-      screen: Location,
+      screen: LocationScreen,
       navigationOptions: ({navigation}) => ({
         title: 'Enter a Location',
         ...headerStyle,
