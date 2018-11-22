@@ -3,8 +3,6 @@ import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
 
-import ConfirmationModal from '../assets/components/ConfirmationModal';
-
 export default class ReviewDetails extends React.Component {
   state = {
     modalTitleText: '',
