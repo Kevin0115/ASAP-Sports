@@ -4,7 +4,7 @@ import uuid
 import psycopg2
 import datetime
 
-from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id
+from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id
 from .db.games import insert_game, get_game
 from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, Status
 from . import utils
@@ -213,7 +213,7 @@ def subscribe2game(request, game_id):
 
 ##### USERS #####    
 
-def user_details(request):
+def get_current_user(request):
     """
     :param request:
     :param game_id:
@@ -223,20 +223,41 @@ def user_details(request):
                 'fb_id': int,
                 'first': str,
                 'last': str,
+                'age': int,
+                'gender': str,
+                'bio': str, 
                 'fb_access_token': str,
                 'profile_pic_url': str(http://url.com),
-                'asap_access_token': uuid,
                 'creation_timestamp': str,
 
              }
     """
-    #data = request.read()
-    #postdata = json.loads(data)
-    #print(postdata)
-    print(request.META['Authorization'])
-    for header in request.META:
-        print(header)
-    #user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['Authorization']))
-    #if user is None:
-    #    return utils.json_client_error("Bad authorization")
-    #return utils.json_response(user.to_json())
+    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
+    if user is None:
+        return utils.json_client_error("Bad authorization")
+    return utils.json_response(user.to_json())
+
+def get_user(request, id):
+    """
+    :param request:
+    :param game_id:
+    :return: {
+
+                'id': int,
+                'fb_id': int,
+                'first': str,
+                'last': str,
+                'age': int,
+                'gender': str,
+                'bio': str, 
+                'fb_access_token': str,
+                'profile_pic_url': str(http://url.com),
+                'creation_timestamp': str,
+
+             }
+    """
+    user = get_user_by_id(request.db_conn, id)
+    if user is None:
+        return utils.json_client_error("Bad authorization")
+    return utils.json_response(user.to_json())
+    

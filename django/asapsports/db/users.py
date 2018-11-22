@@ -40,6 +40,16 @@ def get_user_by_fb_id(conn, fb_id):
         for row in curs:
             return User(*row)
 
+def get_user_by_id(conn, id):
+    query = """
+        select id, fb_id, first, last, age, gender, bio, fb_access_token, profile_pic_url,
+            asap_access_token, creation_timestamp
+            from users where id=%s
+    """
+    with conn.cursor() as curs:
+        curs.execute(query, [id])
+        for row in curs:
+            return User(*row)
 
 def insert_user(conn, fb_id, first, last, age, gender, bio, fb_access_token,
                  profile_pic_url, asap_access_token):
