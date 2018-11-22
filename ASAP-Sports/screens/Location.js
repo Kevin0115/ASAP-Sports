@@ -29,8 +29,7 @@ export default class LocationScreen extends React.Component {
         time: this.props.navigation.getParam('time', 'Default'),
         duration: this.props.navigation.getParam('duration', 'Default'),
         date: this.props.navigation.getParam('date', 'Default'),
-        maxPlayers: this.state.maxPlayers,
-        location: '',
+        location: this.state.mapRegion,
       });
   }
 

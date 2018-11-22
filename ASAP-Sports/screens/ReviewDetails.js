@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Image , ScrollView} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
-
+import SportDict from '../assets/components/SportsDict';
 import ConfirmationModal from '../assets/components/ConfirmationModal';
+import {MapView} from "expo";
+const Marker = MapView.Marker;
 
 export default class ReviewDetails extends React.Component {
   state = {
@@ -20,7 +22,6 @@ export default class ReviewDetails extends React.Component {
     navigation.getParam('date', 'Default') +
     ' ' +
     navigation.getParam('time', 'Default');
-
     this.setState({creationInfo: {
       sport: navigation.getParam('sport', 'Default'),
       title: navigation.getParam('title', 'Default'),
@@ -28,12 +29,14 @@ export default class ReviewDetails extends React.Component {
       comp_level: navigation.getParam('compLevel', 'Default'),
       start_time: startTime,
       duration: navigation.getParam('duration', 'Default'),
-      location_lng: 0,
-      location_lat: 0,
+      mapRegion: navigation.getParam('location'),
       max_players: navigation.getParam('maxPlayers', 'Default'),
       location_name: navigation.getParam('location', 'Default'),
       }
     });
+    console.log(navigation.getParam('sport', 'Default'));
+    console.log(this.state.creationInfo.sport);
+    console.log(SportDict[navigation.getParam('sport', 'Default')]);
   }
 
   _hideModal = () => {
@@ -94,25 +97,25 @@ export default class ReviewDetails extends React.Component {
   render() {
     const { creationInfo } = this.state;
     return (
+
       <View style={styles.review}>
         <View style={styles.container}>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Sport</Text>
-            <Text style={styles.info}>{creationInfo.sport}</Text>
+          <View style={{flexDirection:'row', padding: 20, paddingLeft: 45, paddingRight: 45}}>
+            <Image
+              style={styles.logo}
+              source = {SportDict[this.state.creationInfo.sport]}/>
+            <View style={{paddingTop: 10, paddingLeft: 10}}>
+            <Text style={styles.gameTitle}>{creationInfo.title}</Text>
+            </View>
           </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Game Title</Text>
-            <Text style={styles.info}>{creationInfo.title}</Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Game Description</Text>
-            <Text style={styles.info}>{creationInfo.desc}</Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Competitive Level</Text>
+          <ScrollView stickyHeaderIndices={[1]}>
+          <MapView
+            style={{ alignSelf: 'stretch', height: 250 , padding: 7, borderRadius:  10}}
+            region={creationInfo.mapRegion}
+          >
+            <Marker key={1} coordinate={creationInfo.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
 
-            <Text style={styles.info}>{this._convertCompLevelToString(creationInfo.comp_level)}</Text>
-          </View>
+          </MapView>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Game Time and Date</Text>
             <Text style={styles.info}>{creationInfo.start_time}</Text>
@@ -122,13 +125,18 @@ export default class ReviewDetails extends React.Component {
             <Text style={styles.info}>{this._convertMinToHour(creationInfo.duration)}</Text>
           </View>
           <View style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>Competitive Level</Text>
+            <Text style={styles.info}>{this._convertCompLevelToString(creationInfo.comp_level)}</Text>
+          </View>
+          <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Player Limit</Text>
             <Text style={styles.info}>{creationInfo.max_players}</Text>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Location</Text>
-            <Text style={styles.info}>{creationInfo.location_name}</Text>
+            <Text style={styles.infoTitle}>Game Description</Text>
+            <Text style={styles.info}>{creationInfo.desc}</Text>
           </View>
+          </ScrollView>
         </View>
         <View style={styles.buttonContainer}>
           <Modal
@@ -182,8 +190,8 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
   },
   infoTitle: {
     color: '#707070',
@@ -223,5 +231,15 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     margin: 20,
+  },
+  logo: {
+    tintColor:  '#000000',
+  },
+  gameTitle: {
+    color: '#707070',
+    fontSize: 30,
+    fontWeight: 'bold',
+    flexWrap:'wrap',
+    textAlign: 'center'
   }
 });
