@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
     marginTop: 14,
     alignItems: 'center',
     color: '#8c8c8c',
-    fontFamily: 'Helvetica',
   },
   pickerSection: {
     flex: 3,

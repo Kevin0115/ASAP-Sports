@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontWeight: 'bold',
     fontSize: 20,
-    fontFamily: 'Helvetica',
   },
   listItem: {
     fontSize: 18,

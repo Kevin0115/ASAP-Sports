@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     alignItems: 'center',
     color: '#8c8c8c',
-    fontFamily: 'Helvetica',
   },
   buttonContainer: {
     flex: 1,

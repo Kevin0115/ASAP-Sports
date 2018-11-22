@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     color: '#8c8c8c',
-    fontFamily: 'Helvetica',
   },
   profilePicContainer: {
     flex: 1.8,
