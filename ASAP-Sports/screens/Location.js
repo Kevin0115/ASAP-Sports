@@ -2,16 +2,26 @@ import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import { MapView, Location, Permissions} from 'expo';
 import AwesomeButton from 'react-native-really-awesome-button';
+
 const Marker = MapView.Marker;
+const delta  = { //TODO throw into a const file
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+const vancouver  = { //TODO throw into a const file
+  latitude: 49.282730,
+  longitude: -123.120735,
+};
 
 export default class LocationScreen extends React.Component {
+
   state = {
     userLocation: null,
     mapRegion: {
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitude: vancouver.latitude,
+        longitude: vancouver.longitude,
+        latitudeDelta: delta.latitudeDelta,
+        longitudeDelta: delta.longitudeDelta,
       },
   };
 
@@ -48,8 +58,8 @@ export default class LocationScreen extends React.Component {
       this.setState({mapRegion: {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitudeDelta: delta.latitudeDelta,
+          longitudeDelta: delta.longitudeDelta,
         }});
     }
   };
@@ -82,6 +92,8 @@ export default class LocationScreen extends React.Component {
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   location: {

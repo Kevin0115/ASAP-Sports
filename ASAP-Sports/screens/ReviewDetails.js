@@ -5,7 +5,16 @@ import Modal from 'react-native-modal';
 import SportDict from '../assets/components/SportsDict';
 import ConfirmationModal from '../assets/components/ConfirmationModal';
 import {MapView} from "expo";
+
 const Marker = MapView.Marker;
+const delta  = { //TODO throw into a const file
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+const vancouver  = { //TODO throw into a const file
+  latitude: 49.282730,
+  longitude: -123.120735,
+};
 
 export default class ReviewDetails extends React.Component {
   state = {
@@ -15,10 +24,10 @@ export default class ReviewDetails extends React.Component {
     creationInfo: {},
     modalImage: null,
     mapRegion:{
-      latitude: 37.78825,
-      longitude: -122.4324,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      latitude: vancouver.latitude,
+      longitude: vancouver.longitude,
+      latitudeDelta: delta.latitudeDelta,
+      longitudeDelta: delta.longitudeDelta,
     },
   };
 
@@ -28,7 +37,6 @@ export default class ReviewDetails extends React.Component {
     navigation.getParam('date', 'Default') +
     ' ' +
     navigation.getParam('time', 'Default');
-    console.log(startTime);
     const mapRegion = navigation.getParam('location', 'Default');
     const location_lng = mapRegion.longitude;
     const location_lat = mapRegion.latitude;
