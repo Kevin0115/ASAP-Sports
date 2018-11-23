@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions, Platform} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
 import SportDict from '../assets/components/SportsDict';
-import ConfirmationModal from '../assets/components/ConfirmationModal';
 import {MapView} from "expo";
 
 const Marker = MapView.Marker;
@@ -132,8 +131,16 @@ export default class ReviewDetails extends React.Component {
             style={styles.map}
             region={this.state.mapRegion}
           >
-            <Marker key={1} coordinate={this.state.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
+            {Platform.OS === 'android' ?
+              <Marker key={1} coordinate={this.state.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
+            : null}
 
+            {Platform.OS === 'ios' ?
+              <Marker key={1} centerOffset={{x: 0, y: -25}} coordinate={this.state.mapRegion}>
+                <Image source={require('../assets/images/logoBlackSmall.png')}
+                       style={styles.markerIOSHack}/>
+              </Marker>
+            :null}
           </MapView>
           <ScrollView stickyHeaderIndices={[1]} style={styles.scroll}>
             <View style = {styles.scrollContainer}>
@@ -220,6 +227,10 @@ export default class ReviewDetails extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  markerIOSHack: {
+    height: 50,
+    width: 50,
+  },
   review: {
     flex: 1,
     backgroundColor: '#fff',
