@@ -196,7 +196,10 @@ export default class ReviewDetails extends React.Component {
               </Text>
               <Button
                 title="OK"
-                onPress={this._hideModal() ||  this.props.navigation.popToTop()}
+                onPress={() => {
+                  this._hideModal();
+                  this.props.navigation.popToTop();
+                }}
               />
             </View>
           </Modal>
