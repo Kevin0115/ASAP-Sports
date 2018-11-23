@@ -39,9 +39,9 @@ def login(request):
         except fb.FacebookAPIException as e:
             return utils.json_client_error("Failed to reach Facebook. %s" % str(e))
 
-        asap_access_token = uuid.uuid4()
+        asap_access_token = uuid.uuid4()    
         try:
-            insert_user(request.db_conn, fb_id, first, last, fb_access_token,
+            insert_user(request.db_conn, fb_id, first, last, None, None, None, fb_access_token,
                     profile_pic_url, asap_access_token)
             user = get_user_by_asap_token(request.db_conn, asap_access_token)
         except psycopg2.IntegrityError:

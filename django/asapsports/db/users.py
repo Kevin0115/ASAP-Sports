@@ -2,12 +2,15 @@ from .asapobject import ASAPObject
 
 
 class User(ASAPObject):
-    def __init__(self, id, fb_id, first, last, fb_access_token,
+    def __init__(self, id, fb_id, first, last, age, gender, bio, fb_access_token,
                  profile_pic_url, asap_access_token, creation_timestamp):
         self.id = id
         self.fb_id = fb_id
         self.first = first
         self.last = last
+        self.age = age
+        self.gender = gender
+        self.bio = bio
         self.fb_access_token = fb_access_token
         self.profile_pic_url =profile_pic_url
         self.asap_access_token = asap_access_token
@@ -16,7 +19,7 @@ class User(ASAPObject):
 
 def get_user_by_asap_token(conn, asap_access_token):
     query = """
-        select id, fb_id, first, last, fb_access_token, profile_pic_url,
+        select id, fb_id, first, last, age, gender, bio, fb_access_token, profile_pic_url,
             asap_access_token, creation_timestamp
             from users where asap_access_token=%s
     """
@@ -28,7 +31,7 @@ def get_user_by_asap_token(conn, asap_access_token):
 
 def get_user_by_fb_id(conn, fb_id):
     query = """
-        select id, fb_id, first, last, fb_access_token, profile_pic_url,
+        select id, fb_id, first, last, age, gender, bio, fb_access_token, profile_pic_url,
             asap_access_token, creation_timestamp
             from users where fb_id=%s
     """
@@ -38,12 +41,12 @@ def get_user_by_fb_id(conn, fb_id):
             return User(*row)
 
 
-def insert_user(conn, fb_id, first, last, fb_access_token,
+def insert_user(conn, fb_id, first, last, age, gender, bio, fb_access_token,
                  profile_pic_url, asap_access_token):
     query = """
-        insert into users (fb_id, first, last, fb_access_token, 
+        insert into users (fb_id, first, last, age, gender, bio, fb_access_token, 
         profile_pic_url, asap_access_token)
-          values (%(fb_id)s, %(first)s, %(last)s, %(fb_access_token)s, 
+          values (%(fb_id)s, %(first)s, %(last)s, %(age)s, %(gender)s, %(bio)s,  %(fb_access_token)s, 
           %(profile_pic_url)s, %(asap_access_token)s)
     """
     with conn.cursor() as curs:

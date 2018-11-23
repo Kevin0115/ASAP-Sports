@@ -1,44 +1,35 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Alert, TextInput, Picker, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View} from 'react-native';
+import { MapView, Location, Permissions} from 'expo';
 import AwesomeButton from 'react-native-really-awesome-button';
-import Modal from 'react-native-modal';
 
-import NumPlayerKeys from '../assets/components/NumPlayerKeys';
+const Marker = MapView.Marker;
+const delta  = { //TODO throw into a const file
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+const vancouver  = { //TODO throw into a const file
+  latitude: 49.282730,
+  longitude: -123.120735,
+};
 
+export default class LocationScreen extends React.Component {
 
-export default class Location extends React.Component {
   state = {
-    location: '', // plaintext string
-    locChosen: false,
-    isNumPickerVisible: false,
-    maxPlayers: 'No Limit Chosen',
-    limitChosen: false,
+    userLocation: null,
+    mapRegion: {
+        latitude: vancouver.latitude,
+        longitude: vancouver.longitude,
+        latitudeDelta: delta.latitudeDelta,
+        longitudeDelta: delta.longitudeDelta,
+      },
   };
 
-  _handleLocationChange = (location) => {
-    this.setState({location: location});
-    this.setState({locChosen: true});
-  };
-
-  _showNumPicker = () => this.setState({isNumPickerVisible: true});
-
-  _hideNumPicker = () => this.setState({isNumPickerVisible: false});
-
-  _handleNumPicked = (num) => {
-    this.setState({
-      maxPlayers: num,
-      limitChosen: (num === 1) ? false : true,
-    });
-  };
-
-  _limitMessage = () => {
-    return this.state.limitChosen ? 
-      'Player Limit: ' + this.state.maxPlayers :
-      'No Limit Chosen';
-  };
+  componentWillMount() {
+    this._getLocationAsync();
+  }
 
   _handleNextPress = () => {
-    if (this.state.locChosen && this.state.limitChosen) {
       this.props.navigation.navigate('ReviewDetails',
       {
         sport: this.props.navigation.getParam('sport', 'Default'),
@@ -48,77 +39,61 @@ export default class Location extends React.Component {
         time: this.props.navigation.getParam('time', 'Default'),
         duration: this.props.navigation.getParam('duration', 'Default'),
         date: this.props.navigation.getParam('date', 'Default'),
-        maxPlayers: this.state.maxPlayers,
-        location: this.state.location,
+        maxPlayers: this.props.navigation.getParam('maxPlayers', 'Default'),
+        location: this.state.mapRegion,
       });
-    } else {
-      Alert.alert('Please complete all fields');
-    }
   }
+
+  onRegionChange(region) {
+    this.setState({
+      mapRegion: region,
+    });
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status === 'granted') {
+      let location = await Location.getCurrentPositionAsync({});
+      this.setState({userLocation: location});
+      this.setState({mapRegion: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: delta.latitudeDelta,
+          longitudeDelta: delta.longitudeDelta,
+        }});
+    }
+  };
 
   render() {
     return (
-      <View style={styles.location}>
-        <View style={styles.input}>
-          <Text style={styles.textHeader}>Please Enter a Location</Text>
-          <TextInput
-            placeholder="Enter a location"
-            placeholderTextColor="#c9c9c9"
-            clearTextOnFocus={true}
-            style={styles.titleInput}
-            onChangeText={this._handleLocationChange}
-            value={this.state.location}
-          />
-        </View>
-        <View style={styles.pickerSection}>
-          <Modal 
-            isVisible={this.state.isNumPickerVisible}
-            style={styles.bottomModal}
-            backdropOpacity={0.5}
+        <View>
+          <MapView
+            style={{ alignSelf: 'stretch', height: '100%' }}
+            region={this.state.mapRegion}
+            onRegionChange={(region) => this.onRegionChange(region)}
           >
-            <View style={styles.modalContent}>
-              <Text style={{opacity: 0.6}}>
-                Choose a maximum number of players
-              </Text>
-              <Picker
-                style={{width: 200}}
-                selectedValue={this.state.maxPlayers}
-                onValueChange={this._handleNumPicked}
-              >
-                {NumPlayerKeys.map((item, index) => {
-                  return (<Picker.Item key={item} label={item} value={index + 1} />);
-                })}
-              </Picker>
-              <Button title='Confirm' onPress={this._hideNumPicker} />
-            </View>
-          </Modal>
-          <AwesomeButton
-            width={320}
-            height={60}
-            onPress={this._showNumPicker}
-          >
-            Select Player Limit
-          </AwesomeButton>
-          <Text style={styles.headerText}>
-            {this._limitMessage()}
-          </Text>
-        </View>
-        <View style={styles.buttonContainer}>
-          <AwesomeButton
-            width={320}
-            height={60}
-            backgroundColor='#004e89'
-            backgroundDarker='#001a33'
-            onPress={this._handleNextPress}
-          >
-            Next
-          </AwesomeButton>
-        </View>
-      </View>
+            <Marker key={1} coordinate={this.state.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
 
+          </MapView>
+          <View style = {{position: "absolute", bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+            <View style = {{paddingBottom: 15}}>
+            <AwesomeButton
+              width={320}
+              height={60}
+              backgroundColor='#004e89'
+              backgroundDarker='#001a33'
+              onPress={this._handleNextPress}
+            >
+              Next
+            </AwesomeButton>
+            </View>
+            </View>
+          </View>
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   location: {

@@ -249,6 +249,7 @@ export default class BrowseGames extends React.Component {
         </View>
         {this.state.openFilter !== null && !(this.state.openFilter === 'time' && Platform.OS === 'android') &&
         <View>
+          {/* TODO be smarter about how I am setting the margin left */}
           <Ionicons name='md-arrow-dropup' size={32} color={COLORS.darkBlue} style={{padding: 0, marginTop: -11, marginLeft: (this.state.openFilter === 'location' ? 59 : (this.state.openFilter === 'time' ? 173 : 287))}}/>
           <View style={styles.filterControlWindow}>
             {this.state.openFilter === 'sport' &&
