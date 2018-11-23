@@ -14,6 +14,12 @@ export default class ReviewDetails extends React.Component {
     isModalVisible: false,
     creationInfo: {},
     modalImage: null,
+    mapRegion:{
+      latitude: 37.78825,
+      longitude: -122.4324,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    },
   };
 
   componentDidMount() {
@@ -22,6 +28,9 @@ export default class ReviewDetails extends React.Component {
     navigation.getParam('date', 'Default') +
     ' ' +
     navigation.getParam('time', 'Default');
+    const mapRegion = navigation.getParam('location', 'Default');
+    const location_lng = mapRegion.longitude;
+    const location_lat = mapRegion.latitude;
     this.setState({creationInfo: {
       sport: navigation.getParam('sport', 'Default'),
       title: navigation.getParam('title', 'Default'),
@@ -29,14 +38,13 @@ export default class ReviewDetails extends React.Component {
       comp_level: navigation.getParam('compLevel', 'Default'),
       start_time: startTime,
       duration: navigation.getParam('duration', 'Default'),
-      mapRegion: navigation.getParam('location'),
       max_players: navigation.getParam('maxPlayers', 'Default'),
-      location_name: navigation.getParam('location', 'Default'),
-      }
+      location_name: 'undefined',
+      location_lng: location_lng,
+      location_lat: location_lat,
+      },
+      mapRegion: mapRegion,
     });
-    console.log(navigation.getParam('sport', 'Default'));
-    console.log(this.state.creationInfo.sport);
-    console.log(SportDict[navigation.getParam('sport', 'Default')]);
   }
 
   _hideModal = () => {
@@ -100,24 +108,24 @@ export default class ReviewDetails extends React.Component {
 
       <View style={styles.review}>
         <View style={styles.container}>
-          <View style={{flexDirection:'row', padding: 10, paddingLeft: 45, paddingRight: 45}}>
+          <View style={styles.header}>
             <Image
               style={styles.logo}
-              source = {SportDict[this.state.creationInfo.sport]}/>
-            <View style={{paddingTop: 10, paddingLeft: 10}}>
+              source = {SportDict[creationInfo.sport]}/>
+            <View style={styles.titleContainer}>
             <Text style={styles.gameTitle}>{creationInfo.title}</Text>
             </View>
           </View>
 
           <MapView
-            style={{width: Dimensions.get('window').width - 18, height: 250 , padding: 10, borderRadius:  10}}
-            region={creationInfo.mapRegion}
+            style={styles.map}
+            region={this.state.mapRegion}
           >
-            <Marker key={1} coordinate={creationInfo.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
+            <Marker key={1} coordinate={this.state.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
 
           </MapView>
-          <ScrollView stickyHeaderIndices={[1]} style={{ width: Dimensions.get('window').width - 18, paddingTop: 10}}>
-            <View style = {{paddingLeft: 10, paddingRight: 10, paddingBottom: 15, paddingTop: 15}}>
+          <ScrollView stickyHeaderIndices={[1]} style={styles.scroll}>
+            <View style = {styles.scrollContainer}>
           <View style={styles.infoContainer}>
             <View style = {{flex:1}}>
             <Image
@@ -125,7 +133,6 @@ export default class ReviewDetails extends React.Component {
               source = {require('../assets/images/calendaricon.png')}/>
             </View>
              <Text style ={styles.info}>{creationInfo.start_time}</Text>
-             {/*<Text style={{flex:1}}>asdadaskdskad</Text>*/}
           </View>
           <View style={styles.infoContainer}>
             <View style = {{flex:1}}>
@@ -149,10 +156,10 @@ export default class ReviewDetails extends React.Component {
               style = {styles.icon}
               source = {require('../assets/images/maxplayericon.png')}/>
             </View>
-            <Text style={styles.info}>Max {creationInfo.max_players} Players</Text>
+            <Text style={styles.info}>{creationInfo.max_players} players maximum</Text>
           </View>
           <View >
-            <Text style={styles.infoTitle}>Game Description:</Text>
+            <Text style={styles.infoTitle}>Description:</Text>
             <Text style={styles.gameDesc}>{creationInfo.desc}</Text>
           </View>
             </View>
@@ -187,7 +194,7 @@ export default class ReviewDetails extends React.Component {
             backgroundDarker='#001a33'
             onPress={this._handleSubmit}
           >
-            Create My Game
+            Create Game
           </AwesomeButton>
         </View>
       </View>
@@ -208,6 +215,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  header: {
+    flexDirection:'row',
+    padding: 10,
+    paddingLeft: 45,
+    paddingRight: 45,
+  },
+  map: {
+    width: Dimensions.get('window').width - 18,
+    height: 250 ,
+    padding: 10,
+    borderRadius:  10
+  },
+  scroll: {
+    width: Dimensions.get('window').width - 18,
+    paddingTop: 10
+  },
+  scrollContainer: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 15,
+    paddingTop: 15
+  },
   infoContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -215,16 +244,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingBottom: 20,
   },
-  infoContainerFlex: {
-    flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    flexDirection: 'row',
-    // flexWrap: "wrap"
-  },
   infoTitle: {
     color: '#707070',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   info: {
@@ -240,6 +262,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 12,
+  },
+  titleContainer: {
+    paddingTop: 10,
+    paddingLeft: 10
   },
   desc: {
     textAlign: 'center',
