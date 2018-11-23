@@ -110,40 +110,50 @@ export default class ReviewDetails extends React.Component {
           </View>
 
           <MapView
-            style={{width: Dimensions.get('window').width - 18, height: 250 , padding: 7, borderRadius:  10}}
+            style={{width: Dimensions.get('window').width - 18, height: 250 , padding: 10, borderRadius:  10}}
             region={creationInfo.mapRegion}
           >
             <Marker key={1} coordinate={creationInfo.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
 
           </MapView>
           <ScrollView stickyHeaderIndices={[1]} style={{ width: Dimensions.get('window').width - 18, paddingTop: 10}}>
-            <View style = {{padding: 15}}>
+            <View style = {{paddingLeft: 10, paddingRight: 10, paddingBottom: 15, paddingTop: 15}}>
           <View style={styles.infoContainer}>
+            <View style = {{flex:1}}>
             <Image
-              // style = {{alignSelf: 'flex-start'}}
+              style = {styles.icon}
               source = {require('../assets/images/calendaricon.png')}/>
+            </View>
              <Text style ={styles.info}>{creationInfo.start_time}</Text>
              {/*<Text style={{flex:1}}>asdadaskdskad</Text>*/}
           </View>
           <View style={styles.infoContainer}>
+            <View style = {{flex:1}}>
             <Image
-              style = {{alignSelf: 'flex-start'}}
+              style = {styles.icon}
               source = {require('../assets/images/durationicon.png')}/>
+            </View>
             <Text style={styles.info}>{this._convertMinToHour(creationInfo.duration)} </Text>
           </View>
           <View style={styles.infoContainer}>
+            <View style = {{flex:1}}>
             <Image
+              style = {styles.icon}
               source = {require('../assets/images/trophyicon.png')}/>
+            </View>
             <Text style={styles.info}>{this._convertCompLevelToString(creationInfo.comp_level)}</Text>
           </View>
           <View style={styles.infoContainer}>
+            <View style = {{flex:1}}>
             <Image
+              style = {styles.icon}
               source = {require('../assets/images/maxplayericon.png')}/>
+            </View>
             <Text style={styles.info}>Max {creationInfo.max_players} Players</Text>
           </View>
           <View >
-            <Text style={styles.infoTitle}>Game Description</Text>
-            <Text style={styles.info}>{creationInfo.desc}</Text>
+            <Text style={styles.infoTitle}>Game Description:</Text>
+            <Text style={styles.gameDesc}>{creationInfo.desc}</Text>
           </View>
             </View>
           </ScrollView>
@@ -220,8 +230,10 @@ const styles = StyleSheet.create({
   info: {
     color: '#707070',
     fontSize: 18,
-    paddingTop: 3,
-    paddingLeft: 8,
+    paddingLeft: 15,
+    paddingTop: 4,
+    textAlign: 'left',
+    flex: 10,
   },
   title: {
     textAlign: 'center',
@@ -259,11 +271,23 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
   },
+  icon: {
+    flex: 1,
+    alignSelf: 'center',
+    height: 35,
+    width: 35,
+  },
   gameTitle: {
     color: '#707070',
     fontSize: 30,
     fontWeight: 'bold',
     flexWrap:'wrap',
     textAlign: 'center'
+  },
+  gameDesc: {
+    color: '#707070',
+    fontSize: 18,
+    padding: 7,
+    textAlign: 'left',
   }
 });
