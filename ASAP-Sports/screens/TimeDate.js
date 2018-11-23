@@ -192,9 +192,6 @@ export default class TimeDate extends React.Component {
             {this._durationText()}
           </Text>
         </View>
-          /*
-          duplicate
-           */
           <View style={styles.pickerSection}>
             <Modal
               isVisible={this.state.isMaxPlayersPickerVisible}

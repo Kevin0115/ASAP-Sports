@@ -58,7 +58,6 @@ export default class ReviewDetails extends React.Component {
 
   _hideModal = () => {
     this.setState({isModalVisible: false});
-    this.props.navigation.popToTop();
   };
 
   _handleSubmit = () => {
@@ -197,7 +196,7 @@ export default class ReviewDetails extends React.Component {
               </Text>
               <Button
                 title="OK"
-                onPress={this._hideModal}
+                onPress={this._hideModal() ||  this.props.navigation.popToTop()}
               />
             </View>
           </Modal>
