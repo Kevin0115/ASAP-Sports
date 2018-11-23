@@ -28,6 +28,7 @@ export default class ReviewDetails extends React.Component {
     navigation.getParam('date', 'Default') +
     ' ' +
     navigation.getParam('time', 'Default');
+    console.log(startTime);
     const mapRegion = navigation.getParam('location', 'Default');
     const location_lng = mapRegion.longitude;
     const location_lat = mapRegion.latitude;
@@ -158,10 +159,12 @@ export default class ReviewDetails extends React.Component {
             </View>
             <Text style={styles.info}>{creationInfo.max_players} players maximum</Text>
           </View>
+              {creationInfo.desc != '' ?
           <View >
             <Text style={styles.infoTitle}>Description:</Text>
             <Text style={styles.gameDesc}>{creationInfo.desc}</Text>
           </View>
+             : null }
             </View>
           </ScrollView>
         </View>
@@ -251,7 +254,7 @@ const styles = StyleSheet.create({
   },
   info: {
     color: '#707070',
-    fontSize: 18,
+    fontSize: 16,
     paddingLeft: 15,
     paddingTop: 4,
     textAlign: 'left',
@@ -298,10 +301,9 @@ const styles = StyleSheet.create({
     width: 60,
   },
   icon: {
-    flex: 1,
     alignSelf: 'center',
-    height: 35,
-    width: 35,
+    height: 30,
+    width: 30,
   },
   gameTitle: {
     color: '#707070',
