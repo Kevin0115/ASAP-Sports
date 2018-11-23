@@ -30,7 +30,8 @@ def doc(request):
                       ('games/view/<int:game_id>', views.view),
                       ('notifications/subscribe/game/<int:game_id>', views.subscribe2game),
                       ('user', views.get_current_user),
-                      ('user/<int:id>', views.get_user)
+                      ('user/<int:id>', views.get_user),
+                      ('user/update', views.update_user)
                       ]:
         res.append(url)
         res.append(func.__doc__ or '')
@@ -53,7 +54,8 @@ urlpatterns = [
     path('games/view/<int:game_id>', views.view),
     path('notifications/subscribe/game/<int:game_id>', views.subscribe2game),
     path('user', views.get_current_user),
-    path('user/<int:id>', views.get_user)
+    path('user/<int:id>', views.get_user),
+    path('user/update', views.update_user)
 ]
 
 if settings.DEBUG:

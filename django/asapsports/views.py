@@ -4,7 +4,7 @@ import uuid
 import psycopg2
 import datetime
 
-from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id
+from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_by_id
 from .db.games import insert_game, get_game
 from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
 from . import utils
@@ -153,7 +153,7 @@ def host(request):
         return utils.json_client_error("Missing parameter " + str(e))
 
     if asap_access_token is None:
-       return utils.json_client_error("Invalid access token.") 
+       return utils.json_client_error("Bad access token.") 
 
     if start_time < datetime.datetime.utcnow() - datetime.timedelta(minutes=15):
         return utils.json_client_error("Bad start_time")
@@ -267,3 +267,52 @@ def get_user(request, id):
     if user is None:
         return utils.json_client_error("Bad authorization")
     return utils.json_response(user.to_json())
+
+def update_user(request):
+    """
+    :param request has data like:
+                'id': int,
+                'fb_id': int,
+                'first': str,
+                'last': str,
+                'age': int,
+                'gender': str,
+                'bio': str, 
+                'fb_access_token': str,
+                'profile_pic_url': str(http://url.com),
+             }
+             update_user(conn, id, fb_id, first, last, age, gender, bio, fb_access_token,
+                 profile_pic_url, asap_access_token)
+    """
+    data = request.read()
+    postdata = json.loads(data)
+    try:
+        user_id = postdata['id']
+        fb_id = postdata.get('fb_id')
+        first = postdata['first']
+        last = postdata['last']
+        age = postdata.get('age')
+        gender = postdata.get('gender')
+        bio = postdata.get('bio')
+        fb_access_token = postdata.get('fb_access_token')
+        profile_pic_url = postdata.get('profile_pic_url')
+        asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
+    except KeyError as e:
+        return utils.json_client_error("Missing parameter " + str(e))
+
+    if asap_access_token is None:
+       return utils.json_client_error("Bad access token.")
+
+    user = get_user_by_asap_token(request.db_conn, asap_access_token)
+    if user is None:
+        return utils.json_client_error("Invalid access token.")
+    if user.id is not user_id:
+        return utils.json_client_error("Invalid user update")
+
+    update_user_by_id(request.db_conn, user_id, fb_id, first, last, age, gender, bio, fb_access_token,
+                 profile_pic_url, asap_access_token)
+    if user is None:
+        return utils.json_client_error("Bad authorization")
+
+    res = {'status': 'success'}
+    return utils.json_response(res)

@@ -64,10 +64,23 @@ def insert_user(conn, fb_id, first, last, age, gender, bio, fb_access_token,
         curs.execute(query, locals())
 
 
-def update_user(conn):
+def update_user_by_id(conn, id, fb_id, first, last, age, gender, bio, fb_access_token,
+                 profile_pic_url, asap_access_token):
     query = """
-
+        update users set 
+        fb_id=%(fb_id)s,
+        first=%(first)s,
+        last=%(last)s,
+        age=%(age)s,
+        gender=%(gender)s,
+        bio=%(bio)s,
+        fb_access_token=%(fb_access_token)s,
+        profile_pic_url=%(profile_pic_url)s,
+        asap_access_token=%(asap_access_token)s
+        where id=%(id)s;
     """
-    raise ValueError("Not implemented")
+    with conn.cursor() as curs:
+        print(locals())
+        curs.execute(query, locals())
 
 
