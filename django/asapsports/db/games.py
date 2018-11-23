@@ -1,4 +1,5 @@
 from .asapobject import ASAPObject
+from asapsports.utils import distance_between, offset_lat_lng
 
 
 class Game(ASAPObject):
@@ -47,3 +48,24 @@ def get_game(conn, game_id):
         curs.execute(query, locals())
         for row in curs:
             return Game(*row)
+
+
+def search_games(conn, lng, lat, radius_m, start_time, sport, page_num):
+    offset = page_num * 25
+    query = """
+        select id, host_id, title, description, max_players, sport, start_time, 
+            end_time, location_lat, location_lng, location_name, comp_level, 
+            creation_timestamp
+            from games where start_time >= %(start_time)s and start_time <= %(start_time)s + interval '4 hour'
+                and (%(sport)s='any' or sport=%(sport)s) 
+                --and distance(%(lat)s, %(lng)s, location_lat, location_lng) <= %(radius_m)s TODO uncomment and make work
+                offset %(offset)s
+                limit 25
+    """
+
+    with conn.cursor() as curs:
+        curs.execute(query, locals())
+        games = [Game(*row) for row in curs]
+        # TODO filter in database so we can get a defined amount from DB. Very importante.
+        games = [g for g in games if distance_between(g.location_lat, g.location_lng, lat, lng) <= radius_m]
+        return games

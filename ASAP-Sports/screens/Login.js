@@ -6,6 +6,8 @@ import {
 import AwesomeButton from "react-native-really-awesome-button";
 import {SignedInStack} from "../navigation/AppNavigator";
 import Modal from 'react-native-modal';
+import { APP_BASE_URL, FB_APP_ID } from './../const';
+
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -36,12 +38,11 @@ export default class Login extends React.Component {
   };
 
   async logIn() {
-    const APP_ID = '169924577279041';
     const options = {
       permissions: ['public_profile'],
     };
     try {
-      const {type, token} = await Expo.Facebook.logInWithReadPermissionsAsync(APP_ID, options);
+      const {type, token} = await Expo.Facebook.logInWithReadPermissionsAsync(FB_APP_ID, options);
       if (type === 'success') {
         // Get the user's name using Facebook's Graph API
         const response = await fetch(
@@ -53,7 +54,7 @@ export default class Login extends React.Component {
         const loginBody = JSON.stringify({'fb_access_token': tokenStr});
 
         try {
-          let ASAPresponse = await fetch('http://asapsports.aidanrosswood.ca/authentication/login', {
+          let ASAPresponse = await fetch(APP_BASE_URL + '/authentication/login', {
             method: 'POST',
             body: loginBody,
           });

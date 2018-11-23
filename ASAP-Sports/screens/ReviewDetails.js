@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
+import { APP_BASE_URL } from './../const';
 
 import ConfirmationModal from '../assets/components/ConfirmationModal';
 
@@ -43,7 +44,7 @@ export default class ReviewDetails extends React.Component {
 
   _handleSubmit = () => {
     const creationInfo = JSON.stringify(this.state.creationInfo);
-    fetch('http://asapsports.aidanrosswood.ca/games/host', {
+    fetch(APP_BASE_URL + '/games/host', {
       method: 'POST',
       headers: {
         'Authorization': '0daa420c-c03e-4d5b-83ee-235981206ff4',

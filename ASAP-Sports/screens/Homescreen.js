@@ -22,13 +22,22 @@ export default class Homescreen extends React.Component {
         </View>
         <View style={styles.buttonContainer}>
           <AwesomeButton
-            width={320}
+            width={320/2}
+            height={60}
+            backgroundColor="#004e89"
+            backgroundDarker="#001a33"
+            onPress={() => this.props.navigation.navigate('Browse')}
+          >
+            Find a Game
+          </AwesomeButton>
+          <AwesomeButton
+            width={320/2}
             height={60}
             backgroundColor="#004e89"
             backgroundDarker="#001a33"
             onPress={() => this.props.navigation.navigate('Gametype')}
           >
-            Find a Game
+            Host a Game
           </AwesomeButton>
         </View>
       </View>

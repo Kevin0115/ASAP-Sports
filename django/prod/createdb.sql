@@ -49,3 +49,12 @@ CREATE TABLE user_in_games (
   PRIMARY KEY (user_id, game_id)
 );
 
+-- Returns the meters distance between two points
+ CREATE OR REPLACE FUNCTION distance(lat1 FLOAT, lng1 FLOAT, lat2 FLOAT, lng2 FLOAT) RETURNS FLOAT AS $$
+DECLARE                                                   
+    x float = 111.12 * (lat2 - lat1);                           
+    y float = 111.12 * (lng2 - lng1) * cos(lat1 / 92.215);        
+BEGIN                                                     
+    RETURN sqrt(x * x + y * y) * 1000;                               
+END  
+$$ LANGUAGE plpgsql;
