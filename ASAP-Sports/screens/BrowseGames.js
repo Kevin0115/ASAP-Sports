@@ -100,6 +100,7 @@ export default class BrowseGames extends React.Component {
     .then((response) => {
       if (response.error) {
         console.warn("Error!", response.error);
+        this.setState({loading: false});
         // TODO handle error with modal
       } else {
         this.setState({
@@ -132,28 +133,29 @@ export default class BrowseGames extends React.Component {
 
     // Android handles Date/Time picking with Dialogs that must be invoked with JS
     try {
-      const {datePickAction, year, month, day} = await DatePickerAndroid.open({
+      const {action, year, month, day} = await DatePickerAndroid.open({
         date: prevSelectedTime
       });
-      console.log("DatePicker", datePickAction, year, month, day);
-      if (datePickAction === DatePickerAndroid.dismissedAction || ![year, month, day].every(n => n !== undefined)) {
+      console.log("DatePicker", action, year, month, day);
+      if (action === DatePickerAndroid.dismissedAction || ![year, month, day].every(n => n !== undefined)) {
         // Selected year, month (0-11), day
         this.setState({openFilter: null});
         return;
       }
 
-
-      const {timePickAction, hour, minute} = await TimePickerAndroid.open({
+      // TODO timePickerAction is undefined
+      let {timePickerAction, hour, minute} = await TimePickerAndroid.open({
         hour: prevSelectedTime.getHours(),
         minute: prevSelectedTime.getMinutes(), // TODO Kinda goofy ATM. Not sure what to do about it.
         is24Hour: false,
       });
-      console.log("TimePicker", timePickAction, hour, minute);
-      if (timePickAction === TimePickerAndroid.dismissedAction || ![hour, minute].every(n => n !== undefined)) {
+      console.log("TimePicker", timePickerAction, hour, minute);
+      if (timePickerAction === TimePickerAndroid.dismissedAction || ![hour, minute].every(n => n !== undefined)) {
         this.setState({openFilter: null});
         return;
       }
 
+      // TODO show error modal when times are in the past
       this.setState({openFilter: null, time: new Date(year, month, day, hour, minute)});
       this.searchGames();
     } catch ({code, message}) {
@@ -289,14 +291,14 @@ export default class BrowseGames extends React.Component {
             }
             {this.state.openFilter === 'location' &&
               <View style={styles.horizontallyCenter}>
-              <Text>Location</Text>
               <Slider
               style={{ width: 280 }}
               step={1}
               minimumValue={500}
               maximumValue={100000}
               value={this.state.location.radius}
-              onValueChange={(val) => this.setState({ location: {radius: val}})}
+              onValueChange={(val) => null}
+              onSlidingComplete={ (val) => this.setState({ location: {radius: val}})}
               thumbTintColor={COLORS.white}
               />
               <View style={{marginTop: 25, marginBottom: 25}}></View>
@@ -338,7 +340,7 @@ export default class BrowseGames extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  topBar: {
+  topBar: { // TODO shadow below bar
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -378,6 +380,7 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   filterControlWindow: { // TODO this should be positioned above the background and shouldnt displace the background
+    // TODO drop shadow on this AND on little triangle
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
