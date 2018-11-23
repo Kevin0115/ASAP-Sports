@@ -28,8 +28,11 @@ def doc(request):
                       ('games/join/<int:game_id>', views.join),
                       ('games/host', views.host),
                       ('games/view/<int:game_id>', views.view),
+                      ('games/users/<int:game_id>', views.get_users_in_game),
                       ('notifications/subscribe/game/<int:game_id>', views.subscribe2game),
-                      ('user', views.get_current_user)]:
+                      ('user', views.get_current_user),
+                      ('user/<int:id>', views.get_user)
+                      ]:
         res.append(url)
         res.append(func.__doc__ or '')
         res.append('')

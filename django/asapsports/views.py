@@ -236,7 +236,6 @@ def subscribe2game(request, game_id):
 def get_current_user(request):
     """
     :param request:
-    :param game_id:
     :return: {
 
                 'id': int,
@@ -249,7 +248,6 @@ def get_current_user(request):
                 'fb_access_token': str,
                 'profile_pic_url': str(http://url.com),
                 'creation_timestamp': str,
-
              }
     """
     user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
@@ -260,7 +258,7 @@ def get_current_user(request):
 def get_user(request, id):
     """
     :param request:
-    :param game_id:
+    :param id:
     :return: {
 
                 'id': int,
