@@ -1,5 +1,4 @@
-// export const APP_BASE_URL = 'https://asapsports.aidanrosswood.ca'
-export const APP_BASE_URL = 'https://76bd70cb.ngrok.io';
+export const APP_BASE_URL = 'https://asapsports.aidanrosswood.ca'
 export const FB_APP_ID = '169924577279041';
 export const COLORS = {
     pink: '#f45363',
