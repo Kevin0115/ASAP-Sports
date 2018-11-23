@@ -28,7 +28,6 @@ def doc(request):
                       ('games/join/<int:game_id>', views.join),
                       ('games/host', views.host),
                       ('games/view/<int:game_id>', views.view),
-                      ('games/users/<int:game_id>', views.get_users_in_game),
                       ('notifications/subscribe/game/<int:game_id>', views.subscribe2game),
                       ('user', views.get_current_user),
                       ('user/<int:id>', views.get_user)
@@ -52,7 +51,6 @@ urlpatterns = [
     path('games/join/<int:game_id>', views.join),
     path('games/host', views.host),
     path('games/view/<int:game_id>', views.view),
-    path('games/users/<int:game_id>', views.get_users_in_game),
     path('notifications/subscribe/game/<int:game_id>', views.subscribe2game),
     path('user', views.get_current_user),
     path('user/<int:id>', views.get_user)

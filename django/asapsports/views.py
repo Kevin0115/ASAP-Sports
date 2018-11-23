@@ -182,7 +182,7 @@ def view(request, game_id):
     :param request: ASAP access token header
     :param game_id: int, in URL
     :return: {
-                'game_id': game_id,
+               'id': game_id,
                'host_id': user_id,
                'game_title': str,
                'game_description': str,
@@ -192,29 +192,18 @@ def view(request, game_id):
                'end_time': str('YYYY-MM-DD HH:MM'),
                'location_lng': float,
                'location_lat': float,
-               'location_name': str
-             }
-    """
-    game = get_game(request.db_conn, game_id)
-    return utils.json_response(game.to_json())
-
-def get_users_in_game(request, game_id):
-    """
-    :param request: ASAP access token header
-    :param game_id: int, in URL
-    :return: {
-
-                'users': [
-                    user1_id,
-                    user2_id,
+               'location_name': str,
+               'comp_level': int,
+               'creation_timestamp': 'day_of_week, month day, year hh:mm AM/PM',
+               'users": [
+                    user_id,
+                    user_id,
                     ...
-                ] 
+                ]
              }
     """
-    users = get_users(request.db_conn, game_id)
-    for user in users:
-        print(user)
-    res = {'users': users}
+    res = get_game(request.db_conn, game_id).to_json()
+    res['users'] = get_users(request.db_conn, game_id)
     return utils.json_response(res)
     
 
@@ -247,7 +236,7 @@ def get_current_user(request):
                 'bio': str, 
                 'fb_access_token': str,
                 'profile_pic_url': str(http://url.com),
-                'creation_timestamp': str,
+                'creation_timestamp': 'day_of_week, month day, year hh:mm AM/PM',
              }
     """
     user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
@@ -270,7 +259,7 @@ def get_user(request, id):
                 'bio': str, 
                 'fb_access_token': str,
                 'profile_pic_url': str(http://url.com),
-                'creation_timestamp': str,
+                'creation_timestamp': 'day_of_week, month day, year hh:mm AM/PM',
 
              }
     """
@@ -278,4 +267,3 @@ def get_user(request, id):
     if user is None:
         return utils.json_client_error("Bad authorization")
     return utils.json_response(user.to_json())
-    
