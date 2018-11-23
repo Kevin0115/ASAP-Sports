@@ -26,6 +26,7 @@ export default class Homescreen extends React.Component {
             height={60}
             backgroundColor="#004e89"
             backgroundDarker="#001a33"
+            style={{marginRight: 5}}
             onPress={() => this.props.navigation.navigate('Browse')}
           >
             Find a Game
@@ -35,6 +36,7 @@ export default class Homescreen extends React.Component {
             height={60}
             backgroundColor="#004e89"
             backgroundDarker="#001a33"
+            style={{marginLeft: 5}}
             onPress={() => this.props.navigation.navigate('Gametype')}
           >
             Host a Game
@@ -75,6 +77,7 @@ const styles = StyleSheet.create({
     height: 150,
   },
   buttonContainer: {
+    flexDirection: 'row',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
