@@ -6,7 +6,7 @@ import datetime
 
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id
 from .db.games import insert_game, get_game
-from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, Status
+from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
 from . import utils
 from . import facebook as fb
 
@@ -101,7 +101,7 @@ def join(request, game_id):
     :param game_id: int, in URL
     :return:
     """
-    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['Authorization']))
+    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
     if user is None:
         return utils.json_client_error("Bad authorization")
 
@@ -197,6 +197,26 @@ def view(request, game_id):
     """
     game = get_game(request.db_conn, game_id)
     return utils.json_response(game.to_json())
+
+def get_users_in_game(request, game_id):
+    """
+    :param request: ASAP access token header
+    :param game_id: int, in URL
+    :return: {
+
+                'users': [
+                    user1_id,
+                    user2_id,
+                    ...
+                ] 
+             }
+    """
+    users = get_users(request.db_conn, game_id)
+    for user in users:
+        print(user)
+    res = {'users': users}
+    return utils.json_response(res)
+    
 
 
 ##### NOTIFICATIONS #####
