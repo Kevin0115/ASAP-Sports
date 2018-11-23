@@ -7,14 +7,20 @@ export default class Profile extends React.Component {
     super(props);
     this.state = {
       userData: {},
+      userPic: "",
     };
     this._retrieveData();
   }
 
   _retrieveData = async () => {
     const userData = JSON.parse(await AsyncStorage.getItem('fbGraphApiResponse'));
+    const userPic = JSON.parse(await AsyncStorage.getItem('profilePicUrl'));
+    console.log('Displaying profilePicUrl:');
+    console.log(userPic);
+    console.log('End profilePicUrl');
     this.setState({
       userData: userData,
+      userPic: userPic
     });
   }
 
@@ -26,11 +32,13 @@ export default class Profile extends React.Component {
             Welcome, {this.state.userData.name}!
           </Text>
         </View>
-        <View style={{flex: 5.3, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.profilePicContainer}>
           <Image
-            //source={{uri: {pic}}}
+            style={styles.profilePic}
+            source={{uri: this.state.userPic}}
           />
         </View>
+        <View style={{flex: 3.5}} />
         <View style={styles.buttonContainer}>
           <AwesomeButton
             width={320}
@@ -56,13 +64,22 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 0.7,
     alignItems: 'center',
-    marginTop: 20,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   text: {
     fontWeight: 'bold',
     fontSize: 18,
     color: '#8c8c8c',
+  },
+  profilePicContainer: {
+    flex: 1.8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profilePic: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
   },
   buttonContainer: {
     flex: 1,
