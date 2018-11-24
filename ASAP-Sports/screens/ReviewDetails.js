@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions, Platform} from 'react-native';
+import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions, Platform, AsyncStorage } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
-import { APP_BASE_URL } from './../const';
+import { APP_BASE_URL, vancouver, delta } from './../const';
 
 import SportDict from '../assets/components/SportsDict';
 import {MapView} from "expo";
 
+const Marker = MapView.Marker;
 
 export default class ReviewDetails extends React.Component {
 
@@ -62,16 +63,18 @@ export default class ReviewDetails extends React.Component {
     this.setState({isModalVisible: false});
   };
 
-  _handleSubmit = () => {
+  _handleSubmit = async () => {
+    const userAuthToken = await AsyncStorage.getItem('userAuth');
     const creationInfo = JSON.stringify(this.state.creationInfo);
     fetch(APP_BASE_URL + '/games/host', {
       method: 'POST',
       headers: {
-        'Authorization': '0daa420c-c03e-4d5b-83ee-235981206ff4',
+        'Authorization': userAuthToken,
       },
       body: creationInfo,
     }).then((res) => res.json())
     .then((response) => {
+      if (response.error) throw Error(response.error);
       this.setState({
         modalTitleText: 'Success!',
         modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.',
@@ -79,7 +82,7 @@ export default class ReviewDetails extends React.Component {
         isModalVisible: true,
       });
       console.log('Success: ', JSON.stringify(response));
-    })      
+    })
     .catch((error) => {
       this.setState({
         modalTitleText: 'There was a Problem',

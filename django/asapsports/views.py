@@ -67,7 +67,7 @@ def upcoming_games(request):
                 'past_games': [game]
             }
     """
-    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['Authorization']))
+    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
     if user is None:
         return utils.json_client_error("Bad authorization")
 
@@ -157,6 +157,7 @@ def host(request):
         return utils.json_client_error('Invalid JSON')
 
     print(postdata)
+    print(request.META)
     try:
         game_title = postdata['title']
         game_description = postdata.get('desc')

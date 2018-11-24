@@ -22,6 +22,7 @@ import SportList from '../assets/components/SportList';
 import DatePicker from 'react-native-date-picker';
 import { Button } from 'react-native-elements';
 import { MapView, Location, Permissions} from 'expo';
+import GameCard from '../assets/components/GameCard';
 
 const Marker = MapView.Marker;
 
@@ -63,71 +64,6 @@ const ANY = {
   image: require('../assets/images/questions-circular-button.png'),
 }
 
-import GameCard from '../assets/components/GameCard';
-
-// FOR TESTING ONLY - when we get the API call working, this should be deleted
-const sampleGames = [
-  {  
-   "id":3,
-   "host_id":32,
-   "title":"3v3 Basketball",
-   "description":"3v3 pickup basketball game\n",
-   "max_players":6,
-   "sport":"basketball", // IMPORTANT this is lowercase in the DB
-   "start_time":"Tuesday, October 23, 2018 04:30 PM",
-   "end_time":"Tuesday, October 23, 2018 05:30 PM",
-   "location_lat":0.0,
-   "location_lng":0.0,
-   "location_name":"UBC SRC Gym 2",
-   "comp_level":1,
-   "creation_timestamp":"Tuesday, October 23, 2018 09:26 PM"
-  },
-  {  
-   "id":4,
-   "host_id":32,
-   "title":"1v1 Tennis",
-   "description":"tennis \n",
-   "max_players":2,
-   "sport":"tennis",
-   "start_time":"Thursday, August 23, 2018 12:25 PM",
-   "end_time":"Thursday, August 23, 2018 12:55 PM",
-   "location_lat":0.0,
-   "location_lng":0.0,
-   "location_name":"Tennis Court",
-   "comp_level":1,
-   "creation_timestamp":"Tuesday, October 23, 2018 09:36 PM"
-  },
-  {  
-   "id":5,
-   "host_id":32,
-   "title":"5x5 Soccer",
-   "description":"tennis \n",
-   "max_players":2,
-   "sport":"soccer",
-   "start_time":"Thursday, August 23, 2018 02:25 PM",
-   "end_time":"Thursday, August 23, 2018 02:55 PM",
-   "location_lat":0.0,
-   "location_lng":0.0,
-   "location_name":"Soccer Field",
-   "comp_level":1,
-   "creation_timestamp":"Tuesday, October 23, 2018 09:36 PM"
-  },
-  {  
-   "id":6,
-   "host_id":32,
-   "title":"4v4 Volleyball",
-   "description":"tennis \n",
-   "max_players":2,
-   "sport":"volleyball",
-   "start_time":"Thursday, August 23, 2018 02:25 PM",
-   "end_time":"Thursday, August 23, 2018 02:55 PM",
-   "location_lat":0.0,
-   "location_lng":0.0,
-   "location_name":"Volleyball Court",
-   "comp_level":1,
-   "creation_timestamp":"Tuesday, October 23, 2018 09:36 PM"
-  }
-];
 
 export default class BrowseGames extends React.Component {
 
@@ -181,8 +117,13 @@ export default class BrowseGames extends React.Component {
         this.setState({loading: false});
         // TODO handle error with modal
       } else {
+        // Add string key so the FlatList doesn't complain
+        const games = response;
+        for (var g of games) {
+          g.key = g.id.toString();
+        }
         this.setState({
-          games: response,
+          games: games,
           loading: false,
         });
       }
@@ -221,7 +162,7 @@ export default class BrowseGames extends React.Component {
 
       let tp = await TimePickerAndroid.open({
         hour: prevSelectedTime.getHours(),
-        minute: prevSelectedTime.getMinutes(), // NOTIDEAL Kinda goofy ATM. Not sure what to do about it.
+        minute: prevSelectedTime.getMinutes(), // NOTIDEAL Kinda goofy ATM. Not sure what to do about it. Sometimes it is strange to have the timepicker set to an odd number of minutes like 17 or 59.
         is24Hour: false,
       });
       if (tp.action === TimePickerAndroid.dismissedAction || ![tp.hour, tp.minute].every(n => n !== undefined)) {
@@ -230,7 +171,7 @@ export default class BrowseGames extends React.Component {
       }
 
       // TODO show error modal when times are in the past
-      this.setState({openFilter: null, time: new Date(year, month, day, hour, minute)});
+      this.setState({openFilter: null, time: new Date(year, month, day, tp.hour, tp.minute)});
       this.searchGames();
     } catch ({code, message}) {
       console.warn('Cannot open date picker', message);
@@ -434,6 +375,7 @@ export default class BrowseGames extends React.Component {
               style={{ height: 250, width: '100%', marginBottom: 20 }}
               >
                 <MapView
+                // TODO Looks like the pointer might be a litttttle bit off. (Zoom out and look at where the circle is relative to the pointer)
                 // Ton of good examplage here https://stackoverflow.com/questions/49899475/react-native-draw-a-circle-on-the-map
                 onLayout={(event) => {
                   this.mapViewDems = event.nativeEvent.layout;
@@ -444,7 +386,7 @@ export default class BrowseGames extends React.Component {
                 onRegionChangeComplete={(region) => this.setState({mapRegion: region})}
                 >
                   <MapView.Circle
-                  key = { (this.state.mapRegion.latitude + this.state.mapRegion.longitude).toString() }
+                  key = { this.state.mapRegion.latitude + ',' + this.state.mapRegion.longitude }
                   center = { this.state.mapRegion }
                   radius = { this.state.radius_m }
                   strokeWidth = { 1 }
@@ -504,10 +446,19 @@ export default class BrowseGames extends React.Component {
         </View>
         }
         {!this.state.loading && this.state.games.length > 0 &&
-          <Text style={styles.headerText}>
-            {this.state.games.map(g => <Text>{g.title}</Text>)}
-            {/* TODO get game cards */}
-          </Text>
+          <FlatList
+          data={this.state.games}
+          numColumns={1}
+          renderItem={({item}) =>
+            <GameCard
+              gameInfo={item}
+              onPress={() => {
+                console.log("TODO", item.id, item.sport, item.title);
+                // this.props.navigation.navigate('GameInfo', item);
+              }}
+            />
+          }
+          />
         }
       </View>
     );

@@ -41,11 +41,17 @@ def get_dashboard(conn, user_id):
     # TODO this breaks if a user is in 25 games in the future
     query = """
             SELECT id, host_id, title, description, max_players, sport, start_time,
-                 end_time, location_lat, location_lng, location_name, comp_level, creation_timestamp
-            FROM games g LEFT OUTER JOIN user_in_games uig ON uig.game_id=g.id
-            WHERE uid.user_id=%(user_id)s ORDER BY g.creation_timestamp DESC LIMIT 25
+                end_time, location_lat, location_lng, location_name, comp_level, g.creation_timestamp
+            FROM user_in_games AS uig
+            LEFT OUTER JOIN games AS g ON uig.game_id=g.id
+            WHERE uig.user_id=%(user_id)s
+            ORDER BY g.creation_timestamp DESC 
+            LIMIT 25
     """
     with conn.cursor() as curs:
+        mog = ''.join([chr(x) for x in curs.mogrify(query, locals())]).split('\n')
+        for line in mog:
+            print(line)
         curs.execute(query, locals())
         games = [Game(*row) for row in curs]
         now = datetime.datetime.utcnow()

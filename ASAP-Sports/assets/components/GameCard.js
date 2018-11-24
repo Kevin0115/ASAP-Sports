@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 import SportList from './SportList';
+import { COLORS } from '../../const';
 
 export default class GameCard extends React.Component {
   constructor(props) {
@@ -42,7 +43,9 @@ export default class GameCard extends React.Component {
   render() {
     return (
       <View style={styles.touchableContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button}
+          onPress={() => this.props.onPress && this.props.onPress()}
+          >
           <View style={styles.logoContainer}>
             <Image
               source={this.state.icon}
@@ -93,8 +96,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   logo: {
-    borderRadius:60,
-    backgroundColor: '#bbb',
+    borderRadius: 60,
+    overlayColor: COLORS.white, // Android requires overlay colour for Image's with borderRadius
+    backgroundColor: COLORS.lightGrey,
     height: 100,
     width: 100,
   },
