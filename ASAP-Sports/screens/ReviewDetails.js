@@ -5,16 +5,7 @@ import Modal from 'react-native-modal';
 import SportDict from '../assets/components/SportsDict';
 import {MapView} from "expo";
 
-const Marker = MapView.Marker;
-const delta  = { //TODO throw into a const file
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-};
-const vancouver  = { //TODO throw into a const file
-  latitude: 49.282730,
-  longitude: -123.120735,
-};
-//TODO change UTC on displau to user
+
 export default class ReviewDetails extends React.Component {
 
   constructor(props) {
