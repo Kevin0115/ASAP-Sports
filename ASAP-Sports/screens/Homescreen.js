@@ -35,9 +35,9 @@ export default class Homescreen extends React.Component {
       } else {
 
         console.log(response);
-        // Add string key so the FlatList doesn't complain
         for (var gamesList of [response.games_upcoming, response.games_in_progress, response.past_games]) {
           for (var g of gamesList) {
+            // Add string key so the FlatList doesn't complain
             g.key = g.id.toString();
           }
         }

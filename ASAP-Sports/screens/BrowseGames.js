@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import { APP_BASE_URL, COLORS, vancouver, delta } from './../const';
+import { meters2kmString, encodeQueryString, getUserTimeStr, parseAPIDate } from './../utils'
 import { Ionicons } from '@expo/vector-icons';
 import SportList from '../assets/components/SportList';
 import DatePicker from 'react-native-date-picker';
@@ -43,19 +44,6 @@ const Marker = MapView.Marker;
  * 
  */
 
-
-function encodeQueryString(params) {
-  const keys = Object.keys(params)
-  return keys.length
-      ? "?" + keys.map(
-        key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
-        ).join("&")
-      : ""
-}
-
-function meters2kmString(m) {
-  return parseFloat(Math.round(m/100)/10).toFixed(1) + ' km';
-}
 
 const MARKER_SIZE = 40;
 const ANY = {
@@ -178,35 +166,6 @@ export default class BrowseGames extends React.Component {
     }
   }
 
-  getUserTimeStr() {
-    /**
-     * This is trash and there has to be a better way to do this
-     */
-    // console.log("getUserTimeStr", this.state.time && this.state.time.toUTCString());
-    if (this.state.time === null) return "Right Now";
-    const now = new Date();
-    const hours = this.state.time.getHours();
-    const minutes = this.state.time.getMinutes();
-    const hourStr = hours % 12 === 0 ? 12 : hours % 12;
-    const amPmStr = Math.floor(hours / 12) === 0 ? "AM" : "PM";
-    const minStr = minutes === 0 ? "" : ":" + (minutes < 10 ? "0" + minutes : minutes) + " ";
-    const dayStr = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][this.state.time.getDay()];
-    const monthDay = this.state.time.toLocaleString('en-US').split(' ').slice(1, 3).join(' ');
-    const daysBetween = (this.state.time.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-    if (daysBetween < -1/24) {
-      return "Invalid Time"; // NOTIDEAL: How to be clear they selected a time in the past? Raise Exception maybe?
-    }
-    if (now.getDate() === this.state.time.getDate() && Math.abs(daysBetween) < 1){
-      return hourStr + minStr + amPmStr + " Today";
-    }
-    if (daysBetween < 1) {
-      return "Tomorrow " + hourStr + minStr + amPmStr; // TODO: doesn't do it properly if time is tomorrow but more than 24 hrs in future
-    } else if (daysBetween < 7) {
-      return dayStr + " " + hourStr + minStr + amPmStr;
-    }
-    return monthDay + " " + hourStr + minStr + amPmStr; // TODO: This is broken and works differently on iOS and Android
-  }
-
   async _getLocationAsync() {
     console.log("getLocationAsync");
     let { status } = await Permissions.askAsync(Permissions.LOCATION); // NOTIDEAL this asks for coarse and THEN fine. Maybe just ask for one???
@@ -229,7 +188,7 @@ export default class BrowseGames extends React.Component {
   componentWillMount() {
     this._getLocationAsync();
   }
-  
+
   render() {
     return (
       <View style={styles.browse}>
@@ -284,7 +243,7 @@ export default class BrowseGames extends React.Component {
               <Ionicons name={Platform.OS === 'android' ? "md-calendar": "ios-calendar"} size={32} color={COLORS.pink} />
             </AwesomeButton>
             </View>
-            <Text style={styles.filterButtonText}>{this.getUserTimeStr()}</Text>
+            <Text style={styles.filterButtonText}>{this.state.time === null ? "Right now": getUserTimeStr(this.state.time)}</Text>
           </View>
           <View style={styles.filterButtonContainer}>
             <View
