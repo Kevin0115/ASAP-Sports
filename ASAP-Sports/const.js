@@ -9,6 +9,7 @@ export const COLORS = {
     black: '#000000',
     darkGrey: '#444444',
     transparent: '#00000000',
+    clearPink: '#f4536323',
 }
 export const delta  = { //TODO throw into a const file
     latitudeDelta: 0.0922,

@@ -76,7 +76,7 @@ export default class LocationScreen extends React.Component {
               style={{
                 position: "absolute",
                 bottom: this.mapViewDems.height / 2,
-                left: Dimensions.get('window').width / 2 - 25,
+                left: this.mapViewDems.width / 2 - 25,
                 width: 50,
                 height: 50
               }}

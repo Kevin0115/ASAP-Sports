@@ -12,7 +12,8 @@ import {
   DatePickerAndroid, 
   TimePickerAndroid,
   ActivityIndicator,
-  Slider
+  Slider,
+  Dimensions
 } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import { APP_BASE_URL, COLORS, vancouver, delta } from './../const';
@@ -55,6 +56,7 @@ function meters2kmString(m) {
   return parseFloat(Math.round(m/100)/10).toFixed(1) + ' km';
 }
 
+const MARKER_SIZE = 40;
 const ANY = {
   key: 'Any Sport',
   apikey: 'any',
@@ -69,7 +71,7 @@ export default class BrowseGames extends React.Component {
       games: [],
       sport: ANY,
       time: null,
-      radius_m: 5000,
+      radius_m: 1000,
       mapRegion: {
         latitude: vancouver.latitude,
         longitude: vancouver.longitude,
@@ -80,6 +82,8 @@ export default class BrowseGames extends React.Component {
       openFilter: null,
       error: null
     };
+    this.mapViewDems = null;
+    this.buttonLayoutInfo = {refs: {}};
     this.sportList = SportList.map(s => s);
     this.sportList.splice(0, 0, ANY);
     // TODO get user location & search after
@@ -232,6 +236,21 @@ export default class BrowseGames extends React.Component {
             <Text style={styles.filterButtonText}>{this.getUserTimeStr()}</Text>
           </View>
           <View style={styles.filterButtonContainer}>
+            <View
+            /**
+             * TODO: This code gets the position of element relative to screen.
+             * Duplicate it by wrapping the 2 AwesomeButtons above ^ in Views and giving them this code
+             */
+            ref={(ref) => { this.buttonLayoutInfo.refs.sport = ref }}
+            onLayout={({nativeEvent}) => {
+              let ref = this.buttonLayoutInfo.refs.sport;
+              if (ref) {
+                  ref.measure((x, y, width, height, pageX, pageY) => {
+                          this.buttonLayoutInfo['sport'] = pageX + width/2;
+                 })
+              }
+            }}
+            >
             <AwesomeButton
             width={60}
             height={60}
@@ -247,13 +266,22 @@ export default class BrowseGames extends React.Component {
               source={this.state.sport.image}
               style={{width: 35, height: 35, tintColor: COLORS.pink}}></Image>
             </AwesomeButton>
+            </View>
             <Text style={styles.filterButtonText}>{this.state.sport.key}</Text>
           </View>
         </View>
         {this.state.openFilter !== null && !(this.state.openFilter === 'time' && Platform.OS === 'android') &&
         <View>
-          {/* TODO be smarter about how I am setting the margin left */}
-          <Ionicons name='md-arrow-dropup' size={32} color={COLORS.darkBlue} style={{padding: 0, marginTop: -11, marginLeft: (this.state.openFilter === 'location' ? 59 : (this.state.openFilter === 'time' ? 173 : 287))}}/>
+          <Ionicons 
+          name='md-arrow-dropup' 
+          size={32} 
+          color={COLORS.pink} //darkBlue
+          style={{
+            position: 'absolute',
+            top: -12,
+            zIndex: 200,
+            padding: 0,
+            left: this.buttonLayoutInfo[this.state.openFilter] - 6}}/>
           <View style={styles.filterControlWindow}>
             {this.state.openFilter === 'sport' &&
             <View style={styles.horizontallyCenter}>
@@ -301,23 +329,44 @@ export default class BrowseGames extends React.Component {
               style={{ height: 250, width: '100%', marginBottom: 20 }}
               >
                 <MapView
+                // Ton of good examplage here https://stackoverflow.com/questions/49899475/react-native-draw-a-circle-on-the-map
+                onLayout={(event) => {
+                  this.mapViewDems = event.nativeEvent.layout;
+                }}
                 style={{ height: '100%', width: '100%'}}
                 region={this.state.mapRegion}
-                onRegionChange={(region) => this.setState({mapRegion: region})}
+                onRegionChangeComplete={(region) => this.setState({mapRegion: region})}
                 >
+                  <MapView.Circle
+                  key = { (this.state.mapRegion.latitude + this.state.mapRegion.longitude).toString() }
+                  center = { this.state.mapRegion }
+                  radius = { this.state.radius_m }
+                  strokeWidth = { 1 }
+                  strokeColor = { COLORS.pink }
+                  fillColor = { COLORS.clearPink }
+                  // onRegionChangeComplete = { this.onRegionChangeComplete.bind(this) }
+                  />
                 </MapView>
-                <Image 
-                source={require('../assets/images/logoBlackSmall.png')}
-                style={{position: 'absolute', bottom: 0, left: 0}}
-                ></Image>
+                {this.mapViewDems !== null &&
+                  <Image 
+                  source={require('../assets/images/logoBlackSmall.png')}
+                  style={{
+                    position: 'absolute', 
+                    bottom: this.mapViewDems.height / 2,
+                    left: this.mapViewDems.width / 2 - MARKER_SIZE / 2,
+                    width: MARKER_SIZE,
+                    height: MARKER_SIZE
+                  }}
+                  ></Image>
+                }
               </View>
               <Slider
               style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}
               step={1}
               minimumValue={500}
-              maximumValue={100000}
+              maximumValue={20000}
               value={this.state.radius_m}
-              onValueChange={(val) => null}
+              // onValueChange={(val) => null}
               onSlidingComplete={ (val) => this.setState({radius_m: val})}
               thumbTintColor={COLORS.white}
               />
@@ -361,6 +410,7 @@ export default class BrowseGames extends React.Component {
 
 const styles = StyleSheet.create({
   topBar: { // TODO shadow below bar
+    // TODO animate top bar closed on filter press
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -399,14 +449,17 @@ const styles = StyleSheet.create({
     color: COLORS.white, 
     fontSize: 12
   },
-  filterControlWindow: { // TODO this should be positioned above the background and shouldnt displace the background
+  filterControlWindow: {
     // TODO drop shadow on this AND on little triangle
+    position: 'absolute',
+    zIndex: 100,
+    marginLeft: 15,
+    marginRight: 15,
+    top: 8,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
     backgroundColor: COLORS.darkBlue,
-    margin: 15,
-    marginTop: -12,
     borderRadius: 15,
   },
   horizontallyCenter: {

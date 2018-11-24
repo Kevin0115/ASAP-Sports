@@ -4,15 +4,9 @@ import uuid
 import psycopg2
 import datetime
 
-<<<<<<< HEAD
-from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id
-from .db.games import insert_game, get_game, search_games
-from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, Status
-=======
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_by_id
-from .db.games import insert_game, get_game
+from .db.games import insert_game, get_game, search_games
 from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
->>>>>>> master
 from . import utils
 from . import facebook as fb
 
@@ -56,11 +50,7 @@ def login(request):
 
         asap_access_token = str(user.asap_access_token) # TODO user.to_json() is broken because it modifies the user object. Fix that
         res = user.to_json()
-<<<<<<< HEAD
         res.update({'asap_access_token': asap_access_token})
-=======
-        res.update({'asap_access_token': user.asap_access_token})
->>>>>>> master
         return utils.json_response(res)
 
 
