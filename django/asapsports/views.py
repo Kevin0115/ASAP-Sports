@@ -48,8 +48,9 @@ def login(request):
             request.db_conn.rollback()
             user = get_user_by_fb_id(request.db_conn, fb_id)
 
+        asap_access_token = str(user.asap_access_token) # TODO user.to_json() is broken because it modifies the user object. Fix that
         res = user.to_json()
-        res.update({'asap_access_token': str(user.asap_access_token)})
+        res.update({'asap_access_token': user.asap_access_token})
         return utils.json_response(res)
 
 
