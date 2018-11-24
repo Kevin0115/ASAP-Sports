@@ -1,4 +1,5 @@
-export const APP_BASE_URL = 'https://asapsports.aidanrosswood.ca'
+// export const APP_BASE_URL = 'https://asapsports.aidanrosswood.ca'
+export const APP_BASE_URL = 'https://877508d3.ngrok.io'
 export const FB_APP_ID = '169924577279041';
 export const COLORS = {
     pink: '#f45363',
@@ -9,3 +10,11 @@ export const COLORS = {
     darkGrey: '#444444',
     transparent: '#00000000',
 }
+export const delta  = { //TODO throw into a const file
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+};
+export const vancouver  = { //TODO throw into a const file
+    latitude: 49.282730,
+    longitude: -123.120735,
+};

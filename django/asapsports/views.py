@@ -48,8 +48,9 @@ def login(request):
             request.db_conn.rollback()
             user = get_user_by_fb_id(request.db_conn, fb_id)
 
+        asap_access_token = str(user.asap_access_token) # TODO user.to_json() is broken because it modifies the user object. Fix that
         res = user.to_json()
-        res.update({'asap_access_token': str(user.asap_access_token)})
+        res.update({'asap_access_token': asap_access_token})
         return utils.json_response(res)
 
 
@@ -165,7 +166,6 @@ def host(request):
         duration = utils.sanitize_int(postdata['duration'])
         if duration is None or duration <= 0:
             return utils.json_client_error("Bad duration")
-        end_time = start_time + datetime.timedelta(minutes=duration)
         location_lng = utils.sanitize_float(postdata['location_lng'])
         location_lat = utils.sanitize_float(postdata['location_lat'])
         comp_level = utils.sanitize_int(postdata['comp_level'])
@@ -185,6 +185,8 @@ def host(request):
               'location_lat', 'location_name', 'comp_level']:
         if l[x] is None:
             return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
+
+    end_time = start_time + datetime.timedelta(minutes=duration)
 
     user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:

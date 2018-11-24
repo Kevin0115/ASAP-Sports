@@ -15,12 +15,14 @@ import {
   Slider
 } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
-import { APP_BASE_URL, COLORS } from './../const';
+import { APP_BASE_URL, COLORS, vancouver, delta } from './../const';
 import { Ionicons } from '@expo/vector-icons';
 import SportList from '../assets/components/SportList';
 import DatePicker from 'react-native-date-picker';
 import { Button } from 'react-native-elements';
+import { MapView, Location, Permissions} from 'expo';
 
+const Marker = MapView.Marker;
 
 /**
  * NOTES
@@ -67,14 +69,22 @@ export default class BrowseGames extends React.Component {
       games: [],
       sport: ANY,
       time: null,
-      location: {lng: 49.2827, lat: 123.1207, radius: 500200}, // TODO get user location
+      radius_m: 5000,
+      mapRegion: {
+        latitude: vancouver.latitude,
+        longitude: vancouver.longitude,
+        latitudeDelta: delta.latitudeDelta,
+        longitudeDelta: delta.longitudeDelta,
+      },
       loading: true,
       openFilter: null,
       error: null
     };
     this.sportList = SportList.map(s => s);
     this.sportList.splice(0, 0, ANY);
+    // TODO get user location & search after
     this.searchGames();
+    console.log(COLORS);
   }
 
   async searchGames() {
@@ -82,9 +92,9 @@ export default class BrowseGames extends React.Component {
     const timeStr = this.state.time === null ? new Date().toUTCString() : this.state.time.toUTCString();
     console.log("Searching with time:", timeStr);
     const queryParams = encodeQueryString({
-      radius_m: this.state.location.radius,
-      lng: this.state.location.lng,
-      lat: this.state.location.lat,
+      radius_m: this.state.radius_m,
+      lng: this.state.mapRegion.longitude,
+      lat: this.state.mapRegion.latitude,
       start_time: timeStr,
       sport: this.state.sport.apikey,
       page_num: 0
@@ -111,13 +121,12 @@ export default class BrowseGames extends React.Component {
     })
     .catch((error) => {
       // TODO extract modal from screens/Login.js and open on error
-      console.log('Error: ', error);
+      console.warn('Error: ', error);
       this.setState({loading: false})
     });
   }
 
   selectSport(sport) {
-    console.log("selectSport:", sport);
     this.setState({sport: sport, openFilter: null});
     this.searchGames();
   }
@@ -136,7 +145,6 @@ export default class BrowseGames extends React.Component {
       const {action, year, month, day} = await DatePickerAndroid.open({
         date: prevSelectedTime
       });
-      console.log("DatePicker", action, year, month, day);
       if (action === DatePickerAndroid.dismissedAction || ![year, month, day].every(n => n !== undefined)) {
         // Selected year, month (0-11), day
         this.setState({openFilter: null});
@@ -149,7 +157,6 @@ export default class BrowseGames extends React.Component {
         minute: prevSelectedTime.getMinutes(), // TODO Kinda goofy ATM. Not sure what to do about it.
         is24Hour: false,
       });
-      console.log("TimePicker", timePickerAction, hour, minute);
       if (timePickerAction === TimePickerAndroid.dismissedAction || ![hour, minute].every(n => n !== undefined)) {
         this.setState({openFilter: null});
         return;
@@ -167,6 +174,7 @@ export default class BrowseGames extends React.Component {
     /**
      * This is trash and there has to be a better way to do this
      */
+    console.log("getUserTimeStr", this.state.time && this.state.time.toUTCString());
     if (this.state.time === null) return "Right Now";
     const now = new Date();
     const hours = this.state.time.getHours();
@@ -178,7 +186,7 @@ export default class BrowseGames extends React.Component {
     const monthDay = this.state.time.toLocaleString('en-US').split(' ').slice(1, 3).join(' ');
     const daysBetween = (this.state.time.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
     if (daysBetween < -1/24) {
-      return "Invalid Time"; // TODO: How to be clear they selected a time in the past?
+      return "Invalid Time"; // TODO: How to be clear they selected a time in the past? Raise Exception maybe?
     }
     if (now.getDate() === this.state.time.getDate() && Math.abs(daysBetween) < 1){
       return hourStr + minStr + amPmStr + " Today";
@@ -188,12 +196,10 @@ export default class BrowseGames extends React.Component {
     } else if (daysBetween < 7) {
       return dayStr + " " + hourStr + minStr + amPmStr;
     }
-    return monthDay + " " + hourStr + minStr + amPmStr;
+    return monthDay + " " + hourStr + minStr + amPmStr; // TODO: This is broken and works differently on iOS and Android
   }
   
-
   render() {
-    console.log("Rendering!");
     return (
       <View style={styles.browse}>
         <View style={styles.topBar}>
@@ -205,12 +211,11 @@ export default class BrowseGames extends React.Component {
             backgroundDarker={COLORS.transparent}
             textColor={COLORS.darkGrey}
             onPress={() => {
-              console.log("Press location select button!");
               this.setState({openFilter: this.state.openFilter !== 'location' ? 'location': null});
             }}>
               <Ionicons name={Platform.OS === 'android' ? "md-pin": "ios-pin"} size={32} color={COLORS.pink} />
             </AwesomeButton>
-            <Text style={styles.filterButtonText}>Within {meters2kmString(this.state.location.radius)}</Text>
+            <Text style={styles.filterButtonText}>Within {meters2kmString(this.state.radius_m)}</Text>
           </View>
           <View style={styles.filterButtonContainer}>
             <AwesomeButton
@@ -220,7 +225,6 @@ export default class BrowseGames extends React.Component {
             backgroundDarker={COLORS.transparent}
             textColor={COLORS.darkGrey}
             onPress={() => {
-              console.log("Press time select button!");
               this.openTimeSelect();
             }}>
               <Ionicons name={Platform.OS === 'android' ? "md-calendar": "ios-calendar"} size={32} color={COLORS.pink} />
@@ -234,15 +238,14 @@ export default class BrowseGames extends React.Component {
             backgroundColor={COLORS.white}
             backgroundDarker={COLORS.transparent}
             textColor={COLORS.darkGrey}
+            style={{padding: 0, justifyContent: 'center', alignItems: 'center'}}
             onPress={() => {
-              console.log("Press sport select button!");
               this.setState({openFilter: this.state.openFilter !== 'sport' ? 'sport': null});
             }}>
               {/* TODO: this button is slightly wonky*/}
               <Image 
               source={this.state.sport.image}
-              tintColor={COLORS.pink}
-                style={{width: 32, height: 32}}></Image>
+              style={{width: 35, height: 35, tintColor: COLORS.pink}}></Image>
             </AwesomeButton>
             <Text style={styles.filterButtonText}>{this.state.sport.key}</Text>
           </View>
@@ -253,56 +256,72 @@ export default class BrowseGames extends React.Component {
           <Ionicons name='md-arrow-dropup' size={32} color={COLORS.darkBlue} style={{padding: 0, marginTop: -11, marginLeft: (this.state.openFilter === 'location' ? 59 : (this.state.openFilter === 'time' ? 173 : 287))}}/>
           <View style={styles.filterControlWindow}>
             {this.state.openFilter === 'sport' &&
+            <View style={styles.horizontallyCenter}>
               <FlatList
+              style={{width: '100%'}}
               data={this.sportList}
               numColumns={4}
               renderItem={({item}) => 
-                <View>
+                <View
+                style={{width: '25%', alignItems: 'center'}}
+                >
                   {/* TODO Change effect when you touch this button. */}
                   <TouchableOpacity 
-                  style={{backgroundColor: COLORS.white, borderRadius: 6, width: 65, height: 65, padding: 5, margin: 5}}
+                  style={{backgroundColor: COLORS.white, borderRadius: 6, alignItems: 'center', justifyContent: 'center', padding: 5, margin: 5}}
                   onPress={() => this.selectSport(item)}>
                     <Image 
-                    tintColor={item.apikey === this.state.sport.apikey ? COLORS.pink: COLORS.grey} 
                     source={item.image} 
-                    style={{width: 55, height: 55}}></Image>
+                    style={{width: 55, height: 55, tintColor: item.apikey === this.state.sport.apikey ? COLORS.pink: COLORS.grey}}></Image>
                   </TouchableOpacity>
                   <Text style={{color: COLORS.white, fontSize: 11, textAlign: 'center'}}>{item.key}</Text>
                 </View>
               }/>
+            </View>
             }
             {this.state.openFilter === 'time' && Platform.OS === 'ios' &&
-              <View>
+              <View style={styles.horizontallyCenter}>
                 <DatePickerIOS
+                  style={{width: '100%', backgroundColor: COLORS.white, marginBottom: 15, borderRadius: 5}}
                   date={this.state.time === null ? new Date(): this.state.time}
                   onDateChange={date => this.setState({time: date})}
                 />
-                <Button
+                <AwesomeButton
                 textColor={COLORS.white}
                 backgroundColor={COLORS.pink}
+                backgroundDarker={COLORS.transparent}
+                title='Update Search'
                 onPress={() => this.setState({openFilter: null}) || this.searchGames()}>
                   Update Search
-                </Button>
-              </View>
-            }
-            {this.state.openFilter === 'time' && Platform.OS === 'android' &&
-              <View>
-                {/* Android manages DateTime picking with JS */}
+                </AwesomeButton>
               </View>
             }
             {this.state.openFilter === 'location' &&
               <View style={styles.horizontallyCenter}>
+              <View
+              style={{ height: 250, width: '100%', marginBottom: 20 }}
+              >
+                <MapView
+                style={{ height: '100%', width: '100%'}}
+                region={this.state.mapRegion}
+                onRegionChange={(region) => this.setState({mapRegion: region})}
+                >
+                </MapView>
+                <Image 
+                source={require('../assets/images/logoBlackSmall.png')}
+                style={{position: 'absolute', bottom: 0, left: 0}}
+                ></Image>
+              </View>
               <Slider
-              style={{ width: 280 }}
+              style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}
               step={1}
               minimumValue={500}
               maximumValue={100000}
-              value={this.state.location.radius}
+              value={this.state.radius_m}
               onValueChange={(val) => null}
-              onSlidingComplete={ (val) => this.setState({ location: {radius: val}})}
+              onSlidingComplete={ (val) => this.setState({radius_m: val})}
               thumbTintColor={COLORS.white}
               />
-              <View style={{marginTop: 25, marginBottom: 25}}></View>
+              <View style={{marginTop: 25, marginBottom: 0}}></View>
               <AwesomeButton
               textColor={COLORS.white}
               backgroundColor={COLORS.pink}
@@ -318,7 +337,7 @@ export default class BrowseGames extends React.Component {
         }
         {this.state.loading &&
           <View style={styles.centerScreenMessage}>
-            <ActivityIndicator size="large" color={COLORS.pink} />
+            <ActivityIndicator size="large" color={COLORS.darkBlue} />
           </View>
         }
         {!this.state.loading && this.state.games.length == 0 &&
@@ -382,7 +401,6 @@ const styles = StyleSheet.create({
   },
   filterControlWindow: { // TODO this should be positioned above the background and shouldnt displace the background
     // TODO drop shadow on this AND on little triangle
-    position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
@@ -392,6 +410,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   horizontallyCenter: {
+    width: '100%',
     flexDirection: 'column',
     alignItems: 'center',
   },

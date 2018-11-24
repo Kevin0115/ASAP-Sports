@@ -56,7 +56,7 @@ def search_games(conn, lng, lat, radius_m, start_time, sport, page_num):
         select id, host_id, title, description, max_players, sport, start_time, 
             end_time, location_lat, location_lng, location_name, comp_level, 
             creation_timestamp
-            from games where start_time >= %(start_time)s and start_time <= %(start_time)s + interval '4 hour'
+            from games where start_time >= %(start_time)s and start_time <= %(start_time)s + interval '24 hour'
                 and (%(sport)s='any' or sport=%(sport)s) 
                 --and distance(%(lat)s, %(lng)s, location_lat, location_lng) <= %(radius_m)s TODO uncomment and make work
                 offset %(offset)s

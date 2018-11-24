@@ -1,17 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import { MapView, Location, Permissions} from 'expo';
+import { vancouver, delta } from './../const';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 const Marker = MapView.Marker;
-const delta  = { //TODO throw into a const file
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-};
-const vancouver  = { //TODO throw into a const file
-  latitude: 49.282730,
-  longitude: -123.120735,
-};
 
 export default class LocationScreen extends React.Component {
 
