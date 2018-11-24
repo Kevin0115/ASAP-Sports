@@ -1,11 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions, Platform} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
 import { APP_BASE_URL } from './../const';
 
 import SportDict from '../assets/components/SportsDict';
-import ConfirmationModal from '../assets/components/ConfirmationModal';
 import {MapView} from "expo";
 
 const Marker = MapView.Marker;
@@ -17,8 +16,14 @@ const vancouver  = { //TODO throw into a const file
   latitude: 49.282730,
   longitude: -123.120735,
 };
-
+//TODO change UTC on displau to user
 export default class ReviewDetails extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.startTime = '';
+  }
+
   state = {
     modalTitleText: '',
     modalBodyText: '',
@@ -32,13 +37,17 @@ export default class ReviewDetails extends React.Component {
       longitudeDelta: delta.longitudeDelta,
     },
   };
-
   componentDidMount() {
     const { navigation } = this.props;
-    const startTime =
-    navigation.getParam('date', 'Default') +
-    ' ' +
-    navigation.getParam('time', 'Default');
+    if (Platform.OS === 'ios') {
+     this.startTime =
+        navigation.getParam('date', 'Default') +
+        ' ' +
+        navigation.getParam('time', 'Default');
+    } else {
+      this.startTime = navigation.getParam('date', 'Default');
+    }
+    let date = new Date(this.startTime);
     const mapRegion = navigation.getParam('location', 'Default');
     const location_lng = mapRegion.longitude;
     const location_lat = mapRegion.latitude;
@@ -47,7 +56,7 @@ export default class ReviewDetails extends React.Component {
       title: navigation.getParam('title', 'Default'),
       desc: navigation.getParam('desc', 'Default'),
       comp_level: navigation.getParam('compLevel', 'Default'),
-      start_time: startTime,
+      start_time: date.toUTCString(),
       duration: navigation.getParam('duration', 'Default'),
       max_players: navigation.getParam('maxPlayers', 'Default'),
       location_name: 'undefined',
@@ -134,8 +143,16 @@ export default class ReviewDetails extends React.Component {
             style={styles.map}
             region={this.state.mapRegion}
           >
-            <Marker key={1} coordinate={this.state.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
+            {Platform.OS === 'android' ?
+              <Marker key={1} coordinate={this.state.mapRegion} image={require('../assets/images/logoBlackSmall.png')}/>
+            : null}
 
+            {Platform.OS === 'ios' ?
+              <Marker key={1} centerOffset={{x: 0, y: -25}} coordinate={this.state.mapRegion}>
+                <Image source={require('../assets/images/logoBlackSmall.png')}
+                       style={styles.markerIOSHack}/>
+              </Marker>
+            :null}
           </MapView>
           <ScrollView stickyHeaderIndices={[1]} style={styles.scroll}>
             <View style = {styles.scrollContainer}>
@@ -145,7 +162,7 @@ export default class ReviewDetails extends React.Component {
               style = {styles.icon}
               source = {require('../assets/images/calendaricon.png')}/>
             </View>
-             <Text style ={styles.info}>{creationInfo.start_time}</Text>
+             <Text style ={styles.info}>{this.startTime}</Text>
           </View>
           <View style={styles.infoContainer}>
             <View style = {{flex:1}}>
@@ -222,6 +239,10 @@ export default class ReviewDetails extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  markerIOSHack: {
+    height: 50,
+    width: 50,
+  },
   review: {
     flex: 1,
     backgroundColor: '#fff',
