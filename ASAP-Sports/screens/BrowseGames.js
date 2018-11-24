@@ -71,13 +71,14 @@ export default class BrowseGames extends React.Component {
       games: [],
       sport: ANY,
       time: null,
-      radius_m: 1000,
+      radius_m: 2500,
       mapRegion: {
         latitude: vancouver.latitude,
         longitude: vancouver.longitude,
         latitudeDelta: delta.latitudeDelta,
         longitudeDelta: delta.longitudeDelta,
       },
+      userLocation: null,
       loading: true,
       openFilter: null,
       error: null
@@ -86,9 +87,6 @@ export default class BrowseGames extends React.Component {
     this.buttonLayoutInfo = {refs: {}};
     this.sportList = SportList.map(s => s);
     this.sportList.splice(0, 0, ANY);
-    // TODO get user location & search after
-    this.searchGames();
-    console.log(COLORS);
   }
 
   async searchGames() {
@@ -139,7 +137,7 @@ export default class BrowseGames extends React.Component {
     this.setState({openFilter: this.state.openFilter === 'time' ? null : 'time'});
     if (Platform.OS === 'ios'){
       this.searchGames();
-      return; // IOS time select is handled fully by state.
+      return; // iOS time select is handled fully by state.
     }
 
     const prevSelectedTime = this.state.time === null ? new Date(): this.state.time;
@@ -155,13 +153,12 @@ export default class BrowseGames extends React.Component {
         return;
       }
 
-      // TODO timePickerAction is undefined
-      let {timePickerAction, hour, minute} = await TimePickerAndroid.open({
+      let tp = await TimePickerAndroid.open({
         hour: prevSelectedTime.getHours(),
-        minute: prevSelectedTime.getMinutes(), // TODO Kinda goofy ATM. Not sure what to do about it.
+        minute: prevSelectedTime.getMinutes(), // NOTIDEAL Kinda goofy ATM. Not sure what to do about it.
         is24Hour: false,
       });
-      if (timePickerAction === TimePickerAndroid.dismissedAction || ![hour, minute].every(n => n !== undefined)) {
+      if (tp.action === TimePickerAndroid.dismissedAction || ![tp.hour, tp.minute].every(n => n !== undefined)) {
         this.setState({openFilter: null});
         return;
       }
@@ -178,7 +175,7 @@ export default class BrowseGames extends React.Component {
     /**
      * This is trash and there has to be a better way to do this
      */
-    console.log("getUserTimeStr", this.state.time && this.state.time.toUTCString());
+    // console.log("getUserTimeStr", this.state.time && this.state.time.toUTCString());
     if (this.state.time === null) return "Right Now";
     const now = new Date();
     const hours = this.state.time.getHours();
@@ -190,7 +187,7 @@ export default class BrowseGames extends React.Component {
     const monthDay = this.state.time.toLocaleString('en-US').split(' ').slice(1, 3).join(' ');
     const daysBetween = (this.state.time.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
     if (daysBetween < -1/24) {
-      return "Invalid Time"; // TODO: How to be clear they selected a time in the past? Raise Exception maybe?
+      return "Invalid Time"; // NOTIDEAL: How to be clear they selected a time in the past? Raise Exception maybe?
     }
     if (now.getDate() === this.state.time.getDate() && Math.abs(daysBetween) < 1){
       return hourStr + minStr + amPmStr + " Today";
@@ -202,12 +199,46 @@ export default class BrowseGames extends React.Component {
     }
     return monthDay + " " + hourStr + minStr + amPmStr; // TODO: This is broken and works differently on iOS and Android
   }
+
+  async _getLocationAsync() {
+    console.log("getLocationAsync");
+    let { status } = await Permissions.askAsync(Permissions.LOCATION); // NOTIDEAL this asks for coarse and THEN fine. Maybe just ask for one???
+    console.log("Asked");
+    if (status === 'granted') {
+      console.log("Granted")
+      let location = await Location.getCurrentPositionAsync({});
+      console.log("Got Location")
+      this.setState({userLocation: location});
+      this.setState({mapRegion: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: delta.latitudeDelta,
+          longitudeDelta: delta.longitudeDelta,
+        }});
+    }
+    this.searchGames();
+  }
+
+  componentWillMount() {
+    this._getLocationAsync();
+  }
   
   render() {
     return (
       <View style={styles.browse}>
-        <View style={styles.topBar}>
+        <View style={[styles.topBar,styles.shadowed]}>
           <View style={styles.filterButtonContainer}>
+            <View
+            ref={(ref) => { this.buttonLayoutInfo.refs['location'] = ref }}
+            onLayout={({nativeEvent}) => {
+              let ref = this.buttonLayoutInfo.refs['location'];
+              if (ref) {
+                  ref.measure((x, y, width, height, pageX, pageY) => {
+                          this.buttonLayoutInfo['location'] = pageX + width/2;
+                 })
+              }
+            }}
+            >
             <AwesomeButton
             width={60}
             height={60}
@@ -219,9 +250,21 @@ export default class BrowseGames extends React.Component {
             }}>
               <Ionicons name={Platform.OS === 'android' ? "md-pin": "ios-pin"} size={32} color={COLORS.pink} />
             </AwesomeButton>
+            </View>
             <Text style={styles.filterButtonText}>Within {meters2kmString(this.state.radius_m)}</Text>
           </View>
           <View style={styles.filterButtonContainer}>
+            <View
+            ref={(ref) => { this.buttonLayoutInfo.refs['time'] = ref }}
+            onLayout={({nativeEvent}) => {
+              let ref = this.buttonLayoutInfo.refs['time'];
+              if (ref) {
+                  ref.measure((x, y, width, height, pageX, pageY) => {
+                          this.buttonLayoutInfo['time'] = pageX + width/2;
+                 })
+              }
+            }}
+            >
             <AwesomeButton
             width={60}
             height={60}
@@ -233,17 +276,14 @@ export default class BrowseGames extends React.Component {
             }}>
               <Ionicons name={Platform.OS === 'android' ? "md-calendar": "ios-calendar"} size={32} color={COLORS.pink} />
             </AwesomeButton>
+            </View>
             <Text style={styles.filterButtonText}>{this.getUserTimeStr()}</Text>
           </View>
           <View style={styles.filterButtonContainer}>
             <View
-            /**
-             * TODO: This code gets the position of element relative to screen.
-             * Duplicate it by wrapping the 2 AwesomeButtons above ^ in Views and giving them this code
-             */
-            ref={(ref) => { this.buttonLayoutInfo.refs.sport = ref }}
+            ref={(ref) => { this.buttonLayoutInfo.refs['sport'] = ref }}
             onLayout={({nativeEvent}) => {
-              let ref = this.buttonLayoutInfo.refs.sport;
+              let ref = this.buttonLayoutInfo.refs['sport'];
               if (ref) {
                   ref.measure((x, y, width, height, pageX, pageY) => {
                           this.buttonLayoutInfo['sport'] = pageX + width/2;
@@ -261,7 +301,7 @@ export default class BrowseGames extends React.Component {
             onPress={() => {
               this.setState({openFilter: this.state.openFilter !== 'sport' ? 'sport': null});
             }}>
-              {/* TODO: this button is slightly wonky*/}
+              {/* NOTIDEAL: this button is slightly wonky. There is some implicit padding on the AwesomeButton so it is limited to this small size */}
               <Image 
               source={this.state.sport.image}
               style={{width: 35, height: 35, tintColor: COLORS.pink}}></Image>
@@ -275,14 +315,14 @@ export default class BrowseGames extends React.Component {
           <Ionicons 
           name='md-arrow-dropup' 
           size={32} 
-          color={COLORS.pink} //darkBlue
+          color={COLORS.darkBlue}
           style={{
             position: 'absolute',
             top: -12,
             zIndex: 200,
             padding: 0,
             left: this.buttonLayoutInfo[this.state.openFilter] - 6}}/>
-          <View style={styles.filterControlWindow}>
+          <View style={[styles.filterControlWindow, styles.shadowed]}>
             {this.state.openFilter === 'sport' &&
             <View style={styles.horizontallyCenter}>
               <FlatList
@@ -293,7 +333,6 @@ export default class BrowseGames extends React.Component {
                 <View
                 style={{width: '25%', alignItems: 'center'}}
                 >
-                  {/* TODO Change effect when you touch this button. */}
                   <TouchableOpacity 
                   style={{backgroundColor: COLORS.white, borderRadius: 6, alignItems: 'center', justifyContent: 'center', padding: 5, margin: 5}}
                   onPress={() => this.selectSport(item)}>
@@ -335,6 +374,7 @@ export default class BrowseGames extends React.Component {
                 }}
                 style={{ height: '100%', width: '100%'}}
                 region={this.state.mapRegion}
+                showsUserLocation = { true }
                 onRegionChangeComplete={(region) => this.setState({mapRegion: region})}
                 >
                   <MapView.Circle
@@ -364,7 +404,7 @@ export default class BrowseGames extends React.Component {
               style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}
               step={1}
               minimumValue={500}
-              maximumValue={20000}
+              maximumValue={10000}
               value={this.state.radius_m}
               // onValueChange={(val) => null}
               onSlidingComplete={ (val) => this.setState({radius_m: val})}
@@ -409,7 +449,7 @@ export default class BrowseGames extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  topBar: { // TODO shadow below bar
+  topBar: {
     // TODO animate top bar closed on filter press
     flexDirection: 'row',
     justifyContent: 'space-evenly',
@@ -426,7 +466,6 @@ const styles = StyleSheet.create({
   centerScreenMessage: {
     flex: 1,
     justifyContent: 'center',
-    textAlign: 'center',
     padding: 30,
   },
   headerText: {
@@ -450,7 +489,6 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   filterControlWindow: {
-    // TODO drop shadow on this AND on little triangle
     position: 'absolute',
     zIndex: 100,
     marginLeft: 15,
@@ -467,4 +505,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  shadowed: {
+    // iOS
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    
+    // Android
+    elevation: 5,
+  }
 });

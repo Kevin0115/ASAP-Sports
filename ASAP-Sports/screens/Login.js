@@ -22,6 +22,7 @@ export default class Login extends React.Component {
   };
 
   _hideModal = () => {
+    console.log("Hide modal");
     this.setState({isModalVisible: false});
   };
 
