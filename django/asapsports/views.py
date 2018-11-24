@@ -321,3 +321,25 @@ def update_user(request):
 
     res = {'status': 'success'}
     return utils.json_response(res)
+
+
+
+def store_token(request):
+    """
+    :param request has data like:
+                'id': int,
+                'fb_id': int,
+                'first': str,
+                'last': str,
+                'age': int,
+                'gender': str,
+                'bio': str, 
+                'fb_access_token': str,
+                'profile_pic_url': str(http://url.com),
+             }
+             update_user(conn, id, fb_id, first, last, age, gender, bio, fb_access_token,
+                 profile_pic_url, asap_access_token)
+    """
+    data = request.read()
+    postdata = json.loads(data)
+    print(postdata['token']['value'])

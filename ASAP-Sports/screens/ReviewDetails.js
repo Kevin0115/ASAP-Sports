@@ -71,7 +71,7 @@ export default class ReviewDetails extends React.Component {
 
   _handleSubmit = () => {
     const creationInfo = JSON.stringify(this.state.creationInfo);
-    fetch('http://asapsports.aidanrosswood.ca/games/host', {
+    fetch('https://133f1d3a.ngrok.io/games/host', {
       method: 'POST',
       headers: {
         'Authorization': '0daa420c-c03e-4d5b-83ee-235981206ff4',

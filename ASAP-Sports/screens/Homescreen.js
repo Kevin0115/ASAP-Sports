@@ -1,8 +1,57 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, Image, ScrollView } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
+import { Permissions, Notifications } from 'expo';
+
+const PUSH_ENDPOINT = 'http://133f1d3a.ngrok.io/users/push-token';
+
+async function registerForPushNotificationsAsync() {
+  const { status: existingStatus } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  let finalStatus = existingStatus;
+
+  // only ask if permissions have not already been determined, because
+  // iOS won't necessarily prompt the user a second time.
+  if (true) {
+    // Android remote notification permissions are granted during the app
+    // install, so this will only ask on iOS
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    finalStatus = status;
+  }
+
+  // Stop here if the user did not grant permissions
+  //if (finalStatus !== 'granted') {
+   // return;
+  //}
+
+  // Get the token that uniquely identifies this device
+  let token = await Notifications.getExpoPushTokenAsync();
+
+  // POST the token to your backend server from where you can retrieve it to send push notifications.
+  console.log("here2");
+  return fetch(PUSH_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      token: {
+        value: token,
+      },
+      user: {
+        username: 'Brent',
+      },
+    }),
+  });
+}
 
 export default class Homescreen extends React.Component {
+  componentWillMount(){
+    console.log("here");
+    registerForPushNotificationsAsync();
+  }
   render() {
     return (
       // upcoming games text will be dynamic later on
