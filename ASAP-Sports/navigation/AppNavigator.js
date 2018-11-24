@@ -13,6 +13,7 @@ import ReviewDetails from '../screens/ReviewDetails';
 import FilterModal from '../screens/FilterModal';
 import Settings from '../screens/Settings';
 import Profile from '../screens/Profile';
+import ViewGame from '../screens/ViewGame';
 import CancelButton from '../assets/components/CancelButton';
 import FilterButton from '../assets/components/FilterButton';
 import SettingsButton from '../assets/components/SettingsButton';
@@ -56,6 +57,9 @@ const BrowseStack = createStackNavigator(
     },
     FilterModal: {
       screen: FilterModal,
+    },
+    ViewGame: {
+      screen: ViewGame,
     }
   },
   {
