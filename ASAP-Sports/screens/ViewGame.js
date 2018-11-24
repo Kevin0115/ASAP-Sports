@@ -27,7 +27,8 @@ export default class ViewGame extends React.Component {
       latitudeDelta: delta.latitudeDelta,
       longitudeDelta: delta.longitudeDelta,
     },
-    gameInfo : {id: 10001,
+    gameInfo : {
+      id: 10001,
       host_id: 18,
       title: "Init",
       description: "we lit fam",
@@ -39,7 +40,9 @@ export default class ViewGame extends React.Component {
       location_lng: 49.2827,
       location_name: "The court",
       comp_level: 2,
-      creation_timestamp: "Friday, November 23, 2018 02:21 PM"},
+      creation_timestamp: "Friday, November 23, 2018 02:21 PM",
+      users: []
+      }
   };
 
   componentDidMount() {
@@ -144,7 +147,7 @@ export default class ViewGame extends React.Component {
                     style = {styles.icon}
                     source = {require('../assets/images/maxplayericon.png')}/>
                 </View>
-                <Text style={styles.info}>{gameInfo.max_players} players maximum</Text>
+                <Text style={styles.info}>{gameInfo.users.length}/{gameInfo.max_players} players joined</Text>
               </View>
               {gameInfo.desc != '' ?
                 <View >

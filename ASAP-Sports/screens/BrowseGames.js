@@ -6,7 +6,8 @@ export default class BrowseGames extends React.Component {
   //TODO 
   render() {
     const sport = this.props.navigation.getParam('sport', 'default');
-    const game = {id: 10001,
+    const game = {
+      id: 10001,
       host_id: 18,
       title: "5v5 Basktetball",
       description: "casual basketball game at kits beach",
@@ -18,7 +19,34 @@ export default class BrowseGames extends React.Component {
       location_lng: -73.935242,
       location_name: "The court",
       comp_level: 2,
-      creation_timestamp: "Friday, November 23, 2018 02:21 PM"};
+      creation_timestamp: "Friday, November 23, 2018 02:21 PM",
+      users: [
+        {
+          id: 1,
+          fb_id: 1,
+          first: "Kyle",
+          last: "Willis",
+          age: 25,
+          gender: 'male',
+          bio: 'like to code',
+          fb_access_token: 'XXXX',
+          profile_pic_url: 'XXXX',
+          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
+        },
+        {
+          id: 2,
+          fb_id: 2,
+          first: "Kyle",
+          last: "Willis",
+          age: 25,
+          gender: 'male',
+          bio: 'like to code',
+          fb_access_token: 'XXXX',
+          profile_pic_url: 'XXXX',
+          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
+        }
+      ]
+      };
     return (
       <View style={styles.browse}>
         <View style={styles.homeHeader}>
