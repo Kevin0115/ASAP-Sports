@@ -1,7 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import {getUserTimeStr, parseAPIDate} from './../../utils'
 
 import SportList from './SportList';
+import { COLORS } from '../../const';
 
 export default class GameCard extends React.Component {
   constructor(props) {
@@ -27,22 +29,27 @@ export default class GameCard extends React.Component {
   }
 
   _cullDate = () => {
-    let newDate = this.props.gameInfo.start_time.split(" ");
-    let hour = newDate[4];
-    if (hour.split(':')[0] < 10) {
-      newDate.splice(4, 1, hour.substring(1));
-    }
-    newDate.splice(3, 1);
-    newDate.splice(0, 1);
     this.setState({
-      date: newDate.join(" "),
+      date: parseAPIDate(this.props.gameInfo.start_time)
     })
+    // let newDate = this.props.gameInfo.start_time.split(" ");
+    // let hour = newDate[4];
+    // if (hour.split(':')[0] < 10) {
+    //   newDate.splice(4, 1, hour.substring(1));
+    // }
+    // newDate.splice(3, 1);
+    // newDate.splice(0, 1);
+    // this.setState({
+    //   date: newDate.join(" "),
+    // })
   }
 
   render() {
     return (
       <View style={styles.touchableContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button}
+          onPress={() => this.props.onPress && this.props.onPress()}
+          >
           <View style={styles.logoContainer}>
             <Image
               source={this.state.icon}
@@ -59,7 +66,7 @@ export default class GameCard extends React.Component {
                 style={styles.miniIcon}
               />
               <Text >
-                {this.state.date}
+                {this.state.date ? getUserTimeStr(this.state.date): ""}
               </Text>
             </View>
             <View style={styles.iconTextContainer}>
@@ -93,8 +100,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   logo: {
-    borderRadius:60,
-    backgroundColor: '#bbb',
+    borderRadius: 60,
+    overlayColor: COLORS.white, // Android requires overlay colour for Image's with borderRadius
+    backgroundColor: COLORS.lightGrey,
     height: 100,
     width: 100,
   },

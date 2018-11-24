@@ -5,7 +5,7 @@ import psycopg2
 import datetime
 
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_by_id
-from .db.games import insert_game, get_game
+from .db.games import insert_game, get_game, search_games
 from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
 from . import utils
 from . import facebook as fb
@@ -50,7 +50,7 @@ def login(request):
 
         asap_access_token = str(user.asap_access_token) # TODO user.to_json() is broken because it modifies the user object. Fix that
         res = user.to_json()
-        res.update({'asap_access_token': user.asap_access_token})
+        res.update({'asap_access_token': asap_access_token})
         return utils.json_response(res)
 
 
@@ -67,7 +67,7 @@ def upcoming_games(request):
                 'past_games': [game]
             }
     """
-    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['Authorization']))
+    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
     if user is None:
         return utils.json_client_error("Bad authorization")
 
@@ -81,9 +81,10 @@ def upcoming_games(request):
 
 
 def search(request):
+    # TODO fix timezone situations. This applies to both the front and backend. Big problem but not important until after demo
     """
     :param request: {
-          'radius_km': int,
+          'radius_m': int,
           'location_lng': float,
           'location_lat': float,
           'start_time': dd-mmm-yyyy hh:mm(default=now),
@@ -92,8 +93,24 @@ def search(request):
         }
     :return: [game]
     """
-    res = []
-    return utils.json_response([x.to_json() for x in res])
+    try:
+        lng = utils.sanitize_float(request.GET['lng'])        
+        lat = utils.sanitize_float(request.GET['lat'])
+        radius_m = utils.sanitize_int(request.GET['radius_m'])
+        start_time = utils.sanitize_datetime(request.GET['start_time'])
+        sport = utils.sanitize_sport(request.GET['sport']) if request.GET['sport'] != 'any' else 'any'
+    except KeyError as e:
+        return utils.json_client_error('Missing a required parameter: "%s"' % e)
+
+    for key in ['lng', 'lat', 'radius_m', 'start_time', 'sport']:
+        if locals()[key] is None:
+            utils.json_client_error('Could not parse parameter "%s". Received "%s".' % (key, request.GET[key]))
+
+    if start_time < datetime.datetime.now() - datetime.timedelta(hours=1):
+        return utils.json_client_error("You can't search for games in the past.")
+
+    games = search_games(request.db_conn, lng, lat, radius_m, start_time, sport, 0)
+    return utils.json_response([g.to_json() for g in games])
 
 
 def join(request, game_id):
@@ -134,7 +151,11 @@ def host(request):
     :return: {'game_id': game_id}
     """
     data = request.read()
-    postdata = json.loads(data)
+    try:
+        postdata = json.loads(data)
+    except json.JSONDecodeError:
+        return utils.json_client_error('Invalid JSON')
+
     try:
         game_title = postdata['title']
         game_description = postdata.get('desc')
@@ -144,7 +165,6 @@ def host(request):
         duration = utils.sanitize_int(postdata['duration'])
         if duration is None or duration <= 0:
             return utils.json_client_error("Bad duration")
-        end_time = start_time + datetime.timedelta(minutes=duration)
         location_lng = utils.sanitize_float(postdata['location_lng'])
         location_lat = utils.sanitize_float(postdata['location_lat'])
         comp_level = utils.sanitize_int(postdata['comp_level'])
@@ -164,6 +184,8 @@ def host(request):
               'location_lat', 'location_name', 'comp_level']:
         if l[x] is None:
             return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
+
+    end_time = start_time + datetime.timedelta(minutes=duration)
 
     user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:
