@@ -49,9 +49,6 @@ def get_dashboard(conn, user_id):
             LIMIT 25
     """
     with conn.cursor() as curs:
-        mog = ''.join([chr(x) for x in curs.mogrify(query, locals())]).split('\n')
-        for line in mog:
-            print(line)
         curs.execute(query, locals())
         games = [Game(*row) for row in curs]
         now = datetime.datetime.utcnow()

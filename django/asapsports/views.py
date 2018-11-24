@@ -156,8 +156,6 @@ def host(request):
     except json.JSONDecodeError:
         return utils.json_client_error('Invalid JSON')
 
-    print(postdata)
-    print(request.META)
     try:
         game_title = postdata['title']
         game_description = postdata.get('desc')
