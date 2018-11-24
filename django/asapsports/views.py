@@ -226,8 +226,12 @@ def view(request, game_id):
                 ]
              }
     """
+    users = []
     res = get_game(request.db_conn, game_id).to_json()
-    res['users'] = get_users(request.db_conn, game_id)
+    user_ids = get_users(request.db_conn, game_id)
+    for user_id in user_ids:
+        users.append(get_user_by_id(request.db_conn, user_id).to_json())
+    res['users'] = users
     return utils.json_response(res)
     
 
