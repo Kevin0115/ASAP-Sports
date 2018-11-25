@@ -42,21 +42,22 @@ export default class GameInfo extends React.Component {
             <TextInput
               placeholder="Enter a Game Title"
               placeholderTextColor="#c9c9c9"
-              clearTextOnFocus={true}
               style={styles.titleInput}
               onChangeText={this._handleTitleChange}
               value={this.state.gameTitle}
+              onSubmitEditing={Keyboard.dismiss}
+              blurOnSubmit={true}
             />
             <Text style={styles.textHeader}>Game Description</Text>
             <TextInput
-             placeholder="Enter a Game Description"
+              placeholder="Enter a Game Description"
               placeholderTextColor="#c9c9c9"
-              clearTextOnFocus={true}
               style={styles.descInput}
               multiline={true}
               onChangeText={(gameDesc) => this.setState({gameDesc})}
               value={this.state.gameDesc}
               onSubmitEditing={Keyboard.dismiss}
+              blurOnSubmit={true}
             />
           </View>
           <View style={styles.rankingContainer}>
