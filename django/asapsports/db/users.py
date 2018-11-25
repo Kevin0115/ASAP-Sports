@@ -60,7 +60,6 @@ def insert_user(conn, fb_id, first, last, age, gender, bio, fb_access_token,
           %(profile_pic_url)s, %(asap_access_token)s)
     """
     with conn.cursor() as curs:
-        print(locals())
         curs.execute(query, locals())
 
 
@@ -80,7 +79,6 @@ def update_user_by_id(conn, id, fb_id, first, last, age, gender, bio, fb_access_
         where id=%(id)s;
     """
     with conn.cursor() as curs:
-        print(locals())
         curs.execute(query, locals())
 
 

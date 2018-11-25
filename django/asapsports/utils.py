@@ -73,7 +73,6 @@ def distance_between(lat1, lng1, lat2, lng2):
     # approximate radius of earth in m
     R = 6373000.0
 
-    print("d between (%s, %s) and (%s, %s)" % (lat1, lng1, lat2, lng2))
     lat1 = math.radians(lat1)
     lng1 = math.radians(lng1)
     lat2 = math.radians(lat2)
@@ -85,7 +84,6 @@ def distance_between(lat1, lng1, lat2, lng2):
     a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlng / 2)**2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-    print(R*c)
     return int(R * c)
 
 
