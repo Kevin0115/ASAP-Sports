@@ -16,6 +16,22 @@ def insert_user_in_game(conn, user_id, game_id, status):
         curs.execute(query, locals())
 
 
+def delete_user_in_game(conn, user_id, game_id):
+    """
+        :return: Number of rows deleted (always 0 or 1)
+    """
+    query = """
+        WITH deleted AS (
+            DELETE FROM user_in_games
+            WHERE user_id=%(user_id)s AND game_id=%(game_id)s
+        RETURNING *) SELECT count(*) FROM deleted
+    """
+    with conn.cursor() as curs:
+        curs.execute(query, locals())
+        for row in curs:
+            return row[0]
+
+
 def num_users_in_game(conn, game_id): # TODO throw error if no game with game ID exists (count == 0)
     query = """
         select count(*) from user_in_games where game_id=%(game_id)s

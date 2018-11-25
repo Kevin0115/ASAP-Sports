@@ -6,7 +6,7 @@ import datetime
 
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_profile_by_id
 from .db.games import insert_game, get_game, search_games, get_dashboard
-from .db.user_in_game import insert_user_in_game, num_users_in_game, get_users, Status
+from .db.user_in_game import insert_user_in_game, num_users_in_game, get_users, delete_user_in_game, Status
 from . import utils
 from . import facebook as fb
 
@@ -116,18 +116,34 @@ def join(request, game_id):
     :param game_id: int, in URL
     :return:
     """
+    data = request.read()
+    try:
+        postdata = json.loads(data)
+        action = postdata['action']
+        if action not in ('join', 'leave'):
+            return utils.json_client_error("Invalid value for parameter 'action'. Must be one of 'join' or 'leave'.")
+    except json.JSONDecodeError:
+        return utils.json_client_error('Invalid JSON')
+    except KeyError as e:
+        return utils.json_client_error('Missing parameter %s' % e)
+
     user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
     if user is None:
         return utils.json_client_error("Bad authorization")
 
     # TODO lock on game row???
-    game = get_game(request.db_conn, game_id)
-    num_players = num_users_in_game(request.db_conn, game_id)
-    if num_players == game.max_players:
-        return utils.json_client_error("The game is already full.")
-
-    insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
-    return utils.json_response({"status": "Successfully join game"})
+    if action == 'join':
+        game = get_game(request.db_conn, game_id)
+        num_players = num_users_in_game(request.db_conn, game_id)
+        if num_players == game.max_players:
+            return utils.json_client_error("The game is already full.")
+        insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
+        return utils.json_response({"status": "Successfully join game"})
+    else:
+        rows_deleted = delete_user_in_game(request.db_conn, user.id, game_id)
+        if rows_deleted == 0:
+            utils.json_client_error("You cannot leave that game because you are not in it.")
+        return utils.json_response({"status": "Successfully left game"})
 
 
 def host(request):
