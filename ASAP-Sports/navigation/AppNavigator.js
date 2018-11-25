@@ -97,7 +97,7 @@ const AppStack =  createStackNavigator(
     Browse: {
       screen: BrowseStack,
       navigationOptions: ({navigation}) => ({
-        title: 'Search Results',
+        title: 'Search For Games',
         ...headerStyle,
         headerRight: <FilterButton />,
       }),
@@ -133,7 +133,7 @@ const AppStack =  createStackNavigator(
         ...headerStyle,
         ...creationHeaderStyle,
       }),
-  },
+    },
   },
   {
     initialRouteName: 'Homescreen', // This will be changed later to Login depending on conditions
