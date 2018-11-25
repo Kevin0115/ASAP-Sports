@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   logo: {
-    // overlayColor: COLORS.white,
+    overlayColor: COLORS.white,
     borderRadius: 32,
     backgroundColor: '#FFA500',
     height: 60,
