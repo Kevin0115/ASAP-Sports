@@ -2,6 +2,7 @@ import React from 'react';
 import { Picker, Keyboard, KeyboardAvoidingView, StyleSheet, Text, View, Button, AsyncStorage, Image, Switch, TextInput } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
+import APP_BASE_URL  from './../const';
 
 import Ages from '../assets/components/Ages';
 
@@ -35,6 +36,8 @@ export default class Profile extends React.Component {
       userPic: userData.profile_pic_url,
       userAge: userData.age,
       userBio: userData.bio,
+      displayAge: userData.show_age,
+      displayBio: userData.show_bio,
     });
 
     // We'll also need to grab age and bio from the db if exists
@@ -43,24 +46,104 @@ export default class Profile extends React.Component {
   }
 
   // The following 4 functions need to alter the async authUser as well as DB user
-  _handleAgeToggle = () => {
+  _handleAgeToggle = async () => {
     this.setState({
       displayAge: !this.state.displayAge,
-      bioFlexVal: this.state.displayAge ? 2.6 : 2.1,
-      ageFlexVal: this.state.displayAge ? 0 : 0.5,
+      // bioFlexVal: this.state.displayAge ? 2.6 : 2.1,
+      // ageFlexVal: this.state.displayAge ? 0 : 0.5,
     })
+    await AsyncStorage.mergeItem(
+      'authUser',
+      JSON.stringify({show_age: !this.state.displayAge})
+    );
+    fetch(APP_BASE_URL + '/user/update', {
+      method: 'PUT',
+      headers: {
+        'Authorization': this.state.userData.asap_access_token,
+        'Content-Type': 'application/json'
+      },
+      body: {'show_age': !this.state.displayAge}
+    }).then((res) => res.json())
+    .then((response) => {
+      if (response.error) {
+        console.warn("Error!", response.error);
+      }
+    })
+    .catch((error) => {
+      console.warn('Error: ', error);
+    });
   }
 
-  _handleBioToggle = () => {
+  _handleBioToggle = async () => {
     this.setState({displayBio: !this.state.displayBio})
+    await AsyncStorage.mergeItem(
+      'authUser',
+      JSON.stringify({show_bio: !this.state.displayBio})
+    );
+    fetch(APP_BASE_URL + '/user/update', {
+      method: 'PUT',
+      headers: {
+        'Authorization': this.state.userData.asap_access_token,
+        'Content-Type': 'application/json'
+      },
+      body: {'show_bio': !this.state.displayBio}
+    }).then((res) => res.json())
+    .then((response) => {
+      if (response.error) {
+        console.warn("Error!", response.error);
+      }
+    })
+    .catch((error) => {
+      console.warn('Error: ', error);
+    });
   }
 
-  _handleAgePicked = (age) => {
+  _handleAgePicked = async (age) => {
     this.setState({userAge: age});
+    await AsyncStorage.mergeItem(
+      'authUser',
+      JSON.stringify({age: age})
+    );
+    fetch(APP_BASE_URL + '/user/update', {
+      method: 'PUT',
+      headers: {
+        'Authorization': this.state.userData.asap_access_token,
+        'Content-Type': 'application/json'
+      },
+      body: {'age': age}
+    }).then((res) => res.json())
+    .then((response) => {
+      if (response.error) {
+        console.warn("Error!", response.error);
+      }
+    })
+    .catch((error) => {
+      console.warn('Error: ', error);
+    });
   }
 
-  _handleBioChange = (bio) => {
+  _handleBioChange = async (bio) => {
     this.setState({userBio: bio});
+    await AsyncStorage.mergeItem(
+      'authUser',
+      JSON.stringify({bio: bio})
+    );
+    fetch(APP_BASE_URL + '/user/update', {
+      method: 'PUT',
+      headers: {
+        'Authorization': this.state.userData.asap_access_token,
+        'Content-Type': 'application/json'
+      },
+      body: {'bio': bio}
+    }).then((res) => res.json())
+    .then((response) => {
+      if (response.error) {
+        console.warn("Error!", response.error);
+      }
+    })
+    .catch((error) => {
+      console.warn('Error: ', error);
+    });
   }
 
   // Only affect local state
@@ -79,7 +162,7 @@ export default class Profile extends React.Component {
 
   _bioFlex = () => {
     return {
-      flex: this.state.bioFlexVal,
+      flex: this.state.displayAge ? 2.1 : 2.6,
       justifyContent: 'center',
       alignItems: 'center'
     };
@@ -88,7 +171,7 @@ export default class Profile extends React.Component {
   _ageFlex = () => {
     return this.state.displayAge ?
     {
-      flex: this.state.ageFlexVal,
+      flex: this.state.displayAge ? 0.5 : 0,
     }
     :
     {
