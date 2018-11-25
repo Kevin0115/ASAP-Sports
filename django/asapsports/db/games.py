@@ -1,5 +1,4 @@
 from .asapobject import ASAPObject
-from asapsports.utils import distance_between, offset_lat_lng
 from asapsports.db.users import User
 
 from itertools import chain
@@ -70,22 +69,21 @@ def get_users_in_game(conn, game_id):
 def search_games(conn, lng, lat, radius_m, start_time, sport, page_num):
     offset = page_num * 25
     query = """
-        select id, host_id, title, description, max_players, sport, start_time, 
+        SELECT id, host_id, title, description, max_players, sport, start_time,
             end_time, location_lat, location_lng, location_name, comp_level, 
             creation_timestamp
-            from games where 
-                (start_time >= %(start_time)s - interval '24 hour') and (start_time <= %(start_time)s + interval '24 hour')
-                and (%(sport)s='any' or sport=%(sport)s) 
-                --and distance(%(lat)s, %(lng)s, location_lat, location_lng) <= %(radius_m)s TODO uncomment and make work
-                offset %(offset)s
-                limit 25
+            FROM games WHERE
+                (start_time >= %(start_time)s - INTERVAL '24 hour') AND (start_time <= %(start_time)s + INTERVAL '24 hour')
+                AND (%(sport)s='any' OR sport=%(sport)s)
+                AND distance(%(lat)s, %(lng)s, location_lat, location_lng) <= %(radius_m)s
+            ORDER BY start_time ASC
+            OFFSET %(offset)s
+            LIMIT 25
     """
 
     with conn.cursor() as curs:
         curs.execute(query, locals())
         games = [Game(*row) for row in curs]
-        # TODO filter in database so we can get a defined amount from DB. Very importante.
-        games = [g for g in games if distance_between(g.location_lat, g.location_lng, lat, lng) <= radius_m]
 
     for g in games:
         g.players = get_users_in_game(conn, g.id)
@@ -100,7 +98,7 @@ def get_dashboard(conn, user_id):
             FROM user_in_games AS uig
             LEFT OUTER JOIN games AS g ON uig.game_id=g.id
             WHERE uig.user_id=%(user_id)s
-            ORDER BY g.start_time DESC
+            ORDER BY g.start_time ASC
             LIMIT 25
     """
     with conn.cursor() as curs:

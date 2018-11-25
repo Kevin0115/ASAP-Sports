@@ -31,7 +31,7 @@ CREATE TABLE games (
   host_id INT REFERENCES users(id) NOT NULL,
   title VARCHAR(255) NOT NULL CHECK (char_length(title) > 0),
   description VARCHAR(512),
-  max_players SMALLINT CHECK (max_players >= 2 AND max_players <= 16),
+  max_players SMALLINT CHECK (max_players >= 2 AND max_players <= 100),
   sport VARCHAR(16) CHECK (sport IN ('basketball', 'volleyball', 'soccer', 'baseball', 'badminton', 'football',
                                         'table_tennis', 'tennis', 'bouldering', 'skateboarding', 'boxing',
                                         'wrestling', 'swimming', 'ultimate_frisbee')),
@@ -56,11 +56,15 @@ CREATE TABLE user_in_games (
 );
 
 -- Returns the meters distance between two points
- CREATE OR REPLACE FUNCTION distance(lat1 FLOAT, lng1 FLOAT, lat2 FLOAT, lng2 FLOAT) RETURNS FLOAT AS $$
-DECLARE                                                   
-    x float = 111.12 * (lat2 - lat1);                           
-    y float = 111.12 * (lng2 - lng1) * cos(lat1 / 92.215);        
-BEGIN                                                     
-    RETURN sqrt(x * x + y * y) * 1000;                               
-END  
+CREATE OR REPLACE FUNCTION distance(lat1 FLOAT, lng1 FLOAT, lat2 FLOAT, lng2 FLOAT) RETURNS FLOAT AS $$
+DECLARE
+-- Convert degrees to radians
+DegToRad FLOAT := 57.29577951;
+EarthRadius FLOAT := 6387700; -- In meters
+
+BEGIN
+  RETURN EarthRadius * ACOS((sin(lat1 / DegToRad) * SIN(lat2 / DegToRad) +
+        (COS(lat1 / DegToRad) * COS(lat2 / DegToRad) *
+         COS(lng2 / DegToRad - lng1/ DegToRad))));
+END
 $$ LANGUAGE plpgsql;

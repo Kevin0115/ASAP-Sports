@@ -8,19 +8,20 @@ import GameCard from '../assets/components/GameCard';
 
 export default class Homescreen extends React.Component {
   constructor(props){
-    super(props)
+    super(props);
     this.state = {
       listData: []
-    }
+    };
     this.props.navigation.addListener('didFocus', payload => {
       // NOTIDEAL: This gets called a lot. We only want to call it after we have joined/left a game
-      this.searchGames();
-    })
+      this.getDashboard();
+    });
   }
 
-  async searchGames() {
+  async getDashboard(self) {
+    self = self ? self : this;
     const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
-    this.setState({loading: true});
+    self.setState({loading: true});
     fetch(APP_BASE_URL + '/games/upcoming_games', {
       method: 'GET',
       headers: {
@@ -30,7 +31,7 @@ export default class Homescreen extends React.Component {
     .then((response) => {
       if (response.error) {
         console.warn("Error!", response.error);
-        this.setState({loading: false});
+        self.setState({loading: false});
         // TODO handle error with modal
       } else {
 
@@ -55,7 +56,7 @@ export default class Homescreen extends React.Component {
           }
         }
         listData.push({key: 'space', type: 'space'});
-        this.setState({
+        self.setState({
           loading: false,
           listData: listData,
         });
@@ -64,9 +65,9 @@ export default class Homescreen extends React.Component {
     .catch((error) => {
       // TODO extract modal from screens/Login.js and open on error
       console.warn('Error: ', error);
-      this.setState({loading: false})
+      self.setState({loading: false})
     });
-  }
+  };
   render() {
     return (
       // upcoming games text will be dynamic later on
@@ -77,6 +78,8 @@ export default class Homescreen extends React.Component {
           <FlatList
             data={this.state.listData}
             numColumns={1}
+            onRefresh={() => this.getDashboard(this)}
+            refreshing={this.state.loading}
             renderItem={({item}) => {
               if (item.type === 'text') {
                 return (
@@ -138,7 +141,7 @@ export default class Homescreen extends React.Component {
         }
       </View>
     );
-  }
+  };
 }
 
 
@@ -175,7 +178,7 @@ const styles = StyleSheet.create({
     height: 150,
     position: 'absolute',
     left: Dimensions.get('window').width/2 - 100,
-    top: Dimensions.get('window').height/2 - 150
+    top: 40,
   },
   buttonContainer: {
     flexDirection: 'row',
