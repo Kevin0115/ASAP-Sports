@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Keyboard, Picker, Alert } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
+import { COLORS } from '../const';
 
 export default class GameInfo extends React.Component {
   state = {
@@ -9,7 +10,6 @@ export default class GameInfo extends React.Component {
     gameDesc: '',
     compLevel: '2',
   };
-
   _handleTitleChange = (title) => {
     this.setState({gameTitle: title});
     this.setState({titleEntered: true});
@@ -41,7 +41,7 @@ export default class GameInfo extends React.Component {
             <Text style={styles.textHeader}>Game Title</Text>
             <TextInput
               placeholder="Enter a Game Title"
-              placeholderTextColor="#c9c9c9"
+              placeholderTextColor={COLORS.lightGrey}
               style={styles.titleInput}
               onChangeText={this._handleTitleChange}
               value={this.state.gameTitle}
@@ -51,7 +51,7 @@ export default class GameInfo extends React.Component {
             <Text style={styles.textHeader}>Game Description</Text>
             <TextInput
               placeholder="Enter a Game Description"
-              placeholderTextColor="#c9c9c9"
+              placeholderTextColor={COLORS.lightGrey}
               style={styles.descInput}
               multiline={true}
               onChangeText={(gameDesc) => this.setState({gameDesc})}
@@ -78,8 +78,8 @@ export default class GameInfo extends React.Component {
           <AwesomeButton
             width={320}
             height={60}
-            backgroundColor="#004e89"
-            backgroundDarker="#001a33"
+            backgroundColor={COLORS.darkBlue}
+            backgroundDarker={COLORS.darkerBlue}
             onPress={this._handleNextPress}
           >
             Next
@@ -94,7 +94,7 @@ export default class GameInfo extends React.Component {
 const styles = StyleSheet.create({
   gameinfo: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 48,
     width: '90%',
-    borderColor: '#c9c9c9',
+    borderColor: COLORS.lightGrey,
     borderWidth: 2,
     padding: 8,
     borderRadius: 6,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: '45%',
     width: '90%',
-    borderColor: '#c9c9c9',
+    borderColor: COLORS.lightGrey,
     borderWidth: 2,
     padding: 8,
     borderRadius: 6,

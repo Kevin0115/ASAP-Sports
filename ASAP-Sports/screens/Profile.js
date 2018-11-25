@@ -2,7 +2,7 @@ import React from 'react';
 import { Picker, Keyboard, KeyboardAvoidingView, StyleSheet, Text, View, Button, AsyncStorage, Image, Switch, TextInput } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
-import { APP_BASE_URL }  from './../const';
+import { APP_BASE_URL, COLORS }  from './../const';
 
 import Ages from '../assets/components/Ages';
 
@@ -242,7 +242,7 @@ export default class Profile extends React.Component {
         <View style={this._bioFlex()}>
           <TextInput
             placeholder='Enter a Bio'
-            placeholderTextColor='#c9c9c9'
+            placeholderTextColor={COLORS.lightGrey}
             clearTextOnFocus={false}
             style={this._renderBio()}
             multiline={true}
@@ -256,8 +256,8 @@ export default class Profile extends React.Component {
           <AwesomeButton
             width={320}
             height={60}
-            backgroundColor='#004e89'
-            backgroundDarker='#001a33'
+            backgroundColor={COLORS.darkBlue}
+            backgroundDarker={COLORS.darkerBlue}
             onPress={() => this.props.navigation.popToTop()}
           >
             Done
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: '90%',
     width: '90%',
-    borderColor: '#c9c9c9',
+    borderColor: COLORS.lightGrey,
     borderWidth: 2,
     padding: 8,
     borderRadius: 6,

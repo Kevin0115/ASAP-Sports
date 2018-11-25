@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, Button, AsyncStorage, Alert} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
+import { COLORS } from '../const';
 
 export default class Settings extends React.Component {
   async logOut() {
@@ -44,8 +45,8 @@ export default class Settings extends React.Component {
           <AwesomeButton
             width={320}
             height={60}
-            backgroundColor="#004e89"
-            backgroundDarker="#001a33"
+            backgroundColor={COLORS.darkBlue}
+            backgroundDarker={COLORS.darkerBlue}
             onPress={() => this.props.navigation.popToTop()}
           >
             Done
@@ -59,7 +60,7 @@ export default class Settings extends React.Component {
 const styles = StyleSheet.create({
   settings: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     alignItems: 'stretch',
   },
   textContainer: {

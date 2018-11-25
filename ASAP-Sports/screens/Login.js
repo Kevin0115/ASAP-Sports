@@ -6,7 +6,7 @@ import {
 import AwesomeButton from "react-native-really-awesome-button";
 import {SignedInStack} from "../navigation/AppNavigator";
 import Modal from 'react-native-modal';
-import { APP_BASE_URL, FB_APP_ID } from './../const';
+import { APP_BASE_URL, FB_APP_ID, COLORS } from './../const';
 
 
 export default class Login extends React.Component {
@@ -118,8 +118,8 @@ export default class Login extends React.Component {
           <AwesomeButton
             width={320}
             height={60}
-            backgroundColor="#004e89"
-            backgroundDarker="#001a33"
+            backgroundColor={COLORS.darkBlue}
+            backgroundDarker={COLORS.darkerBlue}
             onPress={() => this.logIn()}>
             Login with Facebook
           </AwesomeButton>
