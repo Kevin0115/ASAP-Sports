@@ -38,7 +38,6 @@ def login(request):
             fb_id, first, last, profile_pic_url = fb.get_user_info(fb_access_token)
         except fb.FacebookAPIException as e:
             return utils.json_client_error("Failed to reach Facebook. %s" % str(e))
-
         asap_access_token = uuid.uuid4()    
         try:
             insert_user(request.db_conn, fb_id, first, last, None, None, None, fb_access_token,
