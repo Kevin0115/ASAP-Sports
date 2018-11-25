@@ -13,7 +13,7 @@ export default class Profile extends React.Component {
       // Async state variables
       userData: {},
       userName: '',
-      userPic: '',
+      userPic: '../assets/images/userbigblue.png',
       displayAge: false,
       displayBio: false,
       userAge: null,
@@ -313,6 +313,7 @@ const styles = StyleSheet.create({
   },
   toggleSwitch: {
     flex: 1,
+    marginRight: 8,
   },
   bioText: {
     fontSize: 16,
