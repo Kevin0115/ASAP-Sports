@@ -96,7 +96,7 @@ export default class Homescreen extends React.Component {
                     gameInfo={item}
                     onPress={() => {
                       console.log("TODO", item.id, item.sport, item.title);
-                      // this.props.navigation.navigate('GameInfo', item);
+                      this.props.navigation.navigate('ViewGame', item);
                     }}
                   />
                 }

@@ -1,8 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions, Platform} from 'react-native';
+import {StyleSheet, Text, View, Image, ScrollView, Dimensions, Platform, Button, FlatList, TouchableHighlight} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import SportDict from '../assets/components/SportsDict';
 import {MapView} from "expo";
+import {parseAPIDate} from "../utils.js";
+import PlayerCard from "../assets/components/PlayerCard";
+import Modal from 'react-native-modal';
+import GameCard from "../assets/components/GameCard";
 
 const Marker = MapView.Marker;
 const delta  = { //TODO throw into a const file
@@ -18,6 +22,7 @@ export default class ViewGame extends React.Component {
   constructor(props) {
     super(props);
     this.startTime = '';
+    this.duration = 0;
   }
 
   state = {
@@ -41,8 +46,20 @@ export default class ViewGame extends React.Component {
       location_name: "The court",
       comp_level: 2,
       creation_timestamp: "Friday, November 23, 2018 02:21 PM",
-      users: []
-      }
+      users: [{
+        id: 1,
+        fb_id: 1,
+        first: "Kyle",
+        last: "Willis",
+        age: 25,
+        gender: 'male',
+        bio: 'like to code',
+        fb_access_token: 'XXXX',
+        profile_pic_url: "https://graph.facebook.com/10160793672270214/picture?redirect=0&width=100&height=100",
+        creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
+      }]
+      },
+    modalVisible: false,
   };
 
   componentDidMount() {
@@ -51,14 +68,30 @@ export default class ViewGame extends React.Component {
     this.startTime = gameInfo.start_time;
     console.log(this.startTime);
     let region = this.state.mapRegion;
-    this.setState({gameInfo: navigation.getParam('game', 'Default')});
-    this.setState({mapRegion:{
+    this.setState({
+        gameInfo: navigation.getParam('game', 'Default'),
+        mapRegion: {
         latitude:  navigation.getParam('game', 'Default').location_lat,
         longitude: navigation.getParam('game', 'Default').location_lng,
         latitudeDelta: region.latitudeDelta,
         longitudeDelta: region.longitudeDelta,
       }});
+    this.duration = this._calc_duration(gameInfo.start_time, gameInfo.end_time);
+    // console.log(gameInfo.users[0].first);
   }
+
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
+  _calc_duration = (start_time, end_time) => {
+    const start = parseAPIDate(start_time);
+    const end = parseAPIDate(end_time);
+    let dur = end - start;
+    dur = dur/(60*1000);
+    return dur;
+  };
+
 
   _convertMinToHour = (min) => {
     if (min < 60) {
@@ -131,7 +164,7 @@ export default class ViewGame extends React.Component {
                     style = {styles.icon}
                     source = {require('../assets/images/durationicon.png')}/>
                 </View>
-                <Text style={styles.info}>{this._convertMinToHour(gameInfo.duration)} </Text>
+                <Text style={styles.info}>{this._convertMinToHour(this.duration)} </Text>
               </View>
               <View style={styles.infoContainer}>
                 <View style = {{flex:1}}>
@@ -147,7 +180,11 @@ export default class ViewGame extends React.Component {
                     style = {styles.icon}
                     source = {require('../assets/images/maxplayericon.png')}/>
                 </View>
-                <Text style={styles.info}>{gameInfo.users.length}/{gameInfo.max_players} players joined</Text>
+                <Text style={styles.clickableInfo}
+                      onPress={() => {
+                        this.setModalVisible(true);
+                      }} >
+                  {gameInfo.users.length}/{gameInfo.max_players} players joined</Text>
               </View>
               {gameInfo.desc != '' ?
                 <View >
@@ -155,6 +192,40 @@ export default class ViewGame extends React.Component {
                   <Text style={styles.gameDesc}>{gameInfo.description}</Text>
                 </View>
                 : null }
+
+              <Modal
+                isVisible={this.state.modalVisible}
+                backdropOpacity={0.7}
+                >
+                  <View style={styles.modalContent}>
+                    <View style = {styles.modalTitle}>
+                    <Text style={{fontWeight: 'bold', fontSize: 20}}>Player List</Text>
+                    </View>
+                    <ScrollView>
+                      <FlatList
+                        data={gameInfo.users}
+                        numColumns={1}
+                        renderItem={({item}) =>
+                          <PlayerCard
+                            player={item}
+                            onPress={(item) => {
+                              // this.props.navigation.navigate('PlayerProfile', item);
+                            }}
+                          />
+                        }
+                      />
+                    </ScrollView>
+                    <View style = {styles.modalClose}>
+                    <Button
+                      title="Done"
+                      onPress={() => {
+                        this.setModalVisible(!this.state.modalVisible);
+                      }}/>
+
+                    </View>
+                </View>
+              </Modal>
+
             </View>
           </ScrollView>
         </View>
@@ -175,6 +246,18 @@ export default class ViewGame extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    modalTitle: {
+      paddingTop: 10,
+      paddingBottom: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  modalClose: {
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 18
+  },
   markerIOSHack: {
     height: 50,
     width: 50,
@@ -232,6 +315,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     flex: 10,
   },
+  clickableInfo: {
+    color: '#007FFF',
+    fontSize: 16,
+    paddingLeft: 15,
+    paddingTop: 4,
+    textAlign: 'left',
+    flex: 10,
+  },
   title: {
     textAlign: 'center',
     fontSize: 16,
@@ -254,10 +345,12 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: "white",
-    padding: 22,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 16,
+    padding: 10,
+    height: '60%',
+    // flexDirection: 'column',
+    // justifyContent: "center",
+    // alignItems: "center",
+    borderRadius: 8,
   },
   check: {
     alignItems: 'center',

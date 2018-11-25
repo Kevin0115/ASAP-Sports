@@ -42,6 +42,9 @@ const HomeStack = createStackNavigator(
     },
     Profile: {
       screen: Profile,
+    },
+    ViewGame: {
+      screen: ViewGame,
     }
   },
   {
