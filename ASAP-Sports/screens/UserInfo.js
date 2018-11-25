@@ -4,6 +4,23 @@ import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
 import APP_BASE_URL  from './../const';
 
+// DUMMY DATA
+const dummyData = {
+  "age": "21",
+  "asap_access_token": "859b0b90-d04b-4523-953b-6e5f112c60e7",
+  "bio": "Hello",
+  "creation_timestamp": "Sunday, November 25, 2018 04:54 AM",
+  "fb_id": 2137095639648126,
+  "first": "Kevin",
+  "gender": null,
+  "id": 1,
+  "last": "Choi",
+  "profile_pic_url": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=2137095639648126&height=200&width=200&ext=1545713693&hash=AeThdvcfC35OQ1Py",
+  "show_age": true,
+  "show_bio": true,
+  "show_gender": false,
+}
+
 export default class UserInfo extends React.Component {
   constructor(props) {
     super(props);
@@ -17,11 +34,20 @@ export default class UserInfo extends React.Component {
       userAge: null,
       userBio: '',
     };
+    
+  }
+
+  componentDidMount() {
     this._retrieveData();
   }
 
-  _retrieveData = async () => {
-    const userData = JSON.parse(await AsyncStorage.getItem('authUser'));
+  _retrieveData = () => {
+    // WILL BE USING THIS LINE OF CODE BELOW
+    // const userData = this.props.navigation.getParam('userInfo', 'Default');
+    
+    // JUST FOR TESTING
+    const userData = dummyData;
+
     console.log(userData);
     this.setState({
       userData: userData,
