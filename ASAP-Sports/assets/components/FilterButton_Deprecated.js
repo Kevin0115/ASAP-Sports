@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Alert, TouchableOpacity, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
+// This component is no longer under use.
+// Keeping it in case we need to recycle it later on.
+
 class FilterButton extends React.Component {
   render() {
     return (
