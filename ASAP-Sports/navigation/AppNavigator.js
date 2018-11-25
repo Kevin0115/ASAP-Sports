@@ -12,6 +12,7 @@ import LocationScreen from '../screens/Location';
 import ReviewDetails from '../screens/ReviewDetails';
 import Settings from '../screens/Settings';
 import Profile from '../screens/Profile';
+import ViewGame from '../screens/ViewGame';
 import CancelButton from '../assets/components/CancelButton';
 import SettingsButton from '../assets/components/SettingsButton';
 import ProfileButton from '../assets/components/ProfileButton';
@@ -39,10 +40,29 @@ const HomeStack = createStackNavigator(
     },
     Profile: {
       screen: Profile,
+    },
+    ViewGame: {
+      screen: ViewGame,
     }
   },
   {
     headerMode: 'none',
+    mode: 'modal',
+  }
+);
+
+const BrowseStack = createStackNavigator(
+  {
+    BrowseGames: {
+      screen: BrowseGames,
+    },
+    ViewGame: {
+      screen: ViewGame,
+    }
+  },
+  {
+    headerMode: 'none',
+    initialRouteName: 'BrowseGames',
     mode: 'modal',
   }
 );
@@ -73,7 +93,7 @@ const AppStack =  createStackNavigator(
       }),
     },
     Browse: {
-      screen: BrowseGames,
+      screen: BrowseStack,
       navigationOptions: ({navigation}) => ({
         title: 'Search For Games',
         ...headerStyle,

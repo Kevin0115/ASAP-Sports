@@ -1,15 +1,15 @@
 import React from 'react';
-import { 
-  Platform, 
-  StyleSheet, 
-  Text, 
-  View, 
-  AsyncStorage, 
-  Image, 
-  FlatList, 
-  TouchableOpacity, 
-  DatePickerIOS, 
-  DatePickerAndroid, 
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  AsyncStorage,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  DatePickerIOS,
+  DatePickerAndroid,
   TimePickerAndroid,
   ActivityIndicator,
   Slider,
@@ -25,19 +25,19 @@ import GameCard from '../assets/components/GameCard';
 
 /**
  * NOTES
- * 
+ *
  * Icon cheatsheet: https://ionicons.com/cheatsheet.html
  *    For icons you must use the value of the icon name prefixed with 'md-' if you want
  *    the Android version or 'ios-' if you want the iOS version of the icon.
- * 
+ *
  * Expo Icons: https://docs.expo.io/versions/latest/guides/icons
  *    Not extremely useful UNLESS you want to create custom icons. Likely this
  *    is the ideal way to handle all of our sports icons.
- * 
+ *
  * Custom Icons from SVG: https://github.com/react-native-community/react-native-svg/issues/109
  *    Look at igorrKur and his comment. He suggests using IcoMoon to create a font from SVG's.
  *    Would be very nice if we could do that.
- * 
+ *
  */
 
 
@@ -264,7 +264,7 @@ export default class BrowseGames extends React.Component {
               this.setState({openFilter: this.state.openFilter !== 'sport' ? 'sport': null});
             }}>
               {/* NOTIDEAL: this button is slightly wonky. There is some implicit padding on the AwesomeButton so it is limited to this small size */}
-              <Image 
+              <Image
               source={this.state.sport.image}
               style={{width: 35, height: 35, tintColor: COLORS.pink}}></Image>
             </AwesomeButton>
@@ -274,9 +274,9 @@ export default class BrowseGames extends React.Component {
         </View>
         {this.state.openFilter !== null && !(this.state.openFilter === 'time' && Platform.OS === 'android') &&
         <View>
-          <Ionicons 
-          name='md-arrow-dropup' 
-          size={32} 
+          <Ionicons
+          name='md-arrow-dropup'
+          size={32}
           color={COLORS.darkBlue}
           style={{
             position: 'absolute',
@@ -291,15 +291,15 @@ export default class BrowseGames extends React.Component {
               style={{width: '100%'}}
               data={this.sportList}
               numColumns={4}
-              renderItem={({item}) => 
+              renderItem={({item}) =>
                 <View
                 style={{width: '25%', alignItems: 'center'}}
                 >
-                  <TouchableOpacity 
+                  <TouchableOpacity
                   style={{backgroundColor: COLORS.white, borderRadius: 6, alignItems: 'center', justifyContent: 'center', padding: 5, margin: 5}}
                   onPress={() => this.selectSport(item)}>
-                    <Image 
-                    source={item.image} 
+                    <Image
+                    source={item.image}
                     style={{width: 55, height: 55, tintColor: item.apikey === this.state.sport.apikey ? COLORS.pink: COLORS.grey}}></Image>
                   </TouchableOpacity>
                   <Text style={{color: COLORS.white, fontSize: 11, textAlign: 'center'}}>{item.key}</Text>
@@ -351,10 +351,10 @@ export default class BrowseGames extends React.Component {
                   />
                 </MapView>
                 {this.mapViewDems !== null &&
-                  <Image 
+                  <Image
                   source={require('../assets/images/logoBlackSmall.png')}
                   style={{
-                    position: 'absolute', 
+                    position: 'absolute',
                     bottom: this.mapViewDems.height / 2,
                     left: this.mapViewDems.width / 2 - MARKER_SIZE / 2,
                     width: MARKER_SIZE,
@@ -408,8 +408,10 @@ export default class BrowseGames extends React.Component {
             <GameCard
               gameInfo={item}
               onPress={() => {
+                console.log(item);
                 console.log("TODO", item.id, item.sport, item.title);
-                // this.props.navigation.navigate('GameInfo', item);
+                console.log(item.players.length);
+                this.props.navigation.navigate('ViewGame', {game: item});
               }}
             />
           }
@@ -478,7 +480,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   filterButtonText: {
-    color: COLORS.white, 
+    color: COLORS.white,
     fontSize: 12
   },
   filterControlWindow: {
@@ -504,7 +506,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    
+
     // Android
     elevation: 5,
   }
