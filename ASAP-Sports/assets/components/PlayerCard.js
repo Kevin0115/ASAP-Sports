@@ -22,10 +22,12 @@ export default class PlayerCard extends React.Component {
           <View style={styles.infoContainer}>
             <View style={styles.iconTextContainer2}>
               <Text >
-                {this.props.player.first} {this.props.player.last }, {this.props.player.age}
+                {this.props.player.first} {this.props.player.last }{this.props.player.age != null? ", "+this.props.player.age: ""}
               </Text>
             </View>
             <View style={styles.iconTextContainer}>
+              { this.props.player.gender !== null ?
+                <View style = {{flexDirection: 'row'}}>
               <Image
                 source={require('../images/genderion.png')}
                 style = {styles.miniIcon}
@@ -33,6 +35,8 @@ export default class PlayerCard extends React.Component {
               <Text >
                 {this.props.player.gender}
               </Text>
+                </View>
+             : null }
             </View>
           </View>
         </TouchableOpacity>
@@ -68,10 +72,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     paddingHorizontal: 5,
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 18,
   },
   iconTextContainer: {
     flexDirection: 'row',

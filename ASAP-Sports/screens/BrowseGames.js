@@ -190,133 +190,7 @@ export default class BrowseGames extends React.Component {
   }
 
   render() {
-    const game = {
-      id: 10001,
-      host_id: 18,
-      title: "5v5 Basktetball",
-      description: "casual basketball game at kits beach",
-      max_players: 4,
-      sport: "basketball",
-      start_time: "Friday, November 23, 2018 10:36 PM",
-      end_time: "Saturday, November 24, 2018 12:21 AM",
-      location_lat: 40.730610,
-      location_lng: -73.935242,
-      location_name: "The court",
-      comp_level: 2,
-      creation_timestamp: "Friday, November 23, 2018 02:21 PM",
-      players: [
-        {
-          id: 1,
-          fb_id: 1,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-        {
-          id: 2,
-          fb_id: 2,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-        {
-          id: 1,
-          fb_id: 1,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-        {
-          id: 1,
-          fb_id: 1,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-        {
-          id: 1,
-          fb_id: 1,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-        {
-          id: 1,
-          fb_id: 1,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-        {
-          id: 1,
-          fb_id: 1,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-        {
-          id: 1,
-          fb_id: 1,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-        {
-          id: 1,
-          fb_id: 1,
-          first: "Kyle",
-          last: "Willis",
-          age: 25,
-          gender: 'male',
-          bio: 'like to code',
-          fb_access_token: 'XXXX',
-          profile_pic_url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160793672270214&height=100&width=100&ext=1545703536&hash=AeROk-DWpbmR65jV",
-          creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
-        },
-      ]
-    };
     return (
-
       <View style={styles.browse}>
         <View style={[styles.topBar,styles.shadowed]}>
           <View style={styles.filterButtonContainer}>
@@ -546,24 +420,7 @@ export default class BrowseGames extends React.Component {
             />
           }
           />
-
         }
-        {/*<View style={styles.buttonContainer}>*/}
-          {/*<AwesomeButton*/}
-            {/*width={320}*/}
-            {/*height={60}*/}
-            {/*backgroundColor="#004e89"*/}
-            {/*backgroundDarker="#001a33"*/}
-            {/*onPress={() => {*/}
-              {/*this.props.navigation.navigate('ViewGame', {*/}
-                {/*game: game*/}
-              {/*});*/}
-            {/*}}*/}
-          {/*>*/}
-            {/*View Game*/}
-          {/*</AwesomeButton>*/}
-        {/*</View>*/}
-
       </View>
     );
   }

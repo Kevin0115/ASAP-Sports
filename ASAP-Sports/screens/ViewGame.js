@@ -1,12 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image, ScrollView, Dimensions, Platform, Button, FlatList, TouchableHighlight} from 'react-native';
+import {StyleSheet, Text, View, Image, ScrollView, Dimensions, Platform, Button, FlatList} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import SportDict from '../assets/components/SportsDict';
 import {MapView} from "expo";
 import {parseAPIDate} from "../utils.js";
 import PlayerCard from "../assets/components/PlayerCard";
 import Modal from 'react-native-modal';
-import GameCard from "../assets/components/GameCard";
+import {APP_BASE_URL} from "../const";
 
 const Marker = MapView.Marker;
 const delta  = { //TODO throw into a const file
@@ -26,6 +26,7 @@ export default class ViewGame extends React.Component {
   }
 
   state = {
+    user: null,
     mapRegion:{
       latitude: vancouver.latitude,
       longitude: vancouver.longitude,
@@ -33,30 +34,30 @@ export default class ViewGame extends React.Component {
       longitudeDelta: delta.longitudeDelta,
     },
     gameInfo : {
-      id: 10001,
-      host_id: 18,
-      title: "Init",
-      description: "we lit fam",
-      max_players: 4,
-      sport: "basketball",
-      start_time: "Friday, November 23, 2018 10:36 PM",
-      end_time: "Saturday, November 24, 2018 12:21 AM",
-      location_lat: 123.1207,
-      location_lng: 49.2827,
-      location_name: "The court",
-      comp_level: 2,
-      creation_timestamp: "Friday, November 23, 2018 02:21 PM",
+      id: null,
+      host_id: null,
+      title: "",
+      description: "",
+      max_players: null,
+      sport: "",
+      start_time: "",
+      end_time: "",
+      location_lat: vancouver.latitude,
+      location_lng: vancouver.longitude,
+      location_name: "",
+      comp_level: null,
+      creation_timestamp: "",
       players: [{
-        id: 1,
-        fb_id: 1,
-        first: "Kyle",
-        last: "Willis",
-        age: 25,
-        gender: 'male',
-        bio: 'like to code',
-        fb_access_token: 'XXXX',
-        profile_pic_url: "https://graph.facebook.com/10160793672270214/picture?redirect=0&width=100&height=100",
-        creation_timestamp: 'Friday, November 23, 2018 02:21 PM',
+        id: null,
+        fb_id: null,
+        first: "",
+        last: "",
+        age: null,
+        gender: '',
+        bio: '',
+        fb_access_token: '',
+        profile_pic_url: "",
+        creation_timestamp: '',
       }]
       },
     modalVisible: false,
@@ -65,9 +66,7 @@ export default class ViewGame extends React.Component {
   componentDidMount() {
     const { navigation } = this.props;
     const gameInfo = navigation.getParam('game', 'Default');
-    console.log(gameInfo);
     this.startTime = gameInfo.start_time;
-    console.log(this.startTime);
     let region = this.state.mapRegion;
     this.setState({
         gameInfo: navigation.getParam('game', 'Default'),
@@ -78,7 +77,6 @@ export default class ViewGame extends React.Component {
         longitudeDelta: region.longitudeDelta,
       }});
     this.duration = this._calc_duration(gameInfo.start_time, gameInfo.end_time);
-    // console.log(gameInfo.players[0].first);
   }
 
   setModalVisible(visible) {
@@ -119,6 +117,13 @@ export default class ViewGame extends React.Component {
 
   _joinGame = () => {
 
+    // fetch(APP_BASE_URL + '/games/join', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Authorization': userAuthToken,
+    //   },
+    //   body: ,
+    // })
   };
 
   render() {
@@ -349,17 +354,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     height: '60%',
-    // flexDirection: 'column',
-    // justifyContent: "center",
-    // alignItems: "center",
     borderRadius: 8,
-  },
-  check: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 70,
-    height: 70,
-    margin: 20,
   },
   logo: {
     borderRadius:30,
