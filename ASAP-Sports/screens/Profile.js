@@ -2,7 +2,7 @@ import React from 'react';
 import { Picker, Keyboard, KeyboardAvoidingView, StyleSheet, Text, View, Button, AsyncStorage, Image, Switch, TextInput } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
-import APP_BASE_URL  from './../const';
+import { APP_BASE_URL }  from './../const';
 
 import Ages from '../assets/components/Ages';
 
@@ -39,30 +39,24 @@ export default class Profile extends React.Component {
       displayAge: userData.show_age,
       displayBio: userData.show_bio,
     });
-
-    // We'll also need to grab age and bio from the db if exists
-    // Also grab the toggle states from the db as well.
-    // With that information, set the state vars
   }
 
   // The following 4 functions need to alter the async authUser as well as DB user
   _handleAgeToggle = async () => {
     this.setState({
       displayAge: !this.state.displayAge,
-      // bioFlexVal: this.state.displayAge ? 2.6 : 2.1,
-      // ageFlexVal: this.state.displayAge ? 0 : 0.5,
     })
     await AsyncStorage.mergeItem(
       'authUser',
       JSON.stringify({show_age: !this.state.displayAge})
     );
     fetch(APP_BASE_URL + '/user/update', {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Authorization': this.state.userData.asap_access_token,
         'Content-Type': 'application/json'
       },
-      body: {'show_age': !this.state.displayAge}
+      body: JSON.stringify({'show_age': this.state.displayAge})
     }).then((res) => res.json())
     .then((response) => {
       if (response.error) {
@@ -81,12 +75,12 @@ export default class Profile extends React.Component {
       JSON.stringify({show_bio: !this.state.displayBio})
     );
     fetch(APP_BASE_URL + '/user/update', {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Authorization': this.state.userData.asap_access_token,
         'Content-Type': 'application/json'
       },
-      body: {'show_bio': !this.state.displayBio}
+      body: JSON.stringify({'show_bio': this.state.displayBio})
     }).then((res) => res.json())
     .then((response) => {
       if (response.error) {
@@ -105,12 +99,12 @@ export default class Profile extends React.Component {
       JSON.stringify({age: age})
     );
     fetch(APP_BASE_URL + '/user/update', {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Authorization': this.state.userData.asap_access_token,
         'Content-Type': 'application/json'
       },
-      body: {'age': age}
+      body: JSON.stringify({'age': age})
     }).then((res) => res.json())
     .then((response) => {
       if (response.error) {
@@ -129,12 +123,12 @@ export default class Profile extends React.Component {
       JSON.stringify({bio: bio})
     );
     fetch(APP_BASE_URL + '/user/update', {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Authorization': this.state.userData.asap_access_token,
         'Content-Type': 'application/json'
       },
-      body: {'bio': bio}
+      body: JSON.stringify({'bio': bio})
     }).then((res) => res.json())
     .then((response) => {
       if (response.error) {
