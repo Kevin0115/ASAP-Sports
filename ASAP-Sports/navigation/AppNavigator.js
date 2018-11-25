@@ -10,11 +10,9 @@ import GameInfo from '../screens/GameInfo';
 import TimeDate from '../screens/TimeDate';
 import LocationScreen from '../screens/Location';
 import ReviewDetails from '../screens/ReviewDetails';
-import FilterModal from '../screens/FilterModal';
 import Settings from '../screens/Settings';
 import Profile from '../screens/Profile';
 import CancelButton from '../assets/components/CancelButton';
-import FilterButton from '../assets/components/FilterButton';
 import SettingsButton from '../assets/components/SettingsButton';
 import ProfileButton from '../assets/components/ProfileButton';
 import Login from "../screens/Login";
@@ -49,22 +47,6 @@ const HomeStack = createStackNavigator(
   }
 );
 
-const BrowseStack = createStackNavigator(
-  {
-    BrowseGames: {
-      screen: BrowseGames,
-    },
-    FilterModal: {
-      screen: FilterModal,
-    }
-  },
-  {
-    headerMode: 'none',
-    initialRouteName: 'BrowseGames',
-    mode: 'modal',
-  }
-);
-
 const LoginStack = createStackNavigator ({
   LoginScreen: {
     screen: Login,
@@ -91,11 +73,10 @@ const AppStack =  createStackNavigator(
       }),
     },
     Browse: {
-      screen: BrowseStack,
+      screen: BrowseGames,
       navigationOptions: ({navigation}) => ({
         title: 'Search For Games',
         ...headerStyle,
-        headerRight: <FilterButton />,
       }),
     },
     GameInfo: {
