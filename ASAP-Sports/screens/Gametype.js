@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, FlatList, Image } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 
 import SportList from '../assets/components/SportList';
+import { COLORS } from '../const';
 
 export default class Gametype extends React.Component {
   render() {
@@ -16,8 +17,8 @@ export default class Gametype extends React.Component {
               <AwesomeButton
                 width={160}
                 height={160}
-                backgroundColor="#004e89"
-                backgroundDarker="#001a33"
+                backgroundColor={COLORS.darkBlue}
+                backgroundDarker={COLORS.darkerBlue}
                 // PASS IN PROPS HERE
                 onPress={() => this.props.navigation.navigate('GameInfo',
                   {
@@ -45,7 +46,7 @@ export default class Gametype extends React.Component {
 const styles = StyleSheet.create({
   gametype: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     alignItems: 'stretch',
   },
   homeHeader: {

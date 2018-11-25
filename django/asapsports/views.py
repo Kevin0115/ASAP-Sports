@@ -27,7 +27,6 @@ def login(request):
         try:
             post_params = json.loads(request.read())
             fb_access_token = post_params['fb_access_token']
-            # device_id = request.POST['device_id']
         except KeyError:
             return utils.json_client_error("Missing required parameter")
         except json.JSONDecodeError:
@@ -80,7 +79,6 @@ def upcoming_games(request):
 
 
 def search(request):
-    # TODO fix timezone situations. This applies to both the front and backend. Big problem but not important until after demo
     """
     :param request: {
           'radius_m': int,

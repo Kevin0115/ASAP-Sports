@@ -4,11 +4,12 @@ export const FB_APP_ID = '169924577279041';
 export const COLORS = {
     pink: '#f45363',
     darkBlue: '#004e89',
+    darkerBlue: '#001a33',
     grey: '#8c8c8c',
     white: '#ffffff',
     black: '#000000',
     darkGrey: '#444444',
-    lightGrey: '#bbbbbb',
+    lightGrey: '#c9c9c9',
     transparent: '#00000000',
     clearPink: '#f4536323',
 }

@@ -219,8 +219,8 @@ export default class ReviewDetails extends React.Component {
           <AwesomeButton
             width={320}
             height={60}
-            backgroundColor='#004e89'
-            backgroundDarker='#001a33'
+            backgroundColor={COLORS.darkBlue}
+            backgroundDarker={COLORS.darkerBlue}
             onPress={this._handleSubmit}
           >
             Create Game
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   review: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     alignItems: 'center',
     justifyContent: 'center',
   },

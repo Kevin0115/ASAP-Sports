@@ -73,7 +73,7 @@ export default class Homescreen extends React.Component {
       // upcoming games text will be dynamic later on
       <View style={styles.homescreen}>
 
-        {this.state.listData.length !== 0 && 
+        {this.state.listData.length > 1 && 
         <View>
           <FlatList
             data={this.state.listData}
@@ -109,7 +109,7 @@ export default class Homescreen extends React.Component {
             width={320/2}
             height={60}
             backgroundColor={COLORS.darkBlue}
-            backgroundDarker="#001a33"
+            backgroundDarker={COLORS.darkerBlue}
             style={{marginRight: 5}}
             onPress={() => this.props.navigation.navigate('Browse')}
           >
@@ -119,7 +119,7 @@ export default class Homescreen extends React.Component {
             width={320/2}
             height={60}
             backgroundColor={COLORS.darkBlue}
-            backgroundDarker="#001a33"
+            backgroundDarker={COLORS.darkerBlue}
             style={{marginLeft: 5}}
             onPress={() => this.props.navigation.navigate('Gametype')}
           >
@@ -133,7 +133,7 @@ export default class Homescreen extends React.Component {
           </View>
         }
 
-        {this.state.listData.length === 0 &&
+        {this.state.listData.length <= 1 &&
         <Image
           source={require('../assets/images/logotext.png')}
           style={styles.logoPlaceholder}

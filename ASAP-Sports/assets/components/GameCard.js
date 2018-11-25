@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   logo: {
     borderRadius: 60,
     overlayColor: COLORS.white, // Android requires overlay colour for Image's with borderRadius
-    backgroundColor: COLORS.lightGrey,
+    backgroundColor: '#bbbbbb',
     height: 100,
     width: 100,
   },
