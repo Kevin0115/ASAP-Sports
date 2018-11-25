@@ -25,6 +25,7 @@ def num_users_in_game(conn, game_id): # TODO throw error if no game with game ID
         for row in curs:
             return row[0]
 
+
 def get_users(conn, game_id):
     users = []
     query = """
@@ -45,7 +46,7 @@ def get_dashboard(conn, user_id):
             FROM user_in_games AS uig
             LEFT OUTER JOIN games AS g ON uig.game_id=g.id
             WHERE uig.user_id=%(user_id)s
-            ORDER BY g.creation_timestamp DESC 
+            ORDER BY g.start_time DESC
             LIMIT 25
     """
     with conn.cursor() as curs:

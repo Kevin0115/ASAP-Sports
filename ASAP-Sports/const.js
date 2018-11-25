@@ -12,11 +12,24 @@ export const COLORS = {
     transparent: '#00000000',
     clearPink: '#f4536323',
 }
-export const delta  = { //TODO throw into a const file
+export const delta = {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
 };
-export const vancouver  = { //TODO throw into a const file
+export const vancouver = {
     latitude: 49.282730,
     longitude: -123.120735,
 };
+
+export const ASAPStyles = {
+    shadowed: {
+        // iOS
+        shadowColor: COLORS.black,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+
+        // Android
+        elevation: 5,
+    }
+}
