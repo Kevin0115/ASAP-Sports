@@ -11,6 +11,9 @@ CREATE TABLE users (
   fb_id BIGINT UNIQUE,
   first VARCHAR(64),
   last VARCHAR(64),
+  age SMALLINT CHECK (age is null or age >= 0),
+  gender VARCHAR(32) CHECK (gender is null or gender IN ('male', 'female', 'whatever the fuck u want')),
+  bio TEXT,
   fb_access_token VARCHAR(256),
   profile_pic_url VARCHAR(512) CHECK (profile_pic_url ~ '^https?:\/\/[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)?'),
   -- TODO URL regex is shite

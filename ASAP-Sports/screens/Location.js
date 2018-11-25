@@ -1,44 +1,38 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Alert, TextInput, Picker, TouchableOpacity } from 'react-native';
+import {Image, StyleSheet, Text, View, Dimensions} from 'react-native';
+import { MapView, Location, Permissions} from 'expo';
 import AwesomeButton from 'react-native-really-awesome-button';
-import Modal from 'react-native-modal';
 
-import NumPlayerKeys from '../assets/components/NumPlayerKeys';
+const delta  = { //TODO throw into a const file
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+const vancouver  = { //TODO throw into a const file
+  latitude: 49.282730,
+  longitude: -123.120735,
+};
 
+export default class LocationScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.mapViewDems = {x:0, y:0 , width:0 , height:0};
+  }
 
-export default class Location extends React.Component {
   state = {
-    location: '', // plaintext string
-    locChosen: false,
-    isNumPickerVisible: false,
-    maxPlayers: 'No Limit Chosen',
-    limitChosen: false,
+    userLocation: null,
+    mapRegion: {
+        latitude: vancouver.latitude,
+        longitude: vancouver.longitude,
+        latitudeDelta: delta.latitudeDelta,
+        longitudeDelta: delta.longitudeDelta,
+      },
   };
 
-  _handleLocationChange = (location) => {
-    this.setState({location: location});
-    this.setState({locChosen: true});
-  };
-
-  _showNumPicker = () => this.setState({isNumPickerVisible: true});
-
-  _hideNumPicker = () => this.setState({isNumPickerVisible: false});
-
-  _handleNumPicked = (num) => {
-    this.setState({
-      maxPlayers: num,
-      limitChosen: (num === 1) ? false : true,
-    });
-  };
-
-  _limitMessage = () => {
-    return this.state.limitChosen ? 
-      'Player Limit: ' + this.state.maxPlayers :
-      'No Limit Chosen';
-  };
+  componentWillMount() {
+    this._getLocationAsync();
+  }
 
   _handleNextPress = () => {
-    if (this.state.locChosen && this.state.limitChosen) {
       this.props.navigation.navigate('ReviewDetails',
       {
         sport: this.props.navigation.getParam('sport', 'Default'),
@@ -48,132 +42,66 @@ export default class Location extends React.Component {
         time: this.props.navigation.getParam('time', 'Default'),
         duration: this.props.navigation.getParam('duration', 'Default'),
         date: this.props.navigation.getParam('date', 'Default'),
-        maxPlayers: this.state.maxPlayers,
-        location: this.state.location,
+        maxPlayers: this.props.navigation.getParam('maxPlayers', 'Default'),
+        location: this.state.mapRegion,
       });
-    } else {
-      Alert.alert('Please complete all fields');
-    }
   }
+
+  onRegionChange(region) {
+    this.setState({
+      mapRegion: region,
+    });
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status === 'granted') {
+      let location = await Location.getCurrentPositionAsync({});
+      this.setState({userLocation: location});
+      this.setState({mapRegion: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: delta.latitudeDelta,
+          longitudeDelta: delta.longitudeDelta,
+        }});
+    }
+  };
 
   render() {
     return (
-      <View style={styles.location}>
-        <View style={styles.input}>
-          <Text style={styles.textHeader}>Please Enter a Location</Text>
-          <TextInput
-            placeholder="Enter a location"
-            placeholderTextColor="#c9c9c9"
-            clearTextOnFocus={true}
-            style={styles.titleInput}
-            onChangeText={this._handleLocationChange}
-            value={this.state.location}
-          />
-        </View>
-        <View style={styles.pickerSection}>
-          <Modal 
-            isVisible={this.state.isNumPickerVisible}
-            style={styles.bottomModal}
-            backdropOpacity={0.5}
+        <View>
+          <MapView
+            onLayout={(event) => {
+              this.mapViewDems = event.nativeEvent.layout;
+            }}
+            style={{ alignSelf: 'stretch', height: '100%' }}
+            region={this.state.mapRegion}
+            onRegionChangeComplete = {(region) => {this.onRegionChange(region)}}
           >
-            <View style={styles.modalContent}>
-              <Text style={{opacity: 0.6}}>
-                Choose a maximum number of players
-              </Text>
-              <Picker
-                style={{width: 200}}
-                selectedValue={this.state.maxPlayers}
-                onValueChange={this._handleNumPicked}
-              >
-                {NumPlayerKeys.map((item, index) => {
-                  return (<Picker.Item key={item} label={item} value={index + 1} />);
-                })}
-              </Picker>
-              <Button title='Confirm' onPress={this._hideNumPicker} />
+          </MapView>
+            <Image
+              style={{
+                position: "absolute",
+                bottom: this.mapViewDems.height / 2,
+                left: Dimensions.get('window').width / 2 - 25,
+                width: 50,
+                height: 50
+              }}
+              source={require('../assets/images/logoBlackSmall.png')}/>
+          <View style = {{position: "absolute", bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
+            <View style = {{paddingBottom: 15}}>
+            <AwesomeButton
+              width={320}
+              height={60}
+              backgroundColor='#004e89'
+              backgroundDarker='#001a33'
+              onPress={this._handleNextPress}
+            >
+              Next
+            </AwesomeButton>
             </View>
-          </Modal>
-          <AwesomeButton
-            width={320}
-            height={60}
-            onPress={this._showNumPicker}
-          >
-            Select Player Limit
-          </AwesomeButton>
-          <Text style={styles.headerText}>
-            {this._limitMessage()}
-          </Text>
-        </View>
-        <View style={styles.buttonContainer}>
-          <AwesomeButton
-            width={320}
-            height={60}
-            backgroundColor='#004e89'
-            backgroundDarker='#001a33'
-            onPress={this._handleNextPress}
-          >
-            Next
-          </AwesomeButton>
-        </View>
-      </View>
-
+            </View>
+          </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  location: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textHeader: {
-    color: '#707070',
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingBottom: 15,
-  },
-  input: {
-    flex: 3,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginTop: 14,
-    alignItems: 'center',
-    color: '#8c8c8c',
-  },
-  pickerSection: {
-    flex: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bottomModal: {
-    justifyContent: "flex-end",
-    margin: 12,
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 22,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 16,
-  },
-  titleInput: {
-    fontSize: 20,
-    height: 48,
-    width: '90%',
-    borderColor: '#c9c9c9',
-    borderWidth: 2,
-    padding: 8,
-    borderRadius: 6,
-  },
-  buttonContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-});
