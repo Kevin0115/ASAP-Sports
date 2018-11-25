@@ -106,7 +106,7 @@ def search(request):
         if locals()[key] is None:
             utils.json_client_error('Could not parse parameter "%s". Received "%s".' % (key, request.GET[key]))
 
-    if start_time < datetime.datetime.now() - datetime.timedelta(hours=1):
+    if start_time < datetime.datetime.utcnow() - datetime.timedelta(hours=1):
         return utils.json_client_error("You can't search for games in the past.")
 
     games = search_games(request.db_conn, lng, lat, radius_m, start_time, sport, 0)

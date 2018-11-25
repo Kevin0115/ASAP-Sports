@@ -13,19 +13,15 @@ import {
   TimePickerAndroid,
   ActivityIndicator,
   Slider,
-  Dimensions
 } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import { APP_BASE_URL, COLORS, vancouver, delta } from './../const';
 import { meters2kmString, encodeQueryString, getUserTimeStr, parseAPIDate } from './../utils'
 import { Ionicons } from '@expo/vector-icons';
 import SportList from '../assets/components/SportList';
-import DatePicker from 'react-native-date-picker';
-import { Button } from 'react-native-elements';
 import { MapView, Location, Permissions} from 'expo';
 import GameCard from '../assets/components/GameCard';
 
-const Marker = MapView.Marker;
 
 /**
  * NOTES
