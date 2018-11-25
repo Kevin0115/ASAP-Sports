@@ -6,6 +6,7 @@ import Modal from 'react-native-modal';
 
 import GameDurations from '../assets/components/GameDurations';
 import NumPlayerKeys from '../assets/components/NumPlayerKeys';
+import { COLORS } from '../const';
 
 export default class TimeDate extends React.Component {
   state = {
@@ -230,8 +231,8 @@ export default class TimeDate extends React.Component {
           <AwesomeButton
             width={320}
             height={60}
-            backgroundColor='#004e89'
-            backgroundDarker='#001a33'
+            backgroundColor={COLORS.darkBlue}
+            backgroundDarker={COLORS.darkerBlue}
             onPress={this._handleNextPress}
           >
             Next

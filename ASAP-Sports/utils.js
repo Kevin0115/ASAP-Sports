@@ -15,8 +15,6 @@ export function getUserTimeStr(date) {
     /**
      * This is trash and there has to be a better way to do this
      */
-    console.log("getUserTimeStr");
-    console.log(date);
     if (date === null) throw Error("Cannot pass null date to getUserTimeStr");
     const now = new Date();
     const hours = date.getHours();

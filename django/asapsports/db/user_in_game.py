@@ -25,6 +25,7 @@ def num_users_in_game(conn, game_id): # TODO throw error if no game with game ID
         for row in curs:
             return row[0]
 
+
 def get_users(conn, game_id):
     users = []
     query = """
@@ -35,24 +36,3 @@ def get_users(conn, game_id):
         for row in curs:
             users.append(row[0])
     return users
-
-
-def get_dashboard(conn, user_id):
-    # TODO this breaks if a user is in 25 games in the future
-    query = """
-            SELECT id, host_id, title, description, max_players, sport, start_time,
-                end_time, location_lat, location_lng, location_name, comp_level, g.creation_timestamp
-            FROM user_in_games AS uig
-            LEFT OUTER JOIN games AS g ON uig.game_id=g.id
-            WHERE uig.user_id=%(user_id)s
-            ORDER BY g.creation_timestamp DESC 
-            LIMIT 25
-    """
-    with conn.cursor() as curs:
-        curs.execute(query, locals())
-        games = [Game(*row) for row in curs]
-        now = datetime.datetime.utcnow()
-        games_upcoming = [g for g in games if g.start_time > now]
-        games_in_progress = [g for g in games if g.start_time <= now <= g.end_time]
-        past_games = [g for g in games if g.end_time < now]
-        return games_upcoming, games_in_progress, past_games

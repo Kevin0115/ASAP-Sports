@@ -5,8 +5,8 @@ import psycopg2
 import datetime
 
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_profile_by_id
-from .db.games import insert_game, get_game, search_games
-from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
+from .db.games import insert_game, get_game, search_games, get_dashboard
+from .db.user_in_game import insert_user_in_game, num_users_in_game, get_users, Status
 from . import utils
 from . import facebook as fb
 
@@ -27,7 +27,6 @@ def login(request):
         try:
             post_params = json.loads(request.read())
             fb_access_token = post_params['fb_access_token']
-            # device_id = request.POST['device_id']
         except KeyError:
             return utils.json_client_error("Missing required parameter")
         except json.JSONDecodeError:
@@ -80,7 +79,6 @@ def upcoming_games(request):
 
 
 def search(request):
-    # TODO fix timezone situations. This applies to both the front and backend. Big problem but not important until after demo
     """
     :param request: {
           'radius_m': int,
@@ -231,7 +229,7 @@ def view(request, game_id):
         users.append(get_user_by_id(request.db_conn, user_id).to_json())
     res['users'] = users
     return utils.json_response(res)
-    
+
 
 
 ##### NOTIFICATIONS #####
@@ -313,7 +311,6 @@ def update_user(request):
     data = request.read()
     postdata = json.loads(data)
     try:
-        user_id = postdata['id']
         asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
         first = utils.sanitize_text(postdata.get('first'))
         last = utils.sanitize_text(postdata.get('last'))
@@ -334,13 +331,11 @@ def update_user(request):
     user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:
         return utils.json_client_error("Invalid access token.")
-    if user.id is not user_id:
-        return utils.json_client_error("Invalid user update")
 
     if all((x is None for x in (first, last, profile_pic_url, age, gender, bio, show_age, show_gender, show_bio))):
         return utils.json_client_error("No values to update")
 
-    update_user_profile_by_id(request.db_conn, user_id, first, last, profile_pic_url,
+    update_user_profile_by_id(request.db_conn, user.id, first, last, profile_pic_url,
                     age, gender, bio, show_age, show_gender, show_bio)
     if user is None:
         return utils.json_client_error("Bad authorization")

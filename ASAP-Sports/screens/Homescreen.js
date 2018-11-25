@@ -1,28 +1,27 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage, FlatList, Dimensions, ActivityIndicator } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
-import { APP_BASE_URL, COLORS } from '../const';
+import { APP_BASE_URL, COLORS, ASAPStyles } from '../const';
 import GameCard from '../assets/components/GameCard';
 
-// TODO: Search again when we come back to this screen (ie after creating a game)
+// NOTIDEAL: Mixing different types in the list is ugly AF.
 
 export default class Homescreen extends React.Component {
   constructor(props){
-    super(props)
+    super(props);
     this.state = {
-      upcomingGames: [],
-      pastGames: [],
-      gamesInProgress: []
-    }
+      listData: []
+    };
+    this.props.navigation.addListener('didFocus', payload => {
+      // NOTIDEAL: This gets called a lot. We only want to call it after we have joined/left a game
+      this.getDashboard();
+    });
   }
 
-  componentWillMount() {
-    this.searchGames();
-  }
-
-  async searchGames() {
+  async getDashboard(self) {
+    self = self ? self : this;
     const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
-    this.setState({loading: true});
+    self.setState({loading: true});
     fetch(APP_BASE_URL + '/games/upcoming_games', {
       method: 'GET',
       headers: {
@@ -32,78 +31,77 @@ export default class Homescreen extends React.Component {
     .then((response) => {
       if (response.error) {
         console.warn("Error!", response.error);
-        this.setState({loading: false});
+        self.setState({loading: false});
         // TODO handle error with modal
       } else {
 
-        // console.log(response);
         for (var gamesList of [response.games_upcoming, response.games_in_progress, response.past_games]) {
           for (var g of gamesList) {
             // Add string key so the FlatList doesn't complain
             g.key = g.id.toString();
+
+            // Give it a type because we are mixing types in the list
+            g.type = 'gamecard';
           }
         }
-        this.setState({
-          upcomingGames: response.games_upcoming,
-          pastGames: response.past_games,
-          gamesInProgress: response.games_in_progress,
+        let listData = [];
+        if (response.games_in_progress.length){
+          listData.push({key: 'In Progress', type: 'text'});
+          listData.push(response.games_in_progress[0]);
+        }
+        if (response.games_upcoming.length){
+          listData.push({key: 'Upcoming Games', type: 'text'});
+          for (var g of response.games_upcoming) {
+            listData.push(g);
+          }
+        }
+        listData.push({key: 'space', type: 'space'});
+        self.setState({
           loading: false,
-          emptyState: response.games_upcoming.length === 0 
-            && response.past_games.length === 0 
-            && response.games_in_progress.length === 0,
+          listData: listData,
         });
       }
     })
     .catch((error) => {
       // TODO extract modal from screens/Login.js and open on error
       console.warn('Error: ', error);
-      this.setState({loading: false})
+      self.setState({loading: false})
     });
-  }
+  };
   render() {
     return (
       // upcoming games text will be dynamic later on
       <View style={styles.homescreen}>
-        {this.state.gamesInProgress.length !== 0 &&
+
+        {this.state.listData.length > 1 && 
         <View>
-          <View style={styles.textContainer}>
-            <Text style={styles.upcomingText}>
-              Game In Progress
-            </Text>
-          </View>
-          <View /* TODO fix this bad hack to get heiight */style={{width: '100%', height: 120}}> 
-            <GameCard
-              gameInfo={this.state.gamesInProgress[0]} //  TODO only getting first game. Maybe we should introduce an invariant so that a user can only have one game in progress at a time. Scheduling conflict problem on the DB level right here.
-              onPress={() => {
-                console.log("TODO", this.state.gamesInProgress[0].id, this.state.gamesInProgress[0].sport, this.state.gamesInProgress[0].title);
-                // this.props.navigation.navigate('GameInfo', item);
-              }}
-            />
-          </View>
-        </View>
-        }
-        {this.state.upcomingGames.length !== 0 && 
-        <View>
-          <View style={styles.textContainer}>
-            <Text style={styles.upcomingText}>
-              Upcoming Games
-            </Text>
-          </View>
-          <View style={{width: '100%'}}>
-              <FlatList
-                data={this.state.upcomingGames}
-                numColumns={1}
-                renderItem={({item}) =>
+          <FlatList
+            data={this.state.listData}
+            numColumns={1}
+            onRefresh={() => this.getDashboard(this)}
+            refreshing={this.state.loading}
+            renderItem={({item}) => {
+              if (item.type === 'text') {
+                return (
+                  <View style={styles.headerTextContainer}>
+                    <Text style={styles.upcomingText}>{item.key}</Text>
+                  </View>
+                )
+              }
+              else if (item.type === 'gamecard'){
+                return (
                   <GameCard
                     gameInfo={item}
                     onPress={() => {
-                      console.log("TODO", item.id, item.sport, item.title);
-                      // this.props.navigation.navigate('GameInfo', item);
+                      console.log("TODOddadsa", item.id, item.sport, item.title);
+                      this.props.navigation.navigate('ViewGame', {game: item});
                     }}
-                  />
-                }
-              />
-          </View>
+                  />)
+              } else if (item.type === 'space') {
+                return (<View style={{marginBottom: 80}}></View>)
+              }
+            }}
+          />
         </View>
         }
         <View style={styles.buttonContainer}>
@@ -111,7 +109,7 @@ export default class Homescreen extends React.Component {
             width={320/2}
             height={60}
             backgroundColor={COLORS.darkBlue}
-            backgroundDarker="#001a33"
+            backgroundDarker={COLORS.darkerBlue}
             style={{marginRight: 5}}
             onPress={() => this.props.navigation.navigate('Browse')}
           >
@@ -121,7 +119,7 @@ export default class Homescreen extends React.Component {
             width={320/2}
             height={60}
             backgroundColor={COLORS.darkBlue}
-            backgroundDarker="#001a33"
+            backgroundDarker={COLORS.darkerBlue}
             style={{marginLeft: 5}}
             onPress={() => this.props.navigation.navigate('Gametype')}
           >
@@ -135,7 +133,7 @@ export default class Homescreen extends React.Component {
           </View>
         }
 
-        {this.state.emptyState &&
+        {this.state.listData.length <= 1 &&
         <Image
           source={require('../assets/images/logotext.png')}
           style={styles.logoPlaceholder}
@@ -143,7 +141,7 @@ export default class Homescreen extends React.Component {
         }
       </View>
     );
-  }
+  };
 }
 
 
@@ -161,18 +159,18 @@ const styles = StyleSheet.create({
     height: '100%',
     // alignItems: 'stretch',
   },
-  textContainer: {
+  headerTextContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#ddd',
+    paddingVertical: 10,
+    ...ASAPStyles.shadowed,
   },
   upcomingText: {
     fontWeight: 'bold',
+    // textDecorationLine: 'underline',
     fontSize: 18,
-    color: COLORS.grey,
-  },
-  upcomingGamesContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    color: COLORS.darkGrey,
   },
   logoPlaceholder: {
     opacity: 0.1,
@@ -180,15 +178,14 @@ const styles = StyleSheet.create({
     height: 150,
     position: 'absolute',
     left: Dimensions.get('window').width/2 - 100,
-    top: Dimensions.get('window').height/2 - 150
+    top: 40,
   },
   buttonContainer: {
     flexDirection: 'row',
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 30,
+    bottom: 15,
     width: '100%',
   },
 });
