@@ -204,7 +204,7 @@ export default class BrowseGames extends React.Component {
       location_name: "The court",
       comp_level: 2,
       creation_timestamp: "Friday, November 23, 2018 02:21 PM",
-      users: [
+      players: [
         {
           id: 1,
           fb_id: 1,
@@ -540,28 +540,29 @@ export default class BrowseGames extends React.Component {
               onPress={() => {
                 console.log(item);
                 console.log("TODO", item.id, item.sport, item.title);
-                // this.props.navigation.navigate('ViewGame', item);
+                console.log(item.players.length);
+                this.props.navigation.navigate('ViewGame', {game: item});
               }}
             />
           }
           />
 
         }
-        <View style={styles.buttonContainer}>
-          <AwesomeButton
-            width={320}
-            height={60}
-            backgroundColor="#004e89"
-            backgroundDarker="#001a33"
-            onPress={() => {
-              this.props.navigation.navigate('ViewGame', {
-                game: game
-              });
-            }}
-          >
-            View Game
-          </AwesomeButton>
-        </View>
+        {/*<View style={styles.buttonContainer}>*/}
+          {/*<AwesomeButton*/}
+            {/*width={320}*/}
+            {/*height={60}*/}
+            {/*backgroundColor="#004e89"*/}
+            {/*backgroundDarker="#001a33"*/}
+            {/*onPress={() => {*/}
+              {/*this.props.navigation.navigate('ViewGame', {*/}
+                {/*game: game*/}
+              {/*});*/}
+            {/*}}*/}
+          {/*>*/}
+            {/*View Game*/}
+          {/*</AwesomeButton>*/}
+        {/*</View>*/}
 
       </View>
     );

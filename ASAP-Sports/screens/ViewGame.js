@@ -46,7 +46,7 @@ export default class ViewGame extends React.Component {
       location_name: "The court",
       comp_level: 2,
       creation_timestamp: "Friday, November 23, 2018 02:21 PM",
-      users: [{
+      players: [{
         id: 1,
         fb_id: 1,
         first: "Kyle",
@@ -65,6 +65,7 @@ export default class ViewGame extends React.Component {
   componentDidMount() {
     const { navigation } = this.props;
     const gameInfo = navigation.getParam('game', 'Default');
+    console.log(gameInfo);
     this.startTime = gameInfo.start_time;
     console.log(this.startTime);
     let region = this.state.mapRegion;
@@ -77,7 +78,7 @@ export default class ViewGame extends React.Component {
         longitudeDelta: region.longitudeDelta,
       }});
     this.duration = this._calc_duration(gameInfo.start_time, gameInfo.end_time);
-    // console.log(gameInfo.users[0].first);
+    // console.log(gameInfo.players[0].first);
   }
 
   setModalVisible(visible) {
@@ -184,7 +185,8 @@ export default class ViewGame extends React.Component {
                       onPress={() => {
                         this.setModalVisible(true);
                       }} >
-                  {gameInfo.users.length}/{gameInfo.max_players} players joined</Text>
+                  {gameInfo.players.length}/{gameInfo.max_players} players joined
+              </Text>
               </View>
               {gameInfo.desc != '' ?
                 <View >
@@ -203,7 +205,7 @@ export default class ViewGame extends React.Component {
                     </View>
                     <ScrollView>
                       <FlatList
-                        data={gameInfo.users}
+                        data={gameInfo.players}
                         numColumns={1}
                         renderItem={({item}) =>
                           <PlayerCard

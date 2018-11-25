@@ -95,8 +95,8 @@ export default class Homescreen extends React.Component {
                   <GameCard
                     gameInfo={item}
                     onPress={() => {
-                      console.log("TODO", item.id, item.sport, item.title);
-                      this.props.navigation.navigate('ViewGame', item);
+                      console.log("TODOddadsa", item.id, item.sport, item.title);
+                      this.props.navigation.navigate('ViewGame', {game: item});
                     }}
                   />
                 }
