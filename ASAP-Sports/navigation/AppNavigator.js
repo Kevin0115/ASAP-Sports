@@ -140,7 +140,7 @@ const AppStack =  createStackNavigator(
     }
   },
   {
-    initialRouteName: 'UserInfo', // This will be changed later to Login depending on conditions
+    initialRouteName: 'Homescreen', // This will be changed later to Login depending on conditions
     headerMode: 'screen',
     headerBackTitle: 'false',
   }
