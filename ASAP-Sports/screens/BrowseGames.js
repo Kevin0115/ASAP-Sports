@@ -13,19 +13,15 @@ import {
   TimePickerAndroid,
   ActivityIndicator,
   Slider,
-  Dimensions
 } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import { APP_BASE_URL, COLORS, vancouver, delta } from './../const';
 import { meters2kmString, encodeQueryString, getUserTimeStr, parseAPIDate } from './../utils'
 import { Ionicons } from '@expo/vector-icons';
 import SportList from '../assets/components/SportList';
-import DatePicker from 'react-native-date-picker';
-import { Button } from 'react-native-elements';
 import { MapView, Location, Permissions} from 'expo';
 import GameCard from '../assets/components/GameCard';
 
-const Marker = MapView.Marker;
 
 /**
  * NOTES
@@ -80,7 +76,7 @@ export default class BrowseGames extends React.Component {
   }
 
   async searchGames() {
-    const userAuthToken = await AsyncStorage.getItem('userAuth');
+    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
     const timeStr = this.state.time === null ? new Date().toUTCString() : this.state.time.toUTCString();
     console.log("Searching with time:", timeStr);
     const queryParams = encodeQueryString({
@@ -96,7 +92,7 @@ export default class BrowseGames extends React.Component {
     fetch(url, {
       method: 'GET',
       headers: {
-        'Authorization': userAuthToken,
+        'Authorization': authUser.asap_access_token,
       },
     }).then((res) => res.json())
     .then((response) => {

@@ -38,7 +38,6 @@ def login(request):
             fb_id, first, last, profile_pic_url = fb.get_user_info(fb_access_token)
         except fb.FacebookAPIException as e:
             return utils.json_client_error("Failed to reach Facebook. %s" % str(e))
-
         asap_access_token = uuid.uuid4()    
         try:
             insert_user(request.db_conn, fb_id, first, last, None, None, None, fb_access_token,
@@ -106,7 +105,7 @@ def search(request):
         if locals()[key] is None:
             utils.json_client_error('Could not parse parameter "%s". Received "%s".' % (key, request.GET[key]))
 
-    if start_time < datetime.datetime.now() - datetime.timedelta(hours=1):
+    if start_time < datetime.datetime.utcnow() - datetime.timedelta(hours=1):
         return utils.json_client_error("You can't search for games in the past.")
 
     games = search_games(request.db_conn, lng, lat, radius_m, start_time, sport, 0)

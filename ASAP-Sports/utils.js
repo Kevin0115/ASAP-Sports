@@ -43,13 +43,9 @@ export function getUserTimeStr(date) {
 
 export function parseAPIDate(apiDate) {
     /**
-     * returns: Date object
-     * 
-     * 
-     * TODO: Make this work because it is currently broken. Probably something to do with timezones.
-     * 
-     * NOTE: Still use this function because then once it is fixed we don't have to refactor anything
-     *  and everything will magically work at the same time
+     * returns: Date object in user's timezone
      */
-    return new Date(Date.parse(apiDate));
+    const utc_ms = Date.parse(apiDate);
+    const user_timezone_offset_ms = new Date().getTimezoneOffset() * 60 * 1000;
+    return new Date(utc_ms - user_timezone_offset_ms);
 }

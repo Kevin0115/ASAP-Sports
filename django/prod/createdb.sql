@@ -19,7 +19,7 @@ CREATE TABLE users (
   -- TODO URL regex is shite
   asap_access_token uuid,
   -- expiry date for access token?
-  creation_timestamp TIMESTAMP NOT NULL DEFAULT current_timestamp
+  creation_timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT current_timestamp
   --   device_id VARCHAR(128)
 );
 
@@ -32,13 +32,13 @@ CREATE TABLE games (
   sport VARCHAR(16) CHECK (sport IN ('basketball', 'volleyball', 'soccer', 'baseball', 'badminton', 'football',
                                         'table_tennis', 'tennis', 'bouldering', 'skateboarding', 'boxing',
                                         'wrestling', 'swimming', 'ultimate_frisbee')),
-  start_time TIMESTAMP NOT NULL,
-  end_time TIMESTAMP NOT NULL,
+  start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   location_lat FLOAT(32),
   location_lng FLOAT(32),
   location_name VARCHAR(128) NOT NULL CHECK (char_length(location_name) > 0),
   comp_level INT NOT NULL CHECK (comp_level >= 1 and comp_level <= 3),
-  creation_timestamp TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  creation_timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT current_timestamp,
 
   CONSTRAINT startend_time_chk CHECK (end_time >= start_time)
 );
@@ -47,7 +47,7 @@ CREATE TABLE user_in_games (
   user_id INT REFERENCES users(id) NOT NULL,
   game_id INT REFERENCES games(id) NOT NULL,
   status VARCHAR(64) NOT NULL CHECK (status IN ('invited', 'accepted', 'declined')),
-  creation_timestamp TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  creation_timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT current_timestamp,
 
   PRIMARY KEY (user_id, game_id)
 );

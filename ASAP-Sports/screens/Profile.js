@@ -9,6 +9,7 @@ export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+<<<<<<< HEAD
       userData: {},
       userPic: '',
       displayAge: false,
@@ -18,11 +19,15 @@ export default class Profile extends React.Component {
       bioFlexVal: 2.6,
       ageFlexVal: 0,
       isModalVisible: false,
+=======
+      authUser: {},
+>>>>>>> origin
     };
     this._retrieveData();
   }
 
   _retrieveData = async () => {
+<<<<<<< HEAD
     const userData = JSON.parse(await AsyncStorage.getItem('fbGraphApiResponse'));
     const userPic = JSON.parse(await AsyncStorage.getItem('profilePicUrl'));
     console.log(userData)
@@ -32,6 +37,12 @@ export default class Profile extends React.Component {
     this.setState({
       userData: userData,
       userPic: userPic,
+=======
+    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
+    console.log(authUser);
+    this.setState({
+      authUser: authUser
+>>>>>>> origin
     });
 
     // We'll also need to grab age and bio from the db if exists
@@ -89,16 +100,25 @@ export default class Profile extends React.Component {
 
   render() {
     return (
+<<<<<<< HEAD
       <KeyboardAvoidingView
         style={styles.profile}
         behavior="padding"
         keyboardVerticalOffset={20}
         enabled
       >
+=======
+      <View style={styles.profile}>
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>
+            Welcome, {this.state.authUser.first + " " + this.state.authUser.last}!
+          </Text>
+        </View>
+>>>>>>> origin
         <View style={styles.profilePicContainer}>
           <Image
             style={styles.profilePic}
-            source={{uri: this.state.userPic}}
+            source={{uri: this.state.authUser.profile_pic_url}}
           />
         </View>
         <View style={styles.textContainer}>
