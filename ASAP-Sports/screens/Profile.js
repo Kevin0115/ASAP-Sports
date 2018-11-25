@@ -9,40 +9,32 @@ export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-<<<<<<< HEAD
+      // Async state variables
       userData: {},
+      userName: '',
       userPic: '',
       displayAge: false,
       displayBio: false,
       userAge: null,
       userBio: '',
+
+      // Local state variables
       bioFlexVal: 2.6,
       ageFlexVal: 0,
       isModalVisible: false,
-=======
-      authUser: {},
->>>>>>> origin
     };
     this._retrieveData();
   }
 
   _retrieveData = async () => {
-<<<<<<< HEAD
-    const userData = JSON.parse(await AsyncStorage.getItem('fbGraphApiResponse'));
-    const userPic = JSON.parse(await AsyncStorage.getItem('profilePicUrl'));
-    console.log(userData)
-    console.log('Displaying profilePicUrl:');
-    console.log(userPic);
-    console.log('End profilePicUrl');
+    const userData = JSON.parse(await AsyncStorage.getItem('authUser'));
+    console.log(userData);
     this.setState({
       userData: userData,
-      userPic: userPic,
-=======
-    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
-    console.log(authUser);
-    this.setState({
-      authUser: authUser
->>>>>>> origin
+      userName: userData.first + " " + userData.last,
+      userPic: userData.profile_pic_url,
+      userAge: userData.age,
+      userBio: userData.bio,
     });
 
     // We'll also need to grab age and bio from the db if exists
@@ -50,10 +42,7 @@ export default class Profile extends React.Component {
     // With that information, set the state vars
   }
 
-  _hideModal = () => {
-    this.setState({isModalVisible: false});
-  }
-
+  // The following 4 functions need to alter the async authUser as well as DB user
   _handleAgeToggle = () => {
     this.setState({
       displayAge: !this.state.displayAge,
@@ -70,8 +59,17 @@ export default class Profile extends React.Component {
     this.setState({userAge: age});
   }
 
+  _handleBioChange = (bio) => {
+    this.setState({userBio: bio});
+  }
+
+  // Only affect local state
+  _hideModal = () => {
+    this.setState({isModalVisible: false});
+  }
+  
   _renderNameAndAge = () => {
-    return this.state.userData.name + 
+    return this.state.userName + 
       (this.state.displayAge && this.state.userAge ? ', ' + this.state.userAge : '');
   }
 
@@ -100,25 +98,16 @@ export default class Profile extends React.Component {
 
   render() {
     return (
-<<<<<<< HEAD
       <KeyboardAvoidingView
         style={styles.profile}
         behavior="padding"
         keyboardVerticalOffset={20}
         enabled
       >
-=======
-      <View style={styles.profile}>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            Welcome, {this.state.authUser.first + " " + this.state.authUser.last}!
-          </Text>
-        </View>
->>>>>>> origin
         <View style={styles.profilePicContainer}>
           <Image
             style={styles.profilePic}
-            source={{uri: this.state.authUser.profile_pic_url}}
+            source={{uri: this.state.userPic}}
           />
         </View>
         <View style={styles.textContainer}>
@@ -180,7 +169,7 @@ export default class Profile extends React.Component {
             clearTextOnFocus={false}
             style={this._renderBio()}
             multiline={true}
-            onChangeText={(userBio) => this.setState({userBio})}
+            onChangeText={this._handleBioChange}
             value={this.state.userBio}
             blurOnSubmit={true}
             onSubmitEditing={Keyboard.dismiss}
