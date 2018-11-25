@@ -4,7 +4,7 @@ import uuid
 import psycopg2
 import datetime
 
-from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_by_id
+from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_profile_by_id
 from .db.games import insert_game, get_game, search_games
 from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
 from . import utils
@@ -314,20 +314,22 @@ def update_user(request):
     postdata = json.loads(data)
     try:
         user_id = postdata['id']
-        fb_id = postdata.get('fb_id')
-        first = postdata['first']
-        last = postdata['last']
-        age = postdata.get('age')
-        gender = postdata.get('gender')
-        bio = postdata.get('bio')
-        fb_access_token = postdata.get('fb_access_token')
-        profile_pic_url = postdata.get('profile_pic_url')
         asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
+        first = utils.sanitize_text(postdata.get('first'))
+        last = utils.sanitize_text(postdata.get('last'))
+        profile_pic_url = utils.sanitize_text(postdata.get('profile_pic_url'))
+        age = utils.sanitize_int(postdata.get('age'))
+        gender = utils.sanitize_text(postdata.get('gender'))
+        bio = utils.sanitize_text(postdata.get('bio'))
+        show_age = utils.sanitize_bool(postdata.get('show_age'))
+        show_gender = utils.sanitize_bool(postdata.get('show_gender'))
+        show_bio = utils.sanitize_bool(postdata.get('show_bio'))
     except KeyError as e:
         return utils.json_client_error("Missing parameter " + str(e))
 
     if asap_access_token is None:
        return utils.json_client_error("Bad access token.")
+
 
     user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:
@@ -335,8 +337,11 @@ def update_user(request):
     if user.id is not user_id:
         return utils.json_client_error("Invalid user update")
 
-    update_user_by_id(request.db_conn, user_id, fb_id, first, last, age, gender, bio, fb_access_token,
-                 profile_pic_url, asap_access_token)
+    if all((x is None for x in (first, last, profile_pic_url, age, gender, bio, show_age, show_gender, show_bio))):
+        return utils.json_client_error("No values to update")
+
+    update_user_profile_by_id(request.db_conn, user_id, first, last, profile_pic_url,
+                    age, gender, bio, show_age, show_gender, show_bio)
     if user is None:
         return utils.json_client_error("Bad authorization")
 

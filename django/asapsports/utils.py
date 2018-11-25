@@ -23,10 +23,22 @@ def get_connection():
                             port=DB_INFO.get('PORT'))
 
 
+def sanitize_bool(x):
+    if x in ('True', 'true', 't', 'T', True, 'on'):
+        return True
+    if x in ('False', 'false', 'f', 'F', False, 'off'):
+        return False
+    return None
+
+
+def sanitize_text(x):
+    return x.strip() if isinstance(x, str) else None
+
+
 def sanitize_int(x):
     try:
         return int(x)
-    except ValueError:
+    except (ValueError, TypeError):
         return None
 
 
