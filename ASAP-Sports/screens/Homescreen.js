@@ -28,7 +28,6 @@ export default class Homescreen extends React.Component {
       },
     }).then((res) => res.json())
     .then((response) => {
-      console.log(response);
       if (response.error) {
         console.warn("Error!", response.error);
         this.setState({loading: false});
