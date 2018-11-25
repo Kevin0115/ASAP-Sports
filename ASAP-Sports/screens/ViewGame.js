@@ -203,33 +203,36 @@ export default class ViewGame extends React.Component {
               <Modal
                 isVisible={this.state.modalVisible}
                 backdropOpacity={0.7}
-                >
-                  <View style={styles.modalContent}>
-                    <View style = {styles.modalTitle}>
-                    <Text style={{fontWeight: 'bold', fontSize: 20}}>Player List</Text>
-                    </View>
-                    <ScrollView>
-                      <FlatList
-                        data={gameInfo.players}
-                        numColumns={1}
-                        renderItem={({item}) =>
-                          <PlayerCard
-                            player={item}
-                            onPress={(item) => {
-                              // this.props.navigation.navigate('PlayerProfile', item);
-                            }}
-                          />
-                        }
-                      />
-                    </ScrollView>
-                    <View style = {styles.modalClose}>
-                    <Button
-                      title="Done"
-                      onPress={() => {
-                        this.setModalVisible(!this.state.modalVisible);
-                      }}/>
+              >
+                <View style={styles.modalContent}>
+                  <View style = {styles.modalTitle}>
+                  <Text style={{fontWeight: 'bold', fontSize: 20}}>Player List</Text>
+                  </View>
+                  <ScrollView>
+                    <FlatList
+                      data={gameInfo.players}
+                      numColumns={1}
+                      renderItem={({item}) =>
+                        <PlayerCard
+                          player={item}
+                          onPress={() => {
+                            this.setState({modalVisible: false});
+                            this.props.navigation.navigate('UserInfo', {userInfo: item});
+                            }
+                          }
+                        />
+                      }
+                      keyExtractor={(item, index) => index.toString()}
+                    />
+                  </ScrollView>
+                  <View style = {styles.modalClose}>
+                  <Button
+                    title="Done"
+                    onPress={() => {
+                      this.setModalVisible(!this.state.modalVisible);
+                    }}/>
 
-                    </View>
+                  </View>
                 </View>
               </Modal>
 
