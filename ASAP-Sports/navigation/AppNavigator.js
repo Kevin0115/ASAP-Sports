@@ -18,6 +18,7 @@ import FilterButton from '../assets/components/FilterButton';
 import SettingsButton from '../assets/components/SettingsButton';
 import ProfileButton from '../assets/components/ProfileButton';
 import Login from "../screens/Login";
+import UserInfo from '../screens/UserInfo';
 import { AuthLoadingScreen } from "../screens/AuthLoadingScreen";
 
 class LogoIcon extends React.Component {
@@ -130,9 +131,16 @@ const AppStack =  createStackNavigator(
         ...creationHeaderStyle,
       }),
     },
+    UserInfo: {
+      screen: UserInfo,
+      navigationOptions: ({navigation}) => ({
+        title: 'Player Info',
+        ...headerStyle,
+      })
+    }
   },
   {
-    initialRouteName: 'Homescreen', // This will be changed later to Login depending on conditions
+    initialRouteName: 'UserInfo', // This will be changed later to Login depending on conditions
     headerMode: 'screen',
     headerBackTitle: 'false',
   }
