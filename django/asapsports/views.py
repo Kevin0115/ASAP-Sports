@@ -313,7 +313,6 @@ def update_user(request):
     data = request.read()
     postdata = json.loads(data)
     try:
-        user_id = postdata['id']
         asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
         first = utils.sanitize_text(postdata.get('first'))
         last = utils.sanitize_text(postdata.get('last'))
@@ -334,13 +333,11 @@ def update_user(request):
     user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:
         return utils.json_client_error("Invalid access token.")
-    if user.id is not user_id:
-        return utils.json_client_error("Invalid user update")
 
     if all((x is None for x in (first, last, profile_pic_url, age, gender, bio, show_age, show_gender, show_bio))):
         return utils.json_client_error("No values to update")
 
-    update_user_profile_by_id(request.db_conn, user_id, first, last, profile_pic_url,
+    update_user_profile_by_id(request.db_conn, user.id, first, last, profile_pic_url,
                     age, gender, bio, show_age, show_gender, show_bio)
     if user is None:
         return utils.json_client_error("Bad authorization")
