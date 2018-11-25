@@ -4,6 +4,8 @@ import AwesomeButton from 'react-native-really-awesome-button';
 import { APP_BASE_URL, COLORS } from '../const';
 import GameCard from '../assets/components/GameCard';
 
+// TODO: Search again when we come back to this screen (ie after creating a game)
+
 export default class Homescreen extends React.Component {
   constructor(props){
     super(props)
@@ -19,12 +21,12 @@ export default class Homescreen extends React.Component {
   }
 
   async searchGames() {
-    const userAuthToken = await AsyncStorage.getItem('userAuth');
+    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
     this.setState({loading: true});
     fetch(APP_BASE_URL + '/games/upcoming_games', {
       method: 'GET',
       headers: {
-        'Authorization': userAuthToken,
+        'Authorization': authUser.asap_access_token,
       },
     }).then((res) => res.json())
     .then((response) => {
@@ -34,7 +36,7 @@ export default class Homescreen extends React.Component {
         // TODO handle error with modal
       } else {
 
-        console.log(response);
+        // console.log(response);
         for (var gamesList of [response.games_upcoming, response.games_in_progress, response.past_games]) {
           for (var g of gamesList) {
             // Add string key so the FlatList doesn't complain

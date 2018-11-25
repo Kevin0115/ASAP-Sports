@@ -76,7 +76,7 @@ export default class BrowseGames extends React.Component {
   }
 
   async searchGames() {
-    const userAuthToken = await AsyncStorage.getItem('userAuth');
+    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
     const timeStr = this.state.time === null ? new Date().toUTCString() : this.state.time.toUTCString();
     console.log("Searching with time:", timeStr);
     const queryParams = encodeQueryString({
@@ -92,7 +92,7 @@ export default class BrowseGames extends React.Component {
     fetch(url, {
       method: 'GET',
       headers: {
-        'Authorization': userAuthToken,
+        'Authorization': authUser.asap_access_token,
       },
     }).then((res) => res.json())
     .then((response) => {

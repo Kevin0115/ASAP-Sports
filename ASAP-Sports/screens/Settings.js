@@ -4,7 +4,7 @@ import AwesomeButton from 'react-native-really-awesome-button';
 
 export default class Settings extends React.Component {
   async logOut() {
-    await AsyncStorage.removeItem('userAuth');
+    await AsyncStorage.removeItem('authUser');
     this.props.navigation.navigate('AuthLoading');
   }
 

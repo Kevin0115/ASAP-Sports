@@ -64,12 +64,12 @@ export default class ReviewDetails extends React.Component {
   };
 
   _handleSubmit = async () => {
-    const userAuthToken = await AsyncStorage.getItem('userAuth');
+    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
     const creationInfo = JSON.stringify(this.state.creationInfo);
     fetch(APP_BASE_URL + '/games/host', {
       method: 'POST',
       headers: {
-        'Authorization': userAuthToken,
+        'Authorization': authUser.asap_access_token,
       },
       body: creationInfo,
     }).then((res) => res.json())

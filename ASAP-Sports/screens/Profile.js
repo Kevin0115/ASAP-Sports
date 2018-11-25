@@ -6,21 +6,16 @@ export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userData: {},
-      userPic: "",
+      authUser: {},
     };
     this._retrieveData();
   }
 
   _retrieveData = async () => {
-    const userData = JSON.parse(await AsyncStorage.getItem('fbGraphApiResponse'));
-    const userPic = JSON.parse(await AsyncStorage.getItem('profilePicUrl'));
-    console.log('Displaying profilePicUrl:');
-    console.log(userPic);
-    console.log('End profilePicUrl');
+    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
+    console.log(authUser);
     this.setState({
-      userData: userData,
-      userPic: userPic
+      authUser: authUser
     });
   }
 
@@ -29,13 +24,13 @@ export default class Profile extends React.Component {
       <View style={styles.profile}>
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Welcome, {this.state.userData.name}!
+            Welcome, {this.state.authUser.first + " " + this.state.authUser.last}!
           </Text>
         </View>
         <View style={styles.profilePicContainer}>
           <Image
             style={styles.profilePic}
-            source={{uri: this.state.userPic}}
+            source={{uri: this.state.authUser.profile_pic_url}}
           />
         </View>
         <View style={{flex: 3.5}} />
