@@ -70,7 +70,7 @@ def insert_user(conn, fb_id, first, last, age, gender, bio, fb_access_token,
         curs.execute(query, locals())
 
 
-def update_user_profile_by_id(conn, id, first, last, profile_pic_url, 
+def update_user_profile_by_id(conn, id, first, last, profile_pic_url,
                     age, gender, bio, show_age, show_gender, show_bio):
     query = """
         update users set 

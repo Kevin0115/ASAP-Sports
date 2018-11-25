@@ -1,6 +1,6 @@
 from .asapobject import ASAPObject
 from asapsports.utils import distance_between, offset_lat_lng
-
+from asapsports.db.users import User
 
 class Game(ASAPObject):
     def __init__(self, id, host_id, title, description, max_players, sport, start_time,
@@ -69,4 +69,16 @@ def search_games(conn, lng, lat, radius_m, start_time, sport, page_num):
         games = [Game(*row) for row in curs]
         # TODO filter in database so we can get a defined amount from DB. Very importante.
         games = [g for g in games if distance_between(g.location_lat, g.location_lng, lat, lng) <= radius_m]
+
+        for g in games:
+            query = """
+                select u.id, u.fb_id, u.first, u.last, u.age, u.gender, u.bio, u.fb_access_token, u.profile_pic_url,
+                    u.asap_access_token, u.show_age, u.show_bio, u.show_gender, u.creation_timestamp
+                    from user_in_games uig
+                    left outer join games g on uig.game_id = g.id
+                    left outer join users u on uig.user_id = u.id
+                    where uig.game_id=%s
+            """
+            curs.execute(query, [g.id])
+            g.players = [User(*row) for row in curs]
         return games
