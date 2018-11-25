@@ -5,8 +5,8 @@ import psycopg2
 import datetime
 
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_profile_by_id
-from .db.games import insert_game, get_game, search_games
-from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
+from .db.games import insert_game, get_game, search_games, get_dashboard
+from .db.user_in_game import insert_user_in_game, num_users_in_game, get_users, Status
 from . import utils
 from . import facebook as fb
 
@@ -231,7 +231,7 @@ def view(request, game_id):
         users.append(get_user_by_id(request.db_conn, user_id).to_json())
     res['users'] = users
     return utils.json_response(res)
-    
+
 
 
 ##### NOTIFICATIONS #####
