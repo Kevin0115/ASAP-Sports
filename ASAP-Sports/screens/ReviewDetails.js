@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions, Platform, AsyncStorage } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
-import { APP_BASE_URL, vancouver, delta } from './../const';
+import { APP_BASE_URL, vancouver, delta, COLORS } from './../const';
 
 import SportDict from '../assets/components/SportsDict';
 import {MapView} from "expo";
@@ -325,6 +325,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   logo: {
+    overlayColor: COLORS.white,
     borderRadius:30,
     backgroundColor: '#FFA500',
     height: 60,

@@ -6,7 +6,7 @@ import {MapView} from "expo";
 import {parseAPIDate} from "../utils.js";
 import PlayerCard from "../assets/components/PlayerCard";
 import Modal from 'react-native-modal';
-import {APP_BASE_URL} from "../const";
+import {APP_BASE_URL, COLORS} from "../const";
 
 const Marker = MapView.Marker;
 const delta  = { //TODO throw into a const file
@@ -263,7 +263,6 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 18
   },
   markerIOSHack: {
     height: 50,
@@ -357,6 +356,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   logo: {
+    overlayColor: COLORS.white,
     borderRadius:30,
     backgroundColor: '#FFA500',
     height: 60,
