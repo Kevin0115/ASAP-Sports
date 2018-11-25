@@ -41,28 +41,9 @@ const HomeStack = createStackNavigator(
     Profile: {
       screen: Profile,
     },
-    ViewGame: {
-      screen: ViewGame,
-    }
   },
   {
     headerMode: 'none',
-    mode: 'modal',
-  }
-);
-
-const BrowseStack = createStackNavigator(
-  {
-    BrowseGames: {
-      screen: BrowseGames,
-    },
-    ViewGame: {
-      screen: ViewGame,
-    }
-  },
-  {
-    headerMode: 'none',
-    initialRouteName: 'BrowseGames',
     mode: 'modal',
   }
 );
@@ -93,9 +74,16 @@ const AppStack =  createStackNavigator(
       }),
     },
     Browse: {
-      screen: BrowseStack,
+      screen: BrowseGames,
       navigationOptions: ({navigation}) => ({
         title: 'Search For Games',
+        ...headerStyle,
+      }),
+    },
+    ViewGame: {
+      screen: ViewGame,
+      navigationOptions: ({navigation}) => ({
+        title: 'Game Info',
         ...headerStyle,
       }),
     },
