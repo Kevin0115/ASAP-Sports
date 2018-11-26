@@ -1,6 +1,6 @@
 import { Permissions, Notifications } from 'expo';
 
-const PUSH_ENDPOINT = 'http://133f1d3a.ngrok.io/users/push-token';
+const PUSH_ENDPOINT = 'http://bbbf2786.ngrok.io/users/push-token';
 
 async function registerForPushNotificationsAsync() {
   const { status: existingStatus } = await Permissions.getAsync(

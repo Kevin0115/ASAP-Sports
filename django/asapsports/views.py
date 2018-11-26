@@ -7,6 +7,7 @@ import datetime
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_by_id
 from .db.games import insert_game, get_game
 from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
+from .db.notifications import insert_notification
 from . import utils
 from . import facebook as fb
 
@@ -168,11 +169,12 @@ def host(request):
     user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:
         return utils.json_client_error("Invalid access token.")
-
+    print(start_time)
     game_id = insert_game(request.db_conn, user.id, game_title, game_description, max_players,
                             sport, start_time, end_time, location_lat, location_lng,
                             location_name, comp_level)
     insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
+    insert_notification(request.db_conn, start_time, game_id)
 
     res = {'game_id': game_id}
     return utils.json_response(res)
@@ -343,3 +345,6 @@ def store_token(request):
     data = request.read()
     postdata = json.loads(data)
     print(postdata['token']['value'])
+    res = {'status': 'success'}
+    return utils.json_response(res)
+    

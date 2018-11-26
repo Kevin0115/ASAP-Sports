@@ -1,8 +1,9 @@
 from datetime import datetime
 
 def insert_notification(conn, start_time, game_id):
+    print("start")
     query = """ insert into notifications (start_time, game_id)
-                  values (%(start_time)s, %(game_id)s  """
+                  values (%(start_time)s, %(game_id)s)  """
     with conn.cursor() as curs:
         curs.execute(query, locals())
 

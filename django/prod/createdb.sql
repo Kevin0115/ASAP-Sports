@@ -53,8 +53,8 @@ CREATE TABLE user_in_games (
 );
 
 CREATE TABLE notifications (
-  id SERIAL PRIMARY KEY,
-  game_id INT REFERENCES games(id) NOT NULL,
-  game_id TIMESTAMP REFERENCES games(start_time) NOT NULL
+  notification_id SERIAL PRIMARY KEY,
+  start_time TIMESTAMP NOT NULL,
+  game_id INT REFERENCES games(id) NOT NULL
 );
 

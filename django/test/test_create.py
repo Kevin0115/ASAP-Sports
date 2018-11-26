@@ -100,6 +100,6 @@ def test_invalid_token():
         print(res.text)
         jsonres = res.json()
         assert "error" in jsonres
-        assert "Invalid access token." in jsonres["error"]
+        assert "Bad access token." in jsonres["error"]
     except:
         assert False

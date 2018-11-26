@@ -30,6 +30,7 @@ async function registerForPushNotificationsAsync() {
 
   // POST the token to your backend server from where you can retrieve it to send push notifications.
   console.log("here2");
+  console.log(token);
   return fetch(PUSH_ENDPOINT, {
     method: 'POST',
     headers: {
@@ -49,7 +50,6 @@ async function registerForPushNotificationsAsync() {
 
 export default class Homescreen extends React.Component {
   componentWillMount(){
-    console.log("here");
     registerForPushNotificationsAsync();
   }
   render() {
