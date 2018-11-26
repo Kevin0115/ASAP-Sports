@@ -36,7 +36,6 @@ export default class GameCard extends React.Component {
         gameLong: this.props.gameInfo.location_lng,
       });
     }
-    console.log(this.state);
   }
 
   _findIcon = () => {

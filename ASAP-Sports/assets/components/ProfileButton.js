@@ -19,7 +19,6 @@ class ProfileButton extends React.Component {
         userPicUrl: userData.profile_pic_url,
       });
     }
-    console.log(this.state);
   }
   render() {
     return (
@@ -53,7 +52,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    borderStyle: 'solid',
     borderWidth: 1.4,
     borderColor: 'white',
     marginLeft: 10
