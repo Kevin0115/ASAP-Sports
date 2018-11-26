@@ -69,7 +69,7 @@ export default class UserInfo extends React.Component {
             height={60}
             backgroundColor='#004e89'
             backgroundDarker='#001a33'
-            onPress={() => this.props.navigation.popToTop()}
+            onPress={() => this.props.navigation.goBack()}
           >
             Done
           </AwesomeButton>
