@@ -144,16 +144,16 @@ def join(request, game_id):
     if action == 'join':
         game = get_game(request.db_conn, game_id)
         if num_players == game.max_players:
-            return utils.json_client_error("The game is already full.")
+            return utils.json_client_error('Game %d full' % game.id, 'The game is already full.')
         try:
             insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
         except psycopg2.IntegrityError:
-            return utils.json_client_error('You are already in that game')
+            return utils.json_client_error('Game %d already has user %d in it.' % (game_id, user.id), 'You are already in that game')
         return utils.json_response({"status": "Successfully join game"})
     else:
         rows_deleted = delete_user_in_game(request.db_conn, user.id, game_id)
         if rows_deleted == 0:
-            utils.json_client_error("You cannot leave that game because you are not in it.")
+            utils.json_client_error('Game %d does not have user %d in it.' % (game_id, user.id), 'You cannot leave that game because you are not in it.')
         if rows_deleted == num_players == 1: # TODO: What should we do if the host leaves the game?
             delete_game(request.db_conn, game_id)
         return utils.json_response({"status": "Successfully left game"})

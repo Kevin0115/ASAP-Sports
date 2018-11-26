@@ -74,6 +74,9 @@ def json_response(dict_obj):
     return HttpResponse(json.dumps(dict_obj), content_type="application/json")
 
 
-def json_client_error(error_str):
-    return HttpResponseBadRequest(json.dumps({'error': error_str}), content_type="application/json")
+def json_client_error(error_str, user_error=None):
+    d = {'error': error_str}
+    if user_error:
+        d['user_error'] = user_error
+    return HttpResponseBadRequest(json.dumps(d), content_type="application/json")
 
