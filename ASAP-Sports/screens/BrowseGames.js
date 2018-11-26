@@ -74,14 +74,6 @@ export default class BrowseGames extends React.Component {
     this.buttonLayoutInfo = {refs: {}};
     this.sportList = SportList.map(s => s);
     this.sportList.splice(0, 0, ANY);
-    this.props.navigation.addListener('didFocus', payload => {
-      // NOTIDEAL: This gets called a lot. We only want to call it after we have joined/left a game
-      if (this.state.userLocation === null){
-        this._getLocationAsync();
-      } else {
-        this.searchGames();
-      }
-    });
   }
 
   async searchGames() {
@@ -183,6 +175,17 @@ export default class BrowseGames extends React.Component {
         }});
     }
     this.searchGames();
+  }
+
+  componentWillMount() {
+    this.props.navigation.addListener('didFocus', payload => {
+      // NOTIDEAL: This gets called a lot. We only want to call it after we have joined/left a game
+      if (this.state.userLocation === null){
+        this._getLocationAsync();
+      } else {
+        this.searchGames();
+      }
+    });
   }
 
   render() {
