@@ -7,11 +7,15 @@ export default class PlayerCard extends React.Component {
     super(props);
   }
 
+  _determineInfoFlex = () => {
+  }
+
   render() {
     return (
       <View style={styles.touchableContainer}>
-        <TouchableOpacity style={styles.button}
-                          onPress={() => this.props.onPress && this.props.onPress()}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.props.onPress && this.props.onPress()}
         >
           <View style={styles.logoContainer}>
             <Image
@@ -20,24 +24,24 @@ export default class PlayerCard extends React.Component {
             />
           </View>
           <View style={styles.infoContainer}>
-            <View style={styles.iconTextContainer2}>
-              <Text >
+            <View style={styles.nameAgeContainer}>
+              <Text style={styles.nameAgeText}>
                 {this.props.player.first} {this.props.player.last }{this.props.player.age != null? ", "+this.props.player.age: ""}
               </Text>
             </View>
-            <View style={styles.iconTextContainer}>
-              { this.props.player.gender !== null ?
+            { this.props.player.gender !== null ?
+              <View style={styles.iconTextContainer}>
                 <View style = {{flexDirection: 'row'}}>
-              <Image
-                source={require('../images/genderion.png')}
-                style = {styles.miniIcon}
-                />
-              <Text >
-                {this.props.player.gender}
-              </Text>
+                  <Image
+                    source={require('../images/genderion.png')}
+                    style = {styles.miniIcon}
+                  />
+                  <Text>
+                    {this.props.player.gender}
+                  </Text>
                 </View>
-             : null }
-            </View>
+              </View>
+            : null }
           </View>
         </TouchableOpacity>
       </View>
@@ -73,11 +77,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     paddingHorizontal: 5,
   },
+  nameAgeText: {
+    fontSize: 16,
+    marginLeft: 8,
+  },
   iconTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  iconTextContainer2: {
+  nameAgeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
