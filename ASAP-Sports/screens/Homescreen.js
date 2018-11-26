@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#ddd',
     paddingVertical: 10,
-    ...ASAPStyles.shadowed,
   },
   upcomingText: {
     fontWeight: 'bold',

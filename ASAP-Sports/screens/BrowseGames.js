@@ -13,9 +13,10 @@ import {
   TimePickerAndroid,
   ActivityIndicator,
   Slider,
+  Dimensions
 } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
-import { APP_BASE_URL, COLORS, vancouver, delta } from './../const';
+import { APP_BASE_URL, COLORS, vancouver, delta, ASAPStyles } from './../const';
 import { meters2kmString, encodeQueryString, getUserTimeStr, parseAPIDate } from './../utils'
 import { Ionicons } from '@expo/vector-icons';
 import SportList from '../assets/components/SportList';
@@ -163,13 +164,9 @@ export default class BrowseGames extends React.Component {
   }
 
   async _getLocationAsync() {
-    console.log("getLocationAsync");
     let { status } = await Permissions.askAsync(Permissions.LOCATION); // NOTIDEAL this asks for coarse and THEN fine. Maybe just ask for one???
-    console.log("Asked");
     if (status === 'granted') {
-      console.log("Granted")
       let location = await Location.getCurrentPositionAsync({});
-      console.log("Got Location")
       this.setState({userLocation: location});
       this.setState({mapRegion: {
           latitude: location.coords.latitude,
@@ -188,7 +185,7 @@ export default class BrowseGames extends React.Component {
   render() {
     return (
       <View style={styles.browse}>
-        <View style={[styles.topBar,styles.shadowed]}>
+        <View style={[styles.topBar,ASAPStyles.shadowed]}>
           <View style={styles.filterButtonContainer}>
             <View
             ref={(ref) => { this.buttonLayoutInfo.refs['location'] = ref }}
@@ -272,8 +269,22 @@ export default class BrowseGames extends React.Component {
             <Text style={styles.filterButtonText}>{this.state.sport.key}</Text>
           </View>
         </View>
+        {!this.state.loading && this.state.games.length > 0 &&
+          <FlatList
+          data={this.state.games}
+          numColumns={1}
+          renderItem={({item}) =>
+            <GameCard
+              gameInfo={item}
+              onPress={() => {
+                this.props.navigation.navigate('ViewGame', {game: item});
+              }}
+            />
+          }
+          />
+        }
         {this.state.openFilter !== null && !(this.state.openFilter === 'time' && Platform.OS === 'android') &&
-        <View>
+        <View style={{width: '100%', height: '100%'}}>
           <Ionicons
           name='md-arrow-dropup'
           size={32}
@@ -283,8 +294,9 @@ export default class BrowseGames extends React.Component {
             top: -12,
             zIndex: 200,
             padding: 0,
-            left: this.buttonLayoutInfo[this.state.openFilter] - 6}}/>
-          <View style={[styles.filterControlWindow, styles.shadowed]}>
+            // NOTIDEAL Factor out a proper ref.measure function that works the same on ios and droid
+            left: this.buttonLayoutInfo[this.state.openFilter] - (Platform.OS === 'ios' ? Dimensions.get('window').width + 6 : 6)}}/>
+          <View style={styles.filterControlWindow}>
             {this.state.openFilter === 'sport' &&
             <View style={styles.horizontallyCenter}>
               <FlatList
@@ -400,23 +412,6 @@ export default class BrowseGames extends React.Component {
           </Text>
         </View>
         }
-        {!this.state.loading && this.state.games.length > 0 &&
-          <FlatList
-          data={this.state.games}
-          numColumns={1}
-          renderItem={({item}) =>
-            <GameCard
-              gameInfo={item}
-              onPress={() => {
-                console.log(item);
-                console.log("TODO", item.id, item.sport, item.title);
-                console.log(item.players.length);
-                this.props.navigation.navigate('ViewGame', {game: item});
-              }}
-            />
-          }
-          />
-        }
       </View>
     );
   }
@@ -481,7 +476,7 @@ const styles = StyleSheet.create({
   },
   filterButtonText: {
     color: COLORS.white,
-    fontSize: 12
+    fontSize: Platform.OS === 'ios' ? 9: 12,
   },
   filterControlWindow: {
     position: 'absolute',
@@ -494,20 +489,11 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: COLORS.darkBlue,
     borderRadius: 15,
+    ...ASAPStyles.shadowed,
   },
   horizontallyCenter: {
     width: '100%',
     flexDirection: 'column',
     alignItems: 'center',
   },
-  shadowed: {
-    // iOS
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-
-    // Android
-    elevation: 5,
-  }
 });

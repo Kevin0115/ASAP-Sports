@@ -23,20 +23,24 @@ export function getUserTimeStr(date) {
   const amPmStr = Math.floor(hours / 12) === 0 ? "AM" : "PM";
   const minStr = minutes === 0 ? "" : ":" + (minutes < 10 ? "0" + minutes : minutes) + " ";
   const dayStr = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()];
-  const monthDay = date.toLocaleString('en-US').split(' ').slice(1, 3).join(' ');
+  const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.getMonth()];
+  const day = date.getDate(); // From 1 to 31
   const daysBetween = (date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+  console.log(date.toUTCString(), "has some days between now", daysBetween);
   if (daysBetween < -1/24) {
-    return "Invalid Time"; // NOTIDEAL: How to be clear they selected a time in the past? Raise Exception maybe?
+    // NOTIDEAL: Should display yesterday, 2 days ago, 3 days ago, ....
+    return month + " " + day + " " + hourStr + minStr + amPmStr;
   }
   if (now.getDate() === date.getDate() && Math.abs(daysBetween) < 1){
     return hourStr + minStr + amPmStr + " Today";
   }
-  if (daysBetween < 1) {
-    return "Tomorrow " + hourStr + minStr + amPmStr; // TODO: doesn't do it properly if time is tomorrow but more than 24 hrs in future
-  } else if (daysBetween < 7) {
+  const tomorrow = new Date(now.getTime() + (1000 * 60 * 60 * 24));
+  if (tomorrow.getDate() === date.getDate() && daysBetween < 2) {
+    return "Tomorrow " + hourStr + minStr + amPmStr;
+  } else if (daysBetween < 6) {
     return dayStr + " " + hourStr + minStr + amPmStr;
   }
-  return monthDay + " " + hourStr + minStr + amPmStr; // TODO: This is broken and works differently on iOS and Android
+  return month + " " + day + " " + hourStr + minStr + amPmStr;
 }
 
 export function parseAPIDate(apiDate) {
