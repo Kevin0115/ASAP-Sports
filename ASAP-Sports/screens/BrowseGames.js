@@ -74,6 +74,14 @@ export default class BrowseGames extends React.Component {
     this.buttonLayoutInfo = {refs: {}};
     this.sportList = SportList.map(s => s);
     this.sportList.splice(0, 0, ANY);
+    this.props.navigation.addListener('didFocus', payload => {
+      // NOTIDEAL: This gets called a lot. We only want to call it after we have joined/left a game
+      if (this.state.userLocation === null){
+        this._getLocationAsync();
+      } else {
+        this.searchGames();
+      }
+    });
   }
 
   async searchGames() {
@@ -128,7 +136,6 @@ export default class BrowseGames extends React.Component {
   async openTimeSelect() {
     this.setState({openFilter: this.state.openFilter === 'time' ? null : 'time'});
     if (Platform.OS === 'ios'){
-      this.searchGames();
       return; // iOS time select is handled fully by state.
     }
 
@@ -176,10 +183,6 @@ export default class BrowseGames extends React.Component {
         }});
     }
     this.searchGames();
-  }
-
-  componentWillMount() {
-    this._getLocationAsync();
   }
 
   render() {
@@ -347,7 +350,7 @@ export default class BrowseGames extends React.Component {
                 onLayout={(event) => {
                   this.mapViewDems = event.nativeEvent.layout;
                 }}
-                style={{ height: '100%', width: '100%'}}
+                style={{ height: '100%', width: '100%', borderRadius: 5}}
                 region={this.state.mapRegion}
                 showsUserLocation = { true }
                 onRegionChangeComplete={(region) => this.setState({mapRegion: region})}

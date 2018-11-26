@@ -5,7 +5,7 @@ import psycopg2
 import datetime
 
 from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_profile_by_id
-from .db.games import insert_game, get_game, search_games, get_dashboard
+from .db.games import insert_game, delete_game, get_game, search_games, get_dashboard
 from .db.user_in_game import insert_user_in_game, num_users_in_game, get_users, delete_user_in_game, Status
 from . import utils
 from . import facebook as fb
@@ -132,17 +132,22 @@ def join(request, game_id):
         return utils.json_client_error("Bad authorization")
 
     # TODO lock on game row???
+    num_players = num_users_in_game(request.db_conn, game_id)
     if action == 'join':
         game = get_game(request.db_conn, game_id)
-        num_players = num_users_in_game(request.db_conn, game_id)
         if num_players == game.max_players:
             return utils.json_client_error("The game is already full.")
-        insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
+        try:
+            insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
+        except psycopg2.IntegrityError:
+            return utils.json_client_error('You are already in that game')
         return utils.json_response({"status": "Successfully join game"})
     else:
         rows_deleted = delete_user_in_game(request.db_conn, user.id, game_id)
         if rows_deleted == 0:
             utils.json_client_error("You cannot leave that game because you are not in it.")
+        if rows_deleted == num_players == 1: # TODO: What should we do if the host leaves the game?
+            delete_game(request.db_conn, game_id)
         return utils.json_response({"status": "Successfully left game"})
 
 

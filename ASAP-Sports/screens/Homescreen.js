@@ -74,12 +74,9 @@ export default class Homescreen extends React.Component {
       <View style={styles.homescreen}>
 
         {this.state.listData.length > 1 && 
-        <View>
           <FlatList
             data={this.state.listData}
             numColumns={1}
-            onRefresh={() => this.getDashboard(this)}
-            refreshing={this.state.loading}
             renderItem={({item}) => {
               if (item.type === 'text') {
                 return (
@@ -93,7 +90,6 @@ export default class Homescreen extends React.Component {
                   <GameCard
                     gameInfo={item}
                     onPress={() => {
-                      console.log("TODOddadsa", item.id, item.sport, item.title);
                       this.props.navigation.navigate('ViewGame', {game: item});
                     }}
                   />)
@@ -102,7 +98,6 @@ export default class Homescreen extends React.Component {
               }
             }}
           />
-        </View>
         }
         <View style={styles.buttonContainer}>
           <AwesomeButton
@@ -127,7 +122,7 @@ export default class Homescreen extends React.Component {
           </AwesomeButton>
         </View>
 
-        {this.state.loading &&
+        {this.state.loading && this.state.listData.length <= 1 &&
           <View style={styles.centerScreenMessage}>
             <ActivityIndicator size="large" color={COLORS.darkBlue} />
           </View>
