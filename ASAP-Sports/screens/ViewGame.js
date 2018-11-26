@@ -158,22 +158,24 @@ export default class ViewGame extends React.Component {
   };
 
   _joinOrLeaveGame = async () => {
-    if (!this.state.userInGame) {
-      let response = '';
-      try {
-        let response = await fetch(APP_BASE_URL + '/games/join/' + this.state.gameInfo.id, {
-          method: 'POST',
-          headers: {
-            'Authorization': this.state.authUser.asap_access_token,
-          },
-        });
-        response = await response.json();
-        console.log(response);
+    let response = '';
+    let action = this.state.userInGame? 'leave': 'join';
+    let body = {action: action};
+    body = JSON.stringify(body);
+    try {
+      let response = await fetch(APP_BASE_URL + '/games/join/' + this.state.gameInfo.id, {
+        method: 'POST',
+        headers: {
+          'Authorization': this.state.authUser.asap_access_token,
+        },
+        body: body,
+      });
+      response = await response.json();
+      console.log(response);
       } catch (err) {
-        console.log(err);
-      }
+      console.log(err);
     }
-
+    this.props.navigation.goBack();
   };
 
   render() {
