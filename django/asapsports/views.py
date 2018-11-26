@@ -91,7 +91,8 @@ def search(request):
     :return: [game]
     """
     try:
-        lng = utils.sanitize_float(request.GET['lng'])        
+        asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
+        lng = utils.sanitize_float(request.GET['lng'])
         lat = utils.sanitize_float(request.GET['lat'])
         radius_m = utils.sanitize_int(request.GET['radius_m'])
         start_time = utils.sanitize_datetime(request.GET['start_time'])
@@ -103,10 +104,17 @@ def search(request):
         if locals()[key] is None:
             utils.json_client_error('Could not parse parameter "%s". Received "%s".' % (key, request.GET[key]))
 
+    if asap_access_token is None:
+        return utils.json_client_error("Badly formed access token")
+    user = get_user_by_asap_token(request.db_conn, asap_access_token)
+    if user is None:
+        return utils.json_client_error("Bad access token")
+
     if start_time < datetime.datetime.utcnow() - datetime.timedelta(hours=1):
         return utils.json_client_error("You can't search for games in the past.")
 
     games = search_games(request.db_conn, lng, lat, radius_m, start_time, sport, 0)
+    games = [g for g in games if not any ((user.id == u.id for u in g.players))]
     return utils.json_response([g.to_json() for g in games])
 
 
