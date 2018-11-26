@@ -26,13 +26,12 @@ export function getUserTimeStr(date) {
   const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.getMonth()];
   const day = date.getDate(); // From 1 to 31
   const daysBetween = (date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-  console.log(date.toUTCString(), "has some days between now", daysBetween);
-  if (daysBetween < -1/24) {
-    // NOTIDEAL: Should display yesterday, 2 days ago, 3 days ago, ....
-    return month + " " + day + " " + hourStr + minStr + amPmStr;
-  }
   if (now.getDate() === date.getDate() && Math.abs(daysBetween) < 1){
     return hourStr + minStr + amPmStr + " Today";
+  }
+  if (daysBetween < 0) {
+    // NOTIDEAL: Should display yesterday, 2 days ago, 3 days ago, ....
+    return month + " " + day + " " + hourStr + minStr + amPmStr;
   }
   const tomorrow = new Date(now.getTime() + (1000 * 60 * 60 * 24));
   if (tomorrow.getDate() === date.getDate() && daysBetween < 2) {

@@ -39,6 +39,14 @@ def insert_game(conn, host_id, title, description, max_players, sport, start_tim
             return row[0]
 
 
+def delete_game(conn, game_id):
+    query = """
+        DELETE FROM games WHERE id=%(game_id)s
+    """
+    with conn.cursor() as curs:
+        curs.execute(query, locals())
+
+
 def get_game(conn, game_id):
     query = """
         select id, host_id, title, description, max_players, sport, start_time, 
