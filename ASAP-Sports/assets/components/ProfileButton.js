@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   profilePic: {
+    overlayColor: '#0000000',
     width: 40,
     height: 40,
     borderRadius: 20,
