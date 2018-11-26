@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import {getUserTimeStr, parseAPIDate} from './../../utils'
+import { AsyncStorage, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { MapView, Location, Permissions} from 'expo';
+import {getUserTimeStr, parseAPIDate, calcDistance} from './../../utils'
 
 import SportList from './SportList';
 import { COLORS } from '../../const';
@@ -11,12 +12,31 @@ export default class GameCard extends React.Component {
     this.state = {
       icon: null,
       date: "",
+      userLat: null,
+      userLong: null,
+      gameLat: null,
+      gameLong: null,
     };
   }
 
   componentDidMount() {
     this._findIcon();
     this._cullDate();
+    this._retrieveData();
+  }
+
+  _retrieveData = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status === 'granted') {
+      let location = await Location.getCurrentPositionAsync({});
+      this.setState({
+        userLat: location.coords.latitude,
+        userLong: location.coords.longitude,
+        gameLat: this.props.gameInfo.location_lat,
+        gameLong: this.props.gameInfo.location_lng,
+      });
+    }
+    console.log(this.state);
   }
 
   _findIcon = () => {
@@ -32,16 +52,6 @@ export default class GameCard extends React.Component {
     this.setState({
       date: parseAPIDate(this.props.gameInfo.start_time)
     })
-    // let newDate = this.props.gameInfo.start_time.split(" ");
-    // let hour = newDate[4];
-    // if (hour.split(':')[0] < 10) {
-    //   newDate.splice(4, 1, hour.substring(1));
-    // }
-    // newDate.splice(3, 1);
-    // newDate.splice(0, 1);
-    // this.setState({
-    //   date: newDate.join(" "),
-    // })
   }
 
   render() {
@@ -75,7 +85,12 @@ export default class GameCard extends React.Component {
                 style={styles.miniIcon}
               />
               <Text >
-                {this.props.gameInfo.location_name}
+                {calcDistance(
+                  this.state.userLat,
+                  this.state.userLong,
+                  this.state.gameLat,
+                  this.state.gameLong
+                )}
               </Text>
             </View>
           </View>
