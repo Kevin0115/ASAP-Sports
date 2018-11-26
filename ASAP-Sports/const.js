@@ -1,5 +1,5 @@
-export const APP_BASE_URL = 'http://asapsports.aidanrosswood.ca'
-// export const APP_BASE_URL = 'https://5bb24f1f.ngrok.io'
+export const APP_BASE_URL = 'http://asapsports.aidanrosswood.ca';
+// export const APP_BASE_URL = 'https://5bb24f1f.ngrok.io';
 export const FB_APP_ID = '169924577279041';
 export const COLORS = {
     pink: '#f45363',
@@ -26,8 +26,8 @@ export const ASAPStyles = {
     shadowed: {
         // iOS
         shadowColor: COLORS.black,
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.8,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
         shadowRadius: 2,
 
         // Android
