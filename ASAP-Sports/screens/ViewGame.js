@@ -1,5 +1,16 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image, ScrollView, Dimensions, Platform, Button, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  Dimensions,
+  Platform,
+  Button,
+  FlatList,
+  AsyncStorage
+} from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import SportDict from '../assets/components/SportsDict';
 import {MapView} from "expo";
@@ -26,7 +37,21 @@ export default class ViewGame extends React.Component {
   }
 
   state = {
-    user: null,
+    authUser: {
+      age: null,
+      asap_access_token: "",
+      bio: "",
+      creation_timestamp: "",
+      fb_id: null,
+      first: "",
+      gender: null,
+      id: null,
+      last: "",
+      profile_pic_url: "",
+      show_age: true,
+      show_bio: true,
+      show_gender: false,
+    },
     mapRegion:{
       latitude: vancouver.latitude,
       longitude: vancouver.longitude,
@@ -61,22 +86,28 @@ export default class ViewGame extends React.Component {
       }]
       },
     modalVisible: false,
+    userInGame: false,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
     const gameInfo = navigation.getParam('game', 'Default');
     this.startTime = gameInfo.start_time;
     let region = this.state.mapRegion;
+    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
+    const userInGame = this._isUserInGame(authUser.id, gameInfo.players);
     this.setState({
-        gameInfo: navigation.getParam('game', 'Default'),
+        gameInfo: gameInfo,
         mapRegion: {
         latitude:  navigation.getParam('game', 'Default').location_lat,
         longitude: navigation.getParam('game', 'Default').location_lng,
         latitudeDelta: region.latitudeDelta,
         longitudeDelta: region.longitudeDelta,
-      }});
+      },
+      authUser: authUser,
+      userInGame: userInGame});
     this.duration = this._calc_duration(gameInfo.start_time, gameInfo.end_time);
+
   }
 
   setModalVisible(visible) {
@@ -115,15 +146,34 @@ export default class ViewGame extends React.Component {
     }
   };
 
-  _joinGame = () => {
+  _isUserInGame = (userID, playerList) => {
+    let isInGame = false;
+    playerList.forEach((player) =>{
+     if (player.id === userID) {
+       isInGame = true;
+       return;
+     }
+    });
+    return isInGame;
+  };
 
-    // fetch(APP_BASE_URL + '/games/join', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': userAuthToken,
-    //   },
-    //   body: ,
-    // })
+  _joinOrLeaveGame = async () => {
+    if (!this.state.userInGame) {
+      let response = '';
+      try {
+        let response = await fetch(APP_BASE_URL + '/games/join/' + this.state.gameInfo.id, {
+          method: 'POST',
+          headers: {
+            'Authorization': this.state.authUser.asap_access_token,
+          },
+        });
+        response = await response.json();
+        console.log(response);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
   };
 
   render() {
@@ -203,33 +253,36 @@ export default class ViewGame extends React.Component {
               <Modal
                 isVisible={this.state.modalVisible}
                 backdropOpacity={0.7}
-                >
-                  <View style={styles.modalContent}>
-                    <View style = {styles.modalTitle}>
-                    <Text style={{fontWeight: 'bold', fontSize: 20}}>Player List</Text>
-                    </View>
-                    <ScrollView>
-                      <FlatList
-                        data={gameInfo.players}
-                        numColumns={1}
-                        renderItem={({item}) =>
-                          <PlayerCard
-                            player={item}
-                            onPress={(item) => {
-                              // this.props.navigation.navigate('PlayerProfile', item);
-                            }}
-                          />
-                        }
-                      />
-                    </ScrollView>
-                    <View style = {styles.modalClose}>
-                    <Button
-                      title="Done"
-                      onPress={() => {
-                        this.setModalVisible(!this.state.modalVisible);
-                      }}/>
+              >
+                <View style={styles.modalContent}>
+                  <View style = {styles.modalTitle}>
+                  <Text style={{fontWeight: 'bold', fontSize: 20}}>Player List</Text>
+                  </View>
+                  <ScrollView>
+                    <FlatList
+                      data={gameInfo.players}
+                      numColumns={1}
+                      renderItem={({item}) =>
+                        <PlayerCard
+                          player={item}
+                          onPress={() => {
+                            this.setState({modalVisible: false});
+                            this.props.navigation.navigate('UserInfo', {userInfo: item});
+                            }
+                          }
+                        />
+                      }
+                      keyExtractor={(item, index) => index.toString()}
+                    />
+                  </ScrollView>
+                  <View style = {styles.modalClose}>
+                  <Button
+                    title="Done"
+                    onPress={() => {
+                      this.setModalVisible(!this.state.modalVisible);
+                    }}/>
 
-                    </View>
+                  </View>
                 </View>
               </Modal>
 
@@ -242,9 +295,9 @@ export default class ViewGame extends React.Component {
             height={60}
             backgroundColor='#004e89'
             backgroundDarker='#001a33'
-            onPress={this._joinGame}
+            onPress={() => this._joinOrLeaveGame()}
           >
-            Join Game
+            {this.state.userInGame? "Leave Game": "Join Game"}
           </AwesomeButton>
         </View>
       </View>
