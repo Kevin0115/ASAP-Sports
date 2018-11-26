@@ -180,6 +180,9 @@ export default class BrowseGames extends React.Component {
 
   componentWillMount() {
     this._getLocationAsync();
+    this.props.navigation.addListener('didFocus', () => {
+      this.searchGames();
+    });
   }
 
   render() {
