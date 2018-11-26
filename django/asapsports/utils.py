@@ -1,6 +1,6 @@
 import json
 import uuid
-
+import math
 import datetime
 import psycopg2
 from django.conf import settings
@@ -23,10 +23,22 @@ def get_connection():
                             port=DB_INFO.get('PORT'))
 
 
+def sanitize_bool(x):
+    if x in ('True', 'true', 't', 'T', True, 'on'):
+        return True
+    if x in ('False', 'false', 'f', 'F', False, 'off'):
+        return False
+    return None
+
+
+def sanitize_text(x):
+    return x.strip() if isinstance(x, str) else None
+
+
 def sanitize_int(x):
     try:
         return int(x)
-    except ValueError:
+    except (ValueError, TypeError):
         return None
 
 
@@ -62,5 +74,9 @@ def json_response(dict_obj):
     return HttpResponse(json.dumps(dict_obj), content_type="application/json")
 
 
-def json_client_error(error_str):
-    return HttpResponseBadRequest(json.dumps({'error': error_str}), content_type="application/json")
+def json_client_error(error_str, user_error=None):
+    d = {'error': error_str}
+    if user_error:
+        d['user_error'] = user_error
+    return HttpResponseBadRequest(json.dumps(d), content_type="application/json")
+

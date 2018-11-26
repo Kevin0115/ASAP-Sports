@@ -1,20 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions, Platform} from 'react-native';
+import { StyleSheet, Text, View, Button, Image , ScrollView, Dimensions, Platform, AsyncStorage } from 'react-native';
 import AwesomeButton from 'react-native-really-awesome-button';
 import Modal from 'react-native-modal';
+import { APP_BASE_URL, vancouver, delta, COLORS } from './../const';
+
 import SportDict from '../assets/components/SportsDict';
 import {MapView} from "expo";
 
 const Marker = MapView.Marker;
-const delta  = { //TODO throw into a const file
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-};
-const vancouver  = { //TODO throw into a const file
-  latitude: 49.282730,
-  longitude: -123.120735,
-};
-//TODO change UTC on displau to user
+
 export default class ReviewDetails extends React.Component {
 
   constructor(props) {
@@ -69,16 +63,18 @@ export default class ReviewDetails extends React.Component {
     this.setState({isModalVisible: false});
   };
 
-  _handleSubmit = () => {
+  _handleSubmit = async () => {
+    const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
     const creationInfo = JSON.stringify(this.state.creationInfo);
-    fetch('https://133f1d3a.ngrok.io/games/host', {
+    fetch(APP_BASE_URL + '/games/host', {
       method: 'POST',
       headers: {
-        'Authorization': '0daa420c-c03e-4d5b-83ee-235981206ff4',
+        'Authorization': authUser.asap_access_token,
       },
       body: creationInfo,
     }).then((res) => res.json())
     .then((response) => {
+      if (response.error) throw Error(response.error);
       this.setState({
         modalTitleText: 'Success!',
         modalBodyText: 'Enable notifications to be alerted when others join your game!\n\nYou\'ll be notified closer to the day of your game.',
@@ -86,7 +82,7 @@ export default class ReviewDetails extends React.Component {
         isModalVisible: true,
       });
       console.log('Success: ', JSON.stringify(response));
-    })      
+    })
     .catch((error) => {
       this.setState({
         modalTitleText: 'There was a Problem',
@@ -223,8 +219,8 @@ export default class ReviewDetails extends React.Component {
           <AwesomeButton
             width={320}
             height={60}
-            backgroundColor='#004e89'
-            backgroundDarker='#001a33'
+            backgroundColor={COLORS.darkBlue}
+            backgroundDarker={COLORS.darkerBlue}
             onPress={this._handleSubmit}
           >
             Create Game
@@ -243,7 +239,7 @@ const styles = StyleSheet.create({
   },
   review: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -329,6 +325,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   logo: {
+    overlayColor: COLORS.white,
     borderRadius:30,
     backgroundColor: '#FFA500',
     height: 60,

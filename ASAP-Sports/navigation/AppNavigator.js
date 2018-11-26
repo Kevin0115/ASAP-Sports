@@ -10,14 +10,14 @@ import GameInfo from '../screens/GameInfo';
 import TimeDate from '../screens/TimeDate';
 import LocationScreen from '../screens/Location';
 import ReviewDetails from '../screens/ReviewDetails';
-import FilterModal from '../screens/FilterModal';
 import Settings from '../screens/Settings';
 import Profile from '../screens/Profile';
+import ViewGame from '../screens/ViewGame';
 import CancelButton from '../assets/components/CancelButton';
-import FilterButton from '../assets/components/FilterButton';
 import SettingsButton from '../assets/components/SettingsButton';
 import ProfileButton from '../assets/components/ProfileButton';
 import Login from "../screens/Login";
+import UserInfo from '../screens/UserInfo';
 import { AuthLoadingScreen } from "../screens/AuthLoadingScreen";
 
 class LogoIcon extends React.Component {
@@ -41,26 +41,10 @@ const HomeStack = createStackNavigator(
     },
     Profile: {
       screen: Profile,
-    }
-  },
-  {
-    headerMode: 'none',
-    mode: 'modal',
-  }
-);
-
-const BrowseStack = createStackNavigator(
-  {
-    BrowseGames: {
-      screen: BrowseGames,
     },
-    FilterModal: {
-      screen: FilterModal,
-    }
   },
   {
     headerMode: 'none',
-    initialRouteName: 'BrowseGames',
     mode: 'modal',
   }
 );
@@ -91,11 +75,17 @@ const AppStack =  createStackNavigator(
       }),
     },
     Browse: {
-      screen: BrowseStack,
+      screen: BrowseGames,
       navigationOptions: ({navigation}) => ({
-        title: 'Search Results',
+        title: 'Search For Games',
         ...headerStyle,
-        headerRight: <FilterButton />,
+      }),
+    },
+    ViewGame: {
+      screen: ViewGame,
+      navigationOptions: ({navigation}) => ({
+        title: 'Game Info',
+        ...headerStyle,
       }),
     },
     GameInfo: {
@@ -129,7 +119,14 @@ const AppStack =  createStackNavigator(
         ...headerStyle,
         ...creationHeaderStyle,
       }),
-  },
+    },
+    UserInfo: {
+      screen: UserInfo,
+      navigationOptions: ({navigation}) => ({
+        title: 'Player Info',
+        ...headerStyle,
+      })
+    }
   },
   {
     initialRouteName: 'Homescreen', // This will be changed later to Login depending on conditions

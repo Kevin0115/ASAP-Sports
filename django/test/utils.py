@@ -8,7 +8,7 @@ DB_INFO = DATABASES['default']
 import psycopg2
 
 
-def get_connection(): # TODO change to connect to test DB instead
+def get_connection():
     return psycopg2.connect(dbname=DB_INFO['NAME'],
                             user=DB_INFO.get('USER'),
                             password=DB_INFO.get('PASSWORD'),

@@ -4,9 +4,9 @@ import uuid
 import psycopg2
 import datetime
 
-from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_by_id
-from .db.games import insert_game, get_game
-from .db.user_in_game import insert_user_in_game, get_dashboard, num_users_in_game, get_users, Status
+from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_profile_by_id
+from .db.games import insert_game, delete_game, get_game, search_games, get_dashboard
+from .db.user_in_game import insert_user_in_game, num_users_in_game, get_users, delete_user_in_game, Status
 from .db.notifications import insert_notification
 from . import utils
 from . import facebook as fb
@@ -28,7 +28,6 @@ def login(request):
         try:
             post_params = json.loads(request.read())
             fb_access_token = post_params['fb_access_token']
-            # device_id = request.POST['device_id']
         except KeyError:
             return utils.json_client_error("Missing required parameter")
         except json.JSONDecodeError:
@@ -39,7 +38,6 @@ def login(request):
             fb_id, first, last, profile_pic_url = fb.get_user_info(fb_access_token)
         except fb.FacebookAPIException as e:
             return utils.json_client_error("Failed to reach Facebook. %s" % str(e))
-
         asap_access_token = uuid.uuid4()    
         try:
             insert_user(request.db_conn, fb_id, first, last, None, None, None, fb_access_token,
@@ -51,7 +49,7 @@ def login(request):
 
         asap_access_token = str(user.asap_access_token) # TODO user.to_json() is broken because it modifies the user object. Fix that
         res = user.to_json()
-        res.update({'asap_access_token': user.asap_access_token})
+        res.update({'asap_access_token': asap_access_token})
         return utils.json_response(res)
 
 
@@ -68,7 +66,7 @@ def upcoming_games(request):
                 'past_games': [game]
             }
     """
-    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['Authorization']))
+    user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
     if user is None:
         return utils.json_client_error("Bad authorization")
 
@@ -84,7 +82,7 @@ def upcoming_games(request):
 def search(request):
     """
     :param request: {
-          'radius_km': int,
+          'radius_m': int,
           'location_lng': float,
           'location_lat': float,
           'start_time': dd-mmm-yyyy hh:mm(default=now),
@@ -93,8 +91,32 @@ def search(request):
         }
     :return: [game]
     """
-    res = []
-    return utils.json_response([x.to_json() for x in res])
+    try:
+        asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
+        lng = utils.sanitize_float(request.GET['lng'])
+        lat = utils.sanitize_float(request.GET['lat'])
+        radius_m = utils.sanitize_int(request.GET['radius_m'])
+        start_time = utils.sanitize_datetime(request.GET['start_time'])
+        sport = utils.sanitize_sport(request.GET['sport']) if request.GET['sport'] != 'any' else 'any'
+    except KeyError as e:
+        return utils.json_client_error('Missing a required parameter: "%s"' % e)
+
+    for key in ['lng', 'lat', 'radius_m', 'start_time', 'sport']:
+        if locals()[key] is None:
+            utils.json_client_error('Could not parse parameter "%s". Received "%s".' % (key, request.GET[key]))
+
+    if asap_access_token is None:
+        return utils.json_client_error("Badly formed access token")
+    user = get_user_by_asap_token(request.db_conn, asap_access_token)
+    if user is None:
+        return utils.json_client_error("Bad access token")
+
+    if start_time < datetime.datetime.utcnow() - datetime.timedelta(hours=1):
+        return utils.json_client_error("You can't search for games in the past.")
+
+    games = search_games(request.db_conn, lng, lat, radius_m, start_time, sport, 0)
+    games = [g for g in games if not any ((user.id == u.id for u in g.players))]
+    return utils.json_response([g.to_json() for g in games])
 
 
 def join(request, game_id):
@@ -103,18 +125,39 @@ def join(request, game_id):
     :param game_id: int, in URL
     :return:
     """
+    data = request.read()
+    try:
+        postdata = json.loads(data)
+        action = postdata['action']
+        if action not in ('join', 'leave'):
+            return utils.json_client_error("Invalid value for parameter 'action'. Must be one of 'join' or 'leave'.")
+    except json.JSONDecodeError:
+        return utils.json_client_error('Invalid JSON')
+    except KeyError as e:
+        return utils.json_client_error('Missing parameter %s' % e)
+
     user = get_user_by_asap_token(request.db_conn, utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION']))
     if user is None:
         return utils.json_client_error("Bad authorization")
 
     # TODO lock on game row???
-    game = get_game(request.db_conn, game_id)
     num_players = num_users_in_game(request.db_conn, game_id)
-    if num_players == game.max_players:
-        return utils.json_client_error("The game is already full.")
-
-    insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
-    return utils.json_response({"status": "Successfully join game"})
+    if action == 'join':
+        game = get_game(request.db_conn, game_id)
+        if num_players == game.max_players:
+            return utils.json_client_error('Game %d full' % game.id, 'The game is already full.')
+        try:
+            insert_user_in_game(request.db_conn, user.id, game_id, Status.accepted)
+        except psycopg2.IntegrityError:
+            return utils.json_client_error('Game %d already has user %d in it.' % (game_id, user.id), 'You are already in that game')
+        return utils.json_response({"status": "Successfully join game"})
+    else:
+        rows_deleted = delete_user_in_game(request.db_conn, user.id, game_id)
+        if rows_deleted == 0:
+            utils.json_client_error('Game %d does not have user %d in it.' % (game_id, user.id), 'You cannot leave that game because you are not in it.')
+        if rows_deleted == num_players == 1: # TODO: What should we do if the host leaves the game?
+            delete_game(request.db_conn, game_id)
+        return utils.json_response({"status": "Successfully left game"})
 
 
 def host(request):
@@ -135,7 +178,11 @@ def host(request):
     :return: {'game_id': game_id}
     """
     data = request.read()
-    postdata = json.loads(data)
+    try:
+        postdata = json.loads(data)
+    except json.JSONDecodeError:
+        return utils.json_client_error('Invalid JSON')
+
     try:
         game_title = postdata['title']
         game_description = postdata.get('desc')
@@ -145,7 +192,6 @@ def host(request):
         duration = utils.sanitize_int(postdata['duration'])
         if duration is None or duration <= 0:
             return utils.json_client_error("Bad duration")
-        end_time = start_time + datetime.timedelta(minutes=duration)
         location_lng = utils.sanitize_float(postdata['location_lng'])
         location_lat = utils.sanitize_float(postdata['location_lat'])
         comp_level = utils.sanitize_int(postdata['comp_level'])
@@ -165,6 +211,8 @@ def host(request):
               'location_lat', 'location_name', 'comp_level']:
         if l[x] is None:
             return utils.json_client_error("Missing or invalid parameter %s with bad value of %s" % (x, postdata[x]))
+
+    end_time = start_time + datetime.timedelta(minutes=duration)
 
     user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:
@@ -212,7 +260,7 @@ def view(request, game_id):
         users.append(get_user_by_id(request.db_conn, user_id).to_json())
     res['users'] = users
     return utils.json_response(res)
-    
+
 
 
 ##### NOTIFICATIONS #####
@@ -294,30 +342,32 @@ def update_user(request):
     data = request.read()
     postdata = json.loads(data)
     try:
-        user_id = postdata['id']
-        fb_id = postdata.get('fb_id')
-        first = postdata['first']
-        last = postdata['last']
-        age = postdata.get('age')
-        gender = postdata.get('gender')
-        bio = postdata.get('bio')
-        fb_access_token = postdata.get('fb_access_token')
-        profile_pic_url = postdata.get('profile_pic_url')
         asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
+        first = utils.sanitize_text(postdata.get('first'))
+        last = utils.sanitize_text(postdata.get('last'))
+        profile_pic_url = utils.sanitize_text(postdata.get('profile_pic_url'))
+        age = utils.sanitize_int(postdata.get('age'))
+        gender = utils.sanitize_text(postdata.get('gender'))
+        bio = utils.sanitize_text(postdata.get('bio'))
+        show_age = utils.sanitize_bool(postdata.get('show_age'))
+        show_gender = utils.sanitize_bool(postdata.get('show_gender'))
+        show_bio = utils.sanitize_bool(postdata.get('show_bio'))
     except KeyError as e:
         return utils.json_client_error("Missing parameter " + str(e))
 
     if asap_access_token is None:
        return utils.json_client_error("Bad access token.")
 
+
     user = get_user_by_asap_token(request.db_conn, asap_access_token)
     if user is None:
         return utils.json_client_error("Invalid access token.")
-    if user.id is not user_id:
-        return utils.json_client_error("Invalid user update")
 
-    update_user_by_id(request.db_conn, user_id, fb_id, first, last, age, gender, bio, fb_access_token,
-                 profile_pic_url, asap_access_token)
+    if all((x is None for x in (first, last, profile_pic_url, age, gender, bio, show_age, show_gender, show_bio))):
+        return utils.json_client_error("No values to update")
+
+    update_user_profile_by_id(request.db_conn, user.id, first, last, profile_pic_url,
+                    age, gender, bio, show_age, show_gender, show_bio)
     if user is None:
         return utils.json_client_error("Bad authorization")
 

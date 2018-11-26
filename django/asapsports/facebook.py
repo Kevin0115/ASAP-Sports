@@ -30,7 +30,7 @@ def get_long_lived_access_token(short_fb_access_token):
 
 
 def get_user_info(fb_access_token):
-    params = {'fields': 'id,name'}
+    params = {'fields': 'id,name,picture.type(large)'}
     headers = {'Authorization': 'Bearer ' + fb_access_token}
     try:
         from_fb = requests.get("https://graph.facebook.com/me", params=params, headers=headers).json()
@@ -42,7 +42,7 @@ def get_user_info(fb_access_token):
             first, last = name[0], None
         else:
             first, last = name[0], name[-1]
-        profile_pic_url = "https://graph.facebook.com/%s/picture?redirect=0&width=100&height=100" % from_fb['id']
+        profile_pic_url = from_fb['picture']['data']['url']
     except requests.exceptions.HTTPError as e:
         raise FacebookAPIException("Failed to reach Facebook")
 

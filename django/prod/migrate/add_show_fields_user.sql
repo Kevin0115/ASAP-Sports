@@ -1,0 +1,3 @@
+ALTER TABLE users add column show_bio BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE users add column show_gender BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE users add column show_age BOOLEAN NOT NULL DEFAULT FALSE;

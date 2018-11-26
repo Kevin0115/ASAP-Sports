@@ -3,7 +3,8 @@ from .asapobject import ASAPObject
 
 class User(ASAPObject):
     def __init__(self, id, fb_id, first, last, age, gender, bio, fb_access_token,
-                 profile_pic_url, asap_access_token, creation_timestamp):
+                 profile_pic_url, asap_access_token, show_age, show_bio, show_gender,
+                 creation_timestamp):
         self.id = id
         self.fb_id = fb_id
         self.first = first
@@ -14,13 +15,17 @@ class User(ASAPObject):
         self.fb_access_token = fb_access_token
         self.profile_pic_url =profile_pic_url
         self.asap_access_token = asap_access_token
+        self.show_age = show_age
+        self.show_bio = show_bio
+        self.show_gender = show_gender
         self.creation_timestamp = creation_timestamp
+        # TODO: small security flaw to send bio/gender/age if show_bio/gender/age is false
 
 
 def get_user_by_asap_token(conn, asap_access_token):
     query = """
         select id, fb_id, first, last, age, gender, bio, fb_access_token, profile_pic_url,
-            asap_access_token, creation_timestamp
+            asap_access_token, show_age, show_bio, show_gender, creation_timestamp
             from users where asap_access_token=%s
     """
     with conn.cursor() as curs:
@@ -32,7 +37,7 @@ def get_user_by_asap_token(conn, asap_access_token):
 def get_user_by_fb_id(conn, fb_id):
     query = """
         select id, fb_id, first, last, age, gender, bio, fb_access_token, profile_pic_url,
-            asap_access_token, creation_timestamp
+            asap_access_token, show_age, show_bio, show_gender, creation_timestamp
             from users where fb_id=%s
     """
     with conn.cursor() as curs:
@@ -40,16 +45,18 @@ def get_user_by_fb_id(conn, fb_id):
         for row in curs:
             return User(*row)
 
+
 def get_user_by_id(conn, id):
     query = """
         select id, fb_id, first, last, age, gender, bio, fb_access_token, profile_pic_url,
-            asap_access_token, creation_timestamp
+            asap_access_token, show_age, show_bio, show_gender, creation_timestamp
             from users where id=%s
     """
     with conn.cursor() as curs:
         curs.execute(query, [id])
         for row in curs:
             return User(*row)
+
 
 def insert_user(conn, fb_id, first, last, age, gender, bio, fb_access_token,
                  profile_pic_url, asap_access_token):
@@ -60,27 +67,25 @@ def insert_user(conn, fb_id, first, last, age, gender, bio, fb_access_token,
           %(profile_pic_url)s, %(asap_access_token)s)
     """
     with conn.cursor() as curs:
-        print(locals())
         curs.execute(query, locals())
 
 
-def update_user_by_id(conn, id, fb_id, first, last, age, gender, bio, fb_access_token,
-                 profile_pic_url, asap_access_token):
+def update_user_profile_by_id(conn, id, first, last, profile_pic_url,
+                    age, gender, bio, show_age, show_gender, show_bio):
     query = """
         update users set 
-        fb_id=%(fb_id)s,
-        first=%(first)s,
-        last=%(last)s,
-        age=%(age)s,
-        gender=%(gender)s,
-        bio=%(bio)s,
-        fb_access_token=%(fb_access_token)s,
-        profile_pic_url=%(profile_pic_url)s,
-        asap_access_token=%(asap_access_token)s
+        first=coalesce(%(first)s, first),
+        last=coalesce(%(last)s, last),
+        profile_pic_url=coalesce(%(profile_pic_url)s, profile_pic_url),
+        age=coalesce(%(age)s, age),
+        gender=coalesce(%(gender)s, gender),
+        bio=coalesce(%(bio)s, bio),
+        show_age=coalesce(%(show_age)s, show_age),
+        show_gender=coalesce(%(show_gender)s, show_gender),
+        show_bio=coalesce(%(show_bio)s, show_bio)
         where id=%(id)s;
     """
     with conn.cursor() as curs:
-        print(locals())
         curs.execute(query, locals())
 
 

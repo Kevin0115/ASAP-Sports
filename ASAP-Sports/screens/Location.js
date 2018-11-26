@@ -1,16 +1,9 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View, Dimensions} from 'react-native';
 import { MapView, Location, Permissions} from 'expo';
+import { vancouver, delta, COLORS } from './../const';
 import AwesomeButton from 'react-native-really-awesome-button';
 
-const delta  = { //TODO throw into a const file
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-};
-const vancouver  = { //TODO throw into a const file
-  latitude: 49.282730,
-  longitude: -123.120735,
-};
 
 export default class LocationScreen extends React.Component {
   constructor(props) {
@@ -83,7 +76,7 @@ export default class LocationScreen extends React.Component {
               style={{
                 position: "absolute",
                 bottom: this.mapViewDems.height / 2,
-                left: Dimensions.get('window').width / 2 - 25,
+                left: this.mapViewDems.width / 2 - 25,
                 width: 50,
                 height: 50
               }}
@@ -93,8 +86,8 @@ export default class LocationScreen extends React.Component {
             <AwesomeButton
               width={320}
               height={60}
-              backgroundColor='#004e89'
-              backgroundDarker='#001a33'
+              backgroundColor={COLORS.darkBlue}
+              backgroundDarker={COLORS.darkerBlue}
               onPress={this._handleNextPress}
             >
               Next

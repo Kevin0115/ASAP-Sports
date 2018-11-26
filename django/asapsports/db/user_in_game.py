@@ -16,6 +16,22 @@ def insert_user_in_game(conn, user_id, game_id, status):
         curs.execute(query, locals())
 
 
+def delete_user_in_game(conn, user_id, game_id):
+    """
+        :return: Number of rows deleted (always 0 or 1)
+    """
+    query = """
+        WITH deleted AS (
+            DELETE FROM user_in_games
+            WHERE user_id=%(user_id)s AND game_id=%(game_id)s
+        RETURNING *) SELECT count(*) FROM deleted
+    """
+    with conn.cursor() as curs:
+        curs.execute(query, locals())
+        for row in curs:
+            return row[0]
+
+
 def num_users_in_game(conn, game_id): # TODO throw error if no game with game ID exists (count == 0)
     query = """
         select count(*) from user_in_games where game_id=%(game_id)s
@@ -24,6 +40,7 @@ def num_users_in_game(conn, game_id): # TODO throw error if no game with game ID
         curs.execute(query, locals())
         for row in curs:
             return row[0]
+
 
 def get_users(conn, game_id):
     users = []
@@ -35,21 +52,3 @@ def get_users(conn, game_id):
         for row in curs:
             users.append(row[0])
     return users
-
-
-def get_dashboard(conn, user_id):
-    # TODO this breaks if a user is in 25 games in the future
-    query = """
-            SELECT id, host_id, title, description, max_players, sport, start_time,
-                 end_time, location_lat, location_lng, location_name, comp_level, creation_timestamp
-            FROM games g LEFT OUTER JOIN user_in_games uig ON uig.game_id=g.id
-            WHERE uid.user_id=%(user_id)s ORDER BY g.creation_timestamp DESC LIMIT 25
-    """
-    with conn.cursor() as curs:
-        curs.execute(query, locals())
-        games = [Game(*row) for row in curs]
-        now = datetime.datetime.utcnow()
-        games_upcoming = [g for g in games if g.start_time > now]
-        games_in_progress = [g for g in games if g.start_time <= now <= g.end_time]
-        past_games = [g for g in games if g.end_time < now]
-        return games_upcoming, games_in_progress, past_games
