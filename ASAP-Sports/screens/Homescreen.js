@@ -7,12 +7,14 @@ import { Permissions, Notifications } from 'expo';
 
 // NOTIDEAL: Mixing different types in the list is ugly AF.
 
-const PUSH_ENDPOINT = 'http://bbbf2786.ngrok.io/users/push-token';
+const PUSH_ENDPOINT = 'http://d8becf45.ngrok.io/users/push-token';
+
 
 async function registerForPushNotificationsAsync() {
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );
+  const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
   let finalStatus = existingStatus;
 
   // only ask if permissions have not already been determined, because
@@ -40,14 +42,12 @@ async function registerForPushNotificationsAsync() {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'Authorization': authUser.asap_access_token,
     },
     body: JSON.stringify({
       token: {
-        value: token,
-      },
-      user: {
-        username: 'Brent',
-      },
+        value: token
+      }
     }),
   });
 }

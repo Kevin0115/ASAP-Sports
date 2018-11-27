@@ -22,6 +22,7 @@ CREATE TABLE users (
   -- TODO URL regex is shite
   asap_access_token uuid,
   -- expiry date for access token?
+  push_token VARCHAR(64),
   creation_timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT current_timestamp
   --   device_id VARCHAR(128)
 );

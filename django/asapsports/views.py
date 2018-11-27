@@ -4,7 +4,7 @@ import uuid
 import psycopg2
 import datetime
 
-from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_profile_by_id
+from .db.users import insert_user, get_user_by_asap_token, get_user_by_fb_id, get_user_by_id, update_user_profile_by_id, insert_push_token
 from .db.games import insert_game, delete_game, get_game, search_games, get_dashboard
 from .db.user_in_game import insert_user_in_game, num_users_in_game, get_users, delete_user_in_game, Status
 from .db.notifications import insert_notification
@@ -41,7 +41,7 @@ def login(request):
         asap_access_token = uuid.uuid4()    
         try:
             insert_user(request.db_conn, fb_id, first, last, None, None, None, fb_access_token,
-                    profile_pic_url, asap_access_token)
+                    profile_pic_url, asap_access_token, None)
             user = get_user_by_asap_token(request.db_conn, asap_access_token)
         except psycopg2.IntegrityError:
             request.db_conn.rollback()
@@ -394,7 +394,14 @@ def store_token(request):
     """
     data = request.read()
     postdata = json.loads(data)
-    print(postdata['token']['value'])
+    token = postdata['token']['value']
+    asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
+    if asap_access_token is None:
+       return utils.json_client_error("Bad access token.")
+    user = get_user_by_asap_token(request.db_conn, asap_access_token)
+    print(token)
+    if token is not None and user is not None:
+        insert_push_token(request.db_conn, user.id, token)
     res = {'status': 'success'}
     return utils.json_response(res)
     
