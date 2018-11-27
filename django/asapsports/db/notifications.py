@@ -13,12 +13,12 @@ def get_current_notification(conn, cur_time):
     with conn.cursor() as curs:
         curs.execute(query, [id])
         for row in curs:
-            notification_time = datetime.strptime(str(row[1]), '%A, %B %d, %Y %I:%M %p').timestamp()
+            notification_time = datetime.strptime(str(row[1]), '%Y-%m-%d %H:%M:%S').timestamp()
             if notification_time-cur_time < 3600:
                 games.append(row[2])
     return games
 
 def delete_notification(conn, game_id):
-    query = """ delete from table where game_id=%(game_id)s"""
+    query = """ delete from notifications where game_id=%(game_id)s"""
     with conn.cursor() as curs:
         curs.execute(query, locals())
