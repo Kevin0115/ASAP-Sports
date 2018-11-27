@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, View, Image, TouchableOpacity, Platform} from 'react-native';
 import { MapView, Location, Permissions} from 'expo';
 import {getUserTimeStr, parseAPIDate, calcDistance} from './../../utils'
 
@@ -78,20 +78,22 @@ export default class GameCard extends React.Component {
                 {this.state.date ? getUserTimeStr(this.state.date): ""}
               </Text>
             </View>
-            <View style={styles.iconTextContainer}>
-              <Image
-                source={require('../images/pin.png')}
-                style={styles.miniIcon}
-              />
-              <Text >
-                {calcDistance(
-                  this.state.userLat,
-                  this.state.userLong,
-                  this.state.gameLat,
-                  this.state.gameLong
-                )}
-              </Text>
-            </View>
+            { Platform.OS === 'ios'?
+              <View style={styles.iconTextContainer}>
+                <Image
+                  source={require('../images/pin.png')}
+                  style={styles.miniIcon}
+                />
+                <Text>
+                  {calcDistance(
+                    this.state.userLat,
+                    this.state.userLong,
+                    this.state.gameLat,
+                    this.state.gameLong
+                  )}
+                </Text>
+              </View>
+            : null }
           </View>
         </TouchableOpacity>
       </View>
