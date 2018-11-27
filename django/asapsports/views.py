@@ -394,7 +394,7 @@ def store_token(request):
     """
     data = request.read()
     postdata = json.loads(data)
-    token = postdata['token']['value']
+    token = postdata['token']
     asap_access_token = utils.sanitize_uuid(request.META['HTTP_AUTHORIZATION'])
     if asap_access_token is None:
        return utils.json_client_error("Bad access token.")
@@ -402,6 +402,8 @@ def store_token(request):
     print(token)
     if token is not None and user is not None:
         insert_push_token(request.db_conn, user.id, token)
+    else:
+        return utils.json_client_error("Invalid user or push token")
     res = {'status': 'success'}
     return utils.json_response(res)
     

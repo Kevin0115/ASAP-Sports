@@ -58,7 +58,7 @@ CREATE TABLE user_in_games (
 
 CREATE TABLE notifications (
   notification_id SERIAL PRIMARY KEY,
-  start_time TIMESTAMP NOT NULL,
+  start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   game_id INT REFERENCES games(id) NOT NULL
 );
 

@@ -7,6 +7,7 @@ from asapsports.db.games import get_game
 from datetime import datetime
 import requests
 import psycopg2
+import time
 
 from asapsports.settings import *
 try:
@@ -30,23 +31,24 @@ notifications = []
 conn = get_connection()
 
 while 1:
+    #potentially could add this sleep so that its not running a db query too often
+    #time.sleep(20)
     cur_time = datetime.utcnow().timestamp()
     notifications = get_current_notification(conn, cur_time)
     for game_id in notifications:
         delete_notification(conn, game_id)
-        print(game_id)
+        conn.commit()
         game = get_game(conn, game_id)
         message = "You have a " + game.sport + " game in 1 hour"
-        params={
-            "to": "ExponentPushToken[ApS2k4O61aNJiiarjotwjw]",
-            "sound": "default",
-            "body": message
-        }
         user_ids = get_users(conn, game_id)
         for user_id in user_ids:
-            print(user_id)
             user = get_user_by_id(conn, user_id)
-            token = user.push_token    
-            print("here")
+            token = user.push_token
+            params={
+                "to": token,
+                "sound": "default",
+                "body": message
+            }
             r = requests.post("https://exp.host/--/api/v2/push/send", data=params)
+        
 

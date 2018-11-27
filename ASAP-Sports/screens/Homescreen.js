@@ -7,7 +7,7 @@ import { Permissions, Notifications } from 'expo';
 
 // NOTIDEAL: Mixing different types in the list is ugly AF.
 
-const PUSH_ENDPOINT = 'http://d8becf45.ngrok.io/users/push-token';
+const PUSH_ENDPOINT = APP_BASE_URL + '/users/push-token';
 
 
 async function registerForPushNotificationsAsync() {
@@ -45,9 +45,7 @@ async function registerForPushNotificationsAsync() {
       'Authorization': authUser.asap_access_token,
     },
     body: JSON.stringify({
-      token: {
-        value: token
-      }
+      token: token
     }),
   });
 }
