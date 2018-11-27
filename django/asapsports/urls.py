@@ -55,7 +55,8 @@ urlpatterns = [
     path('notifications/subscribe/game/<int:game_id>', views.subscribe2game),
     path('user', views.get_current_user),
     path('user/<int:id>', views.get_user),
-    path('user/update', views.update_user)
+    path('user/update', views.update_user),
+    path('users/push-token', views.store_token)
 ]
 
 if settings.DEBUG:

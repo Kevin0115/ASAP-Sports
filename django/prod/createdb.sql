@@ -22,6 +22,7 @@ CREATE TABLE users (
   -- TODO URL regex is shite
   asap_access_token uuid,
   -- expiry date for access token?
+  push_token VARCHAR(64),
   creation_timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT current_timestamp
   --   device_id VARCHAR(128)
 );
@@ -53,6 +54,12 @@ CREATE TABLE user_in_games (
   creation_timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT current_timestamp,
 
   PRIMARY KEY (user_id, game_id)
+);
+
+CREATE TABLE notifications (
+  notification_id SERIAL PRIMARY KEY,
+  start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  game_id INT REFERENCES games(id) NOT NULL
 );
 
 -- Returns the meters distance between two points

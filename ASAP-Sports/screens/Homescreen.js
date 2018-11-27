@@ -3,8 +3,52 @@ import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage, FlatLi
 import AwesomeButton from 'react-native-really-awesome-button';
 import { APP_BASE_URL, COLORS, ASAPStyles } from '../const';
 import GameCard from '../assets/components/GameCard';
+import { Permissions, Notifications } from 'expo';
 
 // NOTIDEAL: Mixing different types in the list is ugly AF.
+
+const PUSH_ENDPOINT = APP_BASE_URL + '/users/push-token';
+
+
+async function registerForPushNotificationsAsync() {
+  const { status: existingStatus } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  const authUser = JSON.parse(await AsyncStorage.getItem('authUser'));
+  let finalStatus = existingStatus;
+
+  // only ask if permissions have not already been determined, because
+  // iOS won't necessarily prompt the user a second time.
+  if (existingStatus !== 'granted') {
+    // Android remote notification permissions are granted during the app
+    // install, so this will only ask on iOS
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    finalStatus = status;
+  }
+
+  // Stop here if the user did not grant permissions
+  if (finalStatus !== 'granted') {
+    return;
+  }
+
+  // Get the token that uniquely identifies this device
+  let token = await Notifications.getExpoPushTokenAsync();
+
+  console.log(token);
+
+  // POST the token to your backend server from where you can retrieve it to send push notifications.
+  return fetch(PUSH_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': authUser.asap_access_token,
+    },
+    body: JSON.stringify({
+      token: token
+    }),
+  });
+}
 
 export default class Homescreen extends React.Component {
   constructor(props){
@@ -16,6 +60,10 @@ export default class Homescreen extends React.Component {
       // NOTIDEAL: This gets called a lot. We only want to call it after we have joined/left a game
       this.getDashboard();
     });
+  }
+
+  componentWillMount(){
+    registerForPushNotificationsAsync();
   }
 
   async getDashboard(self) {

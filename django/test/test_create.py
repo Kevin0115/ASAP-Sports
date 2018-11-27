@@ -95,6 +95,6 @@ def test_invalid_token():
         res = requests.post("http://localhost:8000/games/host", data=json.dumps(params), headers=headers)
         jsonres = res.json()
         assert "error" in jsonres
-        assert "Invalid access token." in jsonres["error"]
+        assert "Bad access token." in jsonres["error"]
     except:
         assert False
