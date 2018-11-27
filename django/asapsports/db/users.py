@@ -83,8 +83,8 @@ def update_user_profile_by_id(conn, id, first, last, profile_pic_url,
         bio=coalesce(%(bio)s, bio),
         show_age=coalesce(%(show_age)s, show_age),
         show_gender=coalesce(%(show_gender)s, show_gender),
-        show_bio=coalesce(%(show_bio)s, show_bio),
-        where id=%(id)s;
+        show_bio=coalesce(%(show_bio)s, show_bio)
+        where id=%(id)s
     """
     with conn.cursor() as curs:
         curs.execute(query, locals())
@@ -93,7 +93,7 @@ def insert_push_token(conn, id, push_token):
     query = """
         update users set 
         push_token=%(push_token)s
-        where id=%(id)s;
+        where id=%(id)s
     """
     with conn.cursor() as curs:
         curs.execute(query, locals())
