@@ -1,51 +1,34 @@
 # ASAP-Sports
 Mobile application that allows you to find and join other athletes in your area in casual/competitive sports.
 
-## STYLE GUIDELINES **READ THIS**
-2 SPACES not tabs; CTRL+A, use "Convert indentions to Spaces", width 2 (Just change your editor so that tabs default to 2 spaces)\
-\For JSX tags with >= 2 attributes, newline them.
-Example:
-```
-<Button
-    title="Create a Game"
-    color="#fff"
-    onPress={() => this.props.navigation.navigate('Sport')}
-/>
-````
-
-## Screen Descriptions (for dev team reference)
-Following is a description of what each of the screens should display.
-
-**Important**
-Beginning with Gametype, props must be propagated and passed through each screen until **ReviewDetails** where all props (user input) are submitted through the API.
-
 ### Homescreen
-The homescreen.
+View your upcoming games in your dashboard. Several options available from here; view profile, settings, or find a game.
 
-![](screenshots/homescreen.PNG)
+<img src="./screenshots/homescreen.PNG" alt="drawing" width="250"/>
 
 ### Gametype
-The screen where user selects the sport
+When creating a game, select desired sport.
 
-![](screenshots/sport.PNG)
+<img src="./screenshots/sport.PNG" alt="drawing" width="250"/>
 
 ### BrowseGames
 The search results of the user-selected sport. Has a toggleable filter window with four sliders: time, date, location, and competitive level
 
-![](screenshots/filterloc.PNG)
+<img src="./screenshots/filterloc.PNG" alt="drawing" width="250"/>
 
 ### GameInfo
 The first screen of game creation. Should include Title, Game Description, Competitive Level, and Number of players, respectively.
 
-![](screenshots/gameinfo.PNG)
+<img src="./screenshots/gameinfo.PNG" alt="drawing" width="250"/>
 
 
 ### Location
-The third screen of game creation. User enters a simple plaintext address of the game.
+Drag to your desired game location.
 
-![](screenshots/location.PNG)
+<img src="./screenshots/location.PNG" alt="drawing" width="250"/>
 
 
 ### ConfirmMessage
 A simple confirmation message telling the use that their game has been created.
-![](screenshots/confirmation.PNG)
+
+<img src="./screenshots/confirmation.PNG" alt="drawing" width="250"/>
