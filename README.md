@@ -25,7 +25,7 @@ The first screen of game creation. Should include Title, Game Description, Compe
 ### Location
 Drag to your desired game location.
 
-<img src="./screenshots/location.PNG" alt="drawing" width="250"/>
+<img src="./screenshots/IMG_0630.PNG" alt="drawing" width="250"/>
 
 
 ### ConfirmMessage
