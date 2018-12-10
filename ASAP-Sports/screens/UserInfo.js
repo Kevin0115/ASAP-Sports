@@ -60,7 +60,7 @@ export default class UserInfo extends React.Component {
         </View>
         <View style={styles.bioContainer}>
           <Text style={styles.bioText}>
-            {this.state.userBio}
+            {this.state.displayBio ? this.state.userBio : null}
           </Text>
         </View>
         <View style={styles.buttonContainer}>

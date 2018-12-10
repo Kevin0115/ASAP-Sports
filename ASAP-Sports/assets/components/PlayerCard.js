@@ -10,6 +10,15 @@ export default class PlayerCard extends React.Component {
   _determineInfoFlex = () => {
   }
 
+  _renderName = () => {
+    let name = this.props.player.first + " " + this.props.player.last;
+    console.log(this.props.player);
+    if (this.props.player.show_age && this.props.player.age) {
+      name += ", " + this.props.player.age;
+    } 
+    return name;
+  }
+
   render() {
     return (
       <View style={styles.touchableContainer}>
@@ -26,7 +35,7 @@ export default class PlayerCard extends React.Component {
           <View style={styles.infoContainer}>
             <View style={styles.nameAgeContainer}>
               <Text style={styles.nameAgeText}>
-                {this.props.player.first} {this.props.player.last }{this.props.player.age != null? ", "+this.props.player.age: ""}
+                {this._renderName()}
               </Text>
             </View>
             { this.props.player.gender !== null ?

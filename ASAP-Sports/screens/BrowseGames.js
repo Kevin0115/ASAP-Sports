@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',
-    color: COLORS.darkGrey,
+    opacity: 0.65,
   },
   listButtonContainer: {
     flex: 1,

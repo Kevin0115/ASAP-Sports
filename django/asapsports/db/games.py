@@ -64,7 +64,7 @@ def get_users_in_game(conn, game_id):
     with conn.cursor() as curs:
         query = """
             select u.id, u.fb_id, u.first, u.last, u.age, u.gender, u.bio, u.fb_access_token, u.profile_pic_url,
-                u.asap_access_token, u.show_age, u.show_bio, u.show_gender, u.creation_timestamp
+                u.asap_access_token, u.show_age, u.show_bio, u.show_gender, u.push_token, u.creation_timestamp
                 from user_in_games uig
                 left outer join games g on uig.game_id = g.id
                 left outer join users u on uig.user_id = u.id
